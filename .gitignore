@@ -1,0 +1,7 @@
+*
+!.gitignore
+!*.ahk
+!components
+!*.md
+test*.ahk
+/取坐标.ahk
