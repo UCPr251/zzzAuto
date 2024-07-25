@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/07/25
- * @version 1.1.1
+ * @version v1.1.4
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
