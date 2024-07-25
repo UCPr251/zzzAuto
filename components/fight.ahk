@@ -8,7 +8,7 @@ fight() {
   RandomSleep()
 
   ; 点击进入战斗
-  SimulateClick(1361, 572, 3)
+  pixelSearchAndClick(1400, 550, 1500, 570, 1650, 570, 0xffffff)
 
   /** 判断是否位于对应界面 */
   judge(patterns) {
@@ -40,7 +40,7 @@ fight() {
           return false
         }
       }
-      Sleep(50)
+      Sleep(10)
     }
     MsgBox("【战斗】战斗结束", , "T2")
     RandomSleep()
@@ -48,7 +48,7 @@ fight() {
     SimulateClick(FoundX, FoundY, 2)
     RandomSleep(500, 800)
     ; 选择铭徽
-    SimulateClick(960, 790, 3)
+    pixelSearchAndClick(930, 780, 1000, 810, 960, 795, 0xffffff)
     ; 加载动画
     Sleep(7000)
     return true
@@ -58,11 +58,11 @@ fight() {
   Sleep(16000)
 
   ; 战斗循环
-  loop (50) {
+  loop (60) {
     Send("{w Down}") ; 向前
     RandomSleep(300, 400)
     Click("Right Down") ; 右键蓄力，进入快蓄
-    RandomSleep(580, 620)
+    RandomSleep(580, 600)
     Click("Right Up") ; 快蓄完毕，释放右键
     RandomSleep()
     Click("Left Down") ; 普攻蓄力
@@ -74,7 +74,7 @@ fight() {
     Send("{w Up}") ; 停止移动
     RandomSleep()
     ; 战斗动作
-    loop (3) {
+    loop (2) {
       Press("e") ; 使用技能
       SimulateClick(, , 6) ; 普攻
       Press("e") ; 使用技能

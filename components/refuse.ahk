@@ -5,15 +5,18 @@
 refuse() {
   activateZZZ()
   debugLog("【step2】拒绝好意，结束对话")
-  RandomSleep(200, 300)
+  RandomSleep()
   ; 开局铭徽(如果有)
-  SimulateClick(960, 790, 2)
+  if (PixelSearchPre(&X, &Y, 935, 780, 1000, 810, 0xffffff, 20)) {
+    SimulateClick(X, Y, 2)
+    RandomSleep()
+  }
   ; 对话
-  Press("Space", 8)
+  Press("Space", 10)
   ; 拒绝
-  pixelSearchAndClick(1401, 668, 1516, 689, 1662, 676, 0xffffff)
+  pixelSearchAndClick(1400, 670, 1520, 690, 1662, 676, 0xffffff)
   ; 对话
-  Press("Space", 8)
+  Press("Space", 10)
   ; 加载动画
   Sleep(5000)
 }

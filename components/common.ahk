@@ -109,6 +109,7 @@ pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
     if (PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, 50)) {
       break
     }
+    Sleep(100)
   }
   if (!X || !Y) {
     MsgBox("未找到像素点" Color "，将使用默认位置", "警告", "T1")

@@ -11,15 +11,15 @@ saveBank() {
   Press('w')
   ; 进门
   Press('a')
-  RandomSleep(2000, 3000)
+  RandomSleep(2400, 2500)
   ; 强行闯入
   pixelSearchAndClick(1360, 600, 1390, 660, 1668, 618, 0x296bfd)
   ; 对话
   Press('Space', 8)
   ; 侵蚀
-  RandomSleep(3500, 3800)
+  RandomSleep(3800, 4000)
   ; 确定侵蚀铭徽
-  SimulateClick(970, 650, 3)
+  pixelSearchAndClick(950, 630, 1000, 660, 970, 650, 0xffffff)
   RandomSleep(4500, 4800)
   Press('a', 3)
   RandomSleep(1500, 1800)

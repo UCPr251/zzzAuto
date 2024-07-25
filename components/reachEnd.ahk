@@ -9,12 +9,12 @@ reachEnd() {
     mode := 0
     loop (10) {
       ; 对指定区域进行RGB检测
-      if (PixelSearchPre(&FoundX, &FoundY, 1301, 220, 1328, 236, 0xF63B46, 30)) {
+      if (PixelSearchPre(&FoundX, &FoundY, 1300, 220, 1380, 230, 0xf63d49, 40)) {
         mode := 1
         break
       }
       ; 对指定区域进行RGB检测
-      if (PixelSearchPre(&FoundX, &FoundY, 1302, 876, 1333, 898, 0xEC2322, 30)) {
+      if (PixelSearchPre(&FoundX, &FoundY, 1300, 880, 1400, 900, 0xeb2a2c, 40)) {
         mode := 2
         break
       }
@@ -40,44 +40,43 @@ reachEnd() {
 
   /** 右上角终点 */
   above() {
-    RandomSleep()
     ; 使用炸弹
     bomb()
     ; 向右移动
     Press("d")
-    RandomSleep(1000, 2000)
-    ; 点击选项
-    SimulateClick(964, 804)
-    RandomSleep(1000, 1500)
+    RandomSleep(1800, 2000)
+    ; 选择铭徽
+    pixelSearchAndClick(935, 780, 1000, 810, 960, 795, 0xffffff)
+    RandomSleep(1200, 1500)
     ; 进入终点
     Press("d")
-    Press("w")
-    Press("w")
+    Press("w", 2)
   }
 
   /** 右下角终点 */
   below() {
-    RandomSleep()
     ; 代理人接应窗口
     Press('s')
     RandomSleep(800, 1200)
     Press("Space", 6)
     RandomSleep(2800, 3000)
-    SimulateClick(1545, 672, 2)
+    ; 取消接应
+    pixelSearchAndClick(1400, 670, 1615, 685, 1545, 672, 0xffffff)
     Press("Space", 6)
     RandomSleep(1800, 2000)
     ; 使用炸弹
     bomb()
     Press('s')
-    RandomSleep(1500, 1800)
+    RandomSleep(1800, 2000)
     ; 选择铭徽
-    SimulateClick(996, 779, 2)
+    pixelSearchAndClick(935, 780, 1000, 810, 960, 795, 0xffffff)
     RandomSleep(800, 1200)
     ; 进入终点
     Press('d', 2)
   }
 
   debugLog("【step3】前往终点")
+  RandomSleep()
   if (mode = 1) {
     above()
   } else {
