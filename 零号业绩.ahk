@@ -72,7 +72,7 @@ global bank := 0
   MsgBox("已" (bank ? "开启" : "关闭") "银行模式（无限循环刷取银行存款）", , "T2")
 }
 
-MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下才能正常使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+P ：暂停脚本`n    Alt+Q ：退出脚本`n    Alt+R ：重启脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://gitee.com/UCPr251/zzzAuto")
+MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能正常使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+P ：暂停脚本`n    Alt+Q ：退出脚本`n    Alt+R ：重启脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://gitee.com/UCPr251/zzzAuto")
 
 /** 是否输出步骤调试日志 */
 global isDebugLog := 1

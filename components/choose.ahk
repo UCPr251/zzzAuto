@@ -27,6 +27,10 @@ choose() {
         break
       }
     }
+    if (clickFnc) {
+      break
+    }
+    Sleep(100)
   }
   RandomSleep(2200, 2400)
   if (clickFnc = 1) {
