@@ -15,6 +15,7 @@ choose() {
     [0xb2eb47, () => 1], ; 恢复身体
     [0x10cbf4, () => SimulateClick(960, 732)], ; 降压准备
     [0xc01c00, 1], ; 侵蚀物资
+    [0xaa7cff, 2], ; 垃圾物资或催化
   ]
   clickFnc := 0
   loop (10) {
@@ -36,8 +37,17 @@ choose() {
     loop (10) {
       ; 确认侵蚀
       if (PixelSearchPre(&X, &Y, 953, 636, 1002, 660, 0xffffff, 30)) {
-        SimulateClick(960, 640)
+        SimulateClick(X, Y)
         Sleep(5000)
+      }
+      Sleep(100)
+    }
+  } else if (clickFnc = 2) {
+    loop (10) {
+      ; 点击确定
+      if (PixelSearchPre(&X, &Y, 940, 783, 985, 805, 0xffffff, 30)) {
+        SimulateClick(X, Y)
+        Sleep(4000)
       }
       Sleep(100)
     }

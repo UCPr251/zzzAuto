@@ -13,7 +13,7 @@ debugLog(str) {
   if (IsSet(isDebugLog) && !isDebugLog) {
     return
   }
-  MsgBox(str, "调试日志", "T1")
+  MsgBox(str, "调试信息", "T1")
 }
 
 /** 随机休眠，默认50~100ms */

@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/07/25
- * @version 1.1.0
+ * @version 1.1.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -47,10 +47,16 @@ SetMouseDelay(-1)
 }
 
 /** Alt+r 重启程序 */
-!r:: Reload()
+!r:: {
+  MsgBox("重启脚本" A_ScriptName, , "T1")
+  Reload()
+}
 
 /** Alt+p 暂停线程 */
-!p:: Pause(-1)
+!p:: {
+  MsgBox("脚本已" (A_IsPaused ? "恢复" : "暂停") "，再次Alt+P可切换状态", , "T2")
+  Pause(-1)
+}
 
 /** Alt+z 运行程序 */
 !z:: {
@@ -66,7 +72,7 @@ global bank := 0
   MsgBox("已" (bank ? "开启" : "关闭") "银行模式（无限循环刷取银行存款）", , "T2")
 }
 
-MsgBox("    绝区零零号空洞自动刷取脚本`n使用方法：`n    Alt+Z ：启动脚本`n    Alt+P ：暂停脚本`n    Alt+Q ：退出脚本`n    Alt+R ：重启脚本`n    Alt+B ：无限循环刷取")
+MsgBox("`t`t绝区零零号空洞自动刷取脚本`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+P ：暂停脚本`n    Alt+Q ：退出脚本`n    Alt+R ：重启脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n仓库地址：https://gitee.com/UCPr251/zzzAuto")
 
 /** 是否输出步骤调试日志 */
 global isDebugLog := 1
@@ -135,7 +141,7 @@ run(mode) {
   ; 战斗
   status := fight()
   if (status = 0) {
-    return MsgBox("【战斗】战斗超时或检测异常，重新启动", "错误")
+    return MsgBox("【战斗】战斗超时或检测异常，请重新启动", "错误")
   }
   ; 选择增益
   choose()
