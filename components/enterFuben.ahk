@@ -20,5 +20,5 @@ enterFuben() {
   ; 出战
   SimulateClick()
   ; 加载动画
-  Sleep(15000)
+  RandomSleep(17000, 18000)
 }

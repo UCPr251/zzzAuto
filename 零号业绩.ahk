@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/07/25
- * @version 1.0.0
+ * @version 1.1.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -38,13 +38,13 @@ SetMouseDelay(-1)
 }
 
 /** Ctrl+s 保存并重载程序 */
-; ~^s:: {
-;   if (InStr(WinGetTitle("A"), "Visual Studio Code") && InStr(WinGetTitle("A"), A_ScriptName)) {
-;     Send("^s")
-;     MsgBox("已自动重载脚本" A_ScriptName, , "T1")
-;     Reload()
-;   }
-; }
+~^s:: {
+  if (InStr(WinGetTitle("A"), "Visual Studio Code") && InStr(WinGetTitle("A"), A_ScriptName)) {
+    Send("^s")
+    MsgBox("已自动重载脚本" A_ScriptName, , "T1")
+    Reload()
+  }
+}
 
 /** Alt+r 重启程序 */
 !r:: Reload()
@@ -57,7 +57,16 @@ SetMouseDelay(-1)
   main()
 }
 
-MsgBox("    绝区零零号空洞自动刷取脚本`n使用方法：`n    Alt+Z ：启动脚本`n    Alt+P ：暂停脚本`n    Alt+Q ：退出脚本`n    Alt+R ：重启脚本")
+global bank := 0
+
+/** Alt+b 银行模式，无限循环 */
+!b:: {
+  global bank
+  bank := !bank
+  MsgBox("已" (bank ? "开启" : "关闭") "银行模式（无限循环刷取银行存款）", , "T2")
+}
+
+MsgBox("    绝区零零号空洞自动刷取脚本`n使用方法：`n    Alt+Z ：启动脚本`n    Alt+P ：暂停脚本`n    Alt+Q ：退出脚本`n    Alt+R ：重启脚本`n    Alt+B ：无限循环刷取")
 
 /** 是否输出步骤调试日志 */
 global isDebugLog := 1
@@ -136,14 +145,19 @@ run(mode) {
   saveBank()
   ; 退出副本
   exitFuben()
-  ; 判断是否达到上限
-  if (isLimited()) {
-    return MsgBox("已达到上限，脚本结束")
+  if (bank) {
+    MsgBox("银行模式，无限刷取，继续循环", , "T1")
+  } else {
+    ; 判断是否达到上限
+    if (isLimited()) {
+      return MsgBox("已达到上限，脚本结束")
+    }
+    MsgBox("未达到上限，继续刷取", , "T1")
   }
-  MsgBox("未达到上限，继续刷取", , "T1")
+  RandomSleep()
   ; 点击完成
   pixelSearchAndClick(1676, 1018, 1724, 1038, 1699, 1027, 0xffffff)
-  RandomSleep(3000, 4000)
+  RandomSleep(3800, 4000)
   ; 继续循环
   run(2)
 }

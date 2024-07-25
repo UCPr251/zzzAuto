@@ -35,7 +35,7 @@ reachEnd() {
     Send("{r Down}")
     RandomSleep(800, 1000)
     Send("{r Up}")
-    RandomSleep(2000, 2200)
+    RandomSleep(1900, 2100)
   }
 
   /** 右上角终点 */
@@ -61,19 +61,19 @@ reachEnd() {
     ; 代理人接应窗口
     Press('s')
     RandomSleep(800, 1200)
-    Press("Space", 4)
-    RandomSleep(1800, 2000)
+    Press("Space", 6)
+    RandomSleep(2800, 3000)
     SimulateClick(1545, 672, 2)
     Press("Space", 6)
     RandomSleep(1800, 2000)
     ; 使用炸弹
     bomb()
-    ; 进入终点
     Press('s')
-    RandomSleep(1200, 1500)
+    RandomSleep(1500, 1800)
     ; 选择铭徽
     SimulateClick(996, 779, 2)
     RandomSleep(800, 1200)
+    ; 进入终点
     Press('d', 2)
   }
 

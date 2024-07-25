@@ -13,5 +13,5 @@ exitFuben() {
   pixelSearchAndClick(1585, 1010, 1601, 1044, 1712, 1026, 0xcb0000)
   RandomSleep(500, 800)
   pixelSearchAndClick(1000, 608, 1020, 643, 1121, 625, 0x00cc0d)
-  RandomSleep(3000, 4000)
+  RandomSleep(3800, 4000)
 }

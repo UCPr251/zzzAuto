@@ -10,6 +10,7 @@ isLimited() {
     if (PixelSearchPre(&FoundX, &FoundY, 1326, 625, 1440, 666, 0xffb500, 80)) {
       return false
     }
+    Sleep(100)
   }
   return true
 }

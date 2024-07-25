@@ -29,30 +29,7 @@ Press(key, times := 1) {
     Send("{" key " Down}")
     RandomSleep()
     Send("{" key " Up}")
-    RandomSleep(150, 300)
-  }
-}
-
-/**
- * 获取图片中心绝对坐标
- * @param File 文件路径
- * @param CoordX X坐标内存地址
- * @param CoordY Y坐标内存地址
- * @returns {Integer} 是否成功
- */
-CenterImgSrchCoords(File, &CoordsX, &CoordsY) {
-  try {
-    g := Gui()
-    g.Opt("-DPIScale")
-    LoadedPic := g.Add("Picture", "", File)
-    LoadedPic.GetPos(, , &Width, &Height)
-    g.Destroy()
-    CoordsX += Width // 2
-    CoordsY += Height // 2
-  } catch {
-    return false
-  } else {
-    return true
+    RandomSleep(150, 200)
   }
 }
 
@@ -142,6 +119,29 @@ pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
   SimulateClick(X, Y, 1, false)
   return [X, Y]
 }
+
+; /**
+;  * 获取图片中心绝对坐标
+;  * @param File 文件路径
+;  * @param CoordX X坐标内存地址
+;  * @param CoordY Y坐标内存地址
+;  * @returns {Integer} 是否成功
+;  */
+; CenterImgSrchCoords(File, &CoordsX, &CoordsY) {
+;   try {
+;     g := Gui()
+;     g.Opt("-DPIScale")
+;     LoadedPic := g.Add("Picture", "", File)
+;     LoadedPic.GetPos(, , &Width, &Height)
+;     g.Destroy()
+;     CoordsX += Width // 2
+;     CoordsY += Height // 2
+;   } catch {
+;     return false
+;   } else {
+;     return true
+;   }
+; }
 
 ; /** 对坐标进行缩放预处理的图片搜索 */
 ; ImageSearchPre(&X, &Y, X1, Y1, X2, Y2, File) {

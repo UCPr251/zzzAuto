@@ -58,7 +58,7 @@ fight() {
   Sleep(16000)
 
   ; 战斗循环
-  loop (40) {
+  loop (50) {
     Send("{w Down}") ; 向前
     RandomSleep(300, 400)
     Click("Right Down") ; 右键蓄力，进入快蓄
@@ -74,12 +74,12 @@ fight() {
     Send("{w Up}") ; 停止移动
     RandomSleep()
     ; 战斗动作
-    loop (5) {
+    loop (3) {
+      Press("e") ; 使用技能
+      SimulateClick(, , 6) ; 普攻
       Press("e") ; 使用技能
       SimulateClick(, , 6) ; 普攻
       Press("Shift") ; 闪避
-      Press("e") ; 使用技能
-      SimulateClick(, , 6) ; 普攻
       if (fightIsOver()) {
         return true
       }
