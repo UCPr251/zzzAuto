@@ -9,6 +9,8 @@ activateZZZ() {
   }
 }
 
+global variation := 40
+
 debugLog(str) {
   if (IsSet(isDebugLog) && !isDebugLog) {
     return
@@ -18,6 +20,23 @@ debugLog(str) {
 
 /** 随机休眠，默认50~100ms */
 RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(ms1, ms2))
+
+/** 选择铭徽 */
+MingHui() {
+  X := 0, Y := 0
+  loop (10) {
+    if (PixelSearchPre(&X, &Y, 930, 760, 1000, 810, 0xffffff)) {
+      break
+    }
+    Sleep(100)
+  }
+  if (!X || !Y) {
+    MsgBox("未找到铭徽选择框，将使用默认位置", "警告", "T1")
+    X := 960, Y := 790
+    preprocess(&X, &Y) ; 缩放处理默认坐标
+  }
+  SimulateClick(X, Y, 1, false)
+}
 
 /**
  * 点按按键
@@ -87,7 +106,7 @@ SimulateClick(x?, y?, clickCount := 1, isPreprocess := true) {
 }
 
 /** 对坐标进行缩放预处理的像素搜索 */
-PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := 0) {
+PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := variation) {
   preprocess(&X1, &Y1)
   preprocess(&X2, &Y2)
   return PixelSearch(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance)
@@ -106,7 +125,7 @@ PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := 0) {
 pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
   X := 0, Y := 0
   loop (10) {
-    if (PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, 50)) {
+    if (PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color)) {
       break
     }
     Sleep(100)

@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/07/26
- * @version v1.1.5
+ * @version v1.2.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -38,13 +38,13 @@ SetMouseDelay(-1)
 }
 
 /** Ctrl+s 保存并重载程序 */
-; ~^s:: {
-;   if (InStr(WinGetTitle("A"), "Visual Studio Code") && InStr(WinGetTitle("A"), A_ScriptName)) {
-;     Send("^s")
-;     MsgBox("已自动重载脚本" A_ScriptName, , "T1")
-;     Reload()
-;   }
-; }
+~^s:: {
+  if (InStr(WinGetTitle("A"), "Visual Studio Code") && InStr(WinGetTitle("A"), A_ScriptName)) {
+    Send("^s")
+    MsgBox("已自动重载脚本" A_ScriptName, , "T1")
+    Reload()
+  }
+}
 
 /** Alt+r 重启程序 */
 !r:: {
@@ -83,14 +83,14 @@ main() {
   activateZZZ()
   /** 通过三个特殊定位点判断所处界面 */
   patterns1 := [
-    [1171, 889, 1784, 901, 0xffffff, 30], ; M
-    [1770, 1027, 1784, 1042, 0xffffff, 30], ; Q
-    [1805, 121, 1797, 911, 0xffffff, 30]  ; Tab
+    [1170, 880, 1800, 920, 0xffffff], ; M
+    [1770, 1020, 1790, 1050, 0xffffff], ; Q
+    [1800, 100, 1850, 130, 0xffffff]  ; Tab
   ]
   patterns2 := [
-    [249, 733, 257, 742, 0x78cc00, 30], ; 资质考核
-    [594, 832, 602, 841, 0x78cc00, 30], ; 旧都列车
-    [688, 419, 696, 428, 0x78cc00, 30] ; 施工废墟
+    [240, 700, 260, 750, 0x78cc00], ; 资质考核
+    [580, 780, 600, 850, 0x78cc00], ; 旧都列车
+    [680, 410, 700, 450, 0x78cc00] ; 施工废墟
   ]
   mode := 0
   /** 判断是否位于对应界面 */
@@ -143,10 +143,13 @@ run(mode) {
   ; 战斗
   status := fight()
   if (status = 0) {
-    return MsgBox("【战斗】战斗超时或检测异常，请重新启动", "错误")
+    return MsgBox("【战斗】战斗超时或检测异常", "错误")
   }
   ; 选择增益
-  choose()
+  status := choose()
+  if (status = 0) {
+    return MsgBox("【选择增益】未找到对应增益选项", "错误")
+  }
   ; 获得零号业绩
   getMoney()
   ; 存银行

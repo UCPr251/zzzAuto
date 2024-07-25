@@ -8,7 +8,7 @@ fight() {
   RandomSleep()
 
   ; 点击进入战斗
-  pixelSearchAndClick(1400, 550, 1500, 570, 1650, 570, 0xffffff)
+  pixelSearchAndClick(1390, 540, 1500, 570, 1650, 570, 0xffffff)
 
   /** 判断是否位于对应界面 */
   judge(patterns) {
@@ -22,15 +22,15 @@ fight() {
 
   /** 通过三个特殊定位点判断所处界面 */
   patterns := [
-    [1230, 430, 1370, 610, 0xffc300, 40], ; 战斗计时
-    [1000, 870, 1030, 1020, 0x00cc0d, 40], ; 绿勾
-    [1130, 880, 1190, 1020, 0xffffff, 40] ; 确定键
+    [1230, 430, 1370, 610, 0xffc300], ; 战斗计时
+    [1000, 840, 1040, 1020, 0x00cc0d], ; 确定绿勾
+    [1130, 840, 1190, 1020, 0xffffff] ; 确定键
   ]
 
   /** 判断战斗是否结束 */
   fightIsOver() {
     ; 周上限提示确定
-    if (PixelSearchPre(&X, &Y, 954, 614, 1001, 636, 0xffffff, 30)) {
+    if (PixelSearchPre(&X, &Y, 950, 610, 1000, 640, 0xffffff)) {
       SimulateClick(X, Y)
       Sleep(1000)
     }
@@ -48,7 +48,7 @@ fight() {
     SimulateClick(FoundX, FoundY, 2)
     RandomSleep(500, 800)
     ; 选择铭徽
-    pixelSearchAndClick(930, 780, 1000, 810, 960, 795, 0xffffff)
+    MingHui()
     ; 加载动画
     Sleep(7000)
     return true

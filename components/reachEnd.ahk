@@ -9,12 +9,12 @@ reachEnd() {
     mode := 0
     loop (10) {
       ; 对指定区域进行RGB检测
-      if (PixelSearchPre(&FoundX, &FoundY, 1300, 220, 1380, 230, 0xf63d49, 40)) {
+      if (PixelSearchPre(&FoundX, &FoundY, 1300, 220, 1380, 270, 0xf63d49)) {
         mode := 1
         break
       }
       ; 对指定区域进行RGB检测
-      if (PixelSearchPre(&FoundX, &FoundY, 1300, 880, 1400, 900, 0xeb2a2c, 40)) {
+      if (PixelSearchPre(&FoundX, &FoundY, 1300, 840, 1400, 900, 0xeb2a2c)) {
         mode := 2
         break
       }
@@ -46,7 +46,7 @@ reachEnd() {
     Press("d")
     RandomSleep(1800, 2000)
     ; 选择铭徽
-    pixelSearchAndClick(935, 780, 1000, 810, 960, 795, 0xffffff)
+    MingHui()
     RandomSleep(1200, 1500)
     ; 进入终点
     Press("d")
@@ -61,7 +61,7 @@ reachEnd() {
     Press("Space", 6)
     RandomSleep(2800, 3000)
     ; 取消接应
-    pixelSearchAndClick(1400, 670, 1615, 685, 1545, 672, 0xffffff)
+    pixelSearchAndClick(1400, 650, 1620, 685, 1545, 672, 0xffffff)
     Press("Space", 6)
     RandomSleep(1800, 2000)
     ; 使用炸弹
@@ -69,7 +69,7 @@ reachEnd() {
     Press('s')
     RandomSleep(1800, 2000)
     ; 选择铭徽
-    pixelSearchAndClick(935, 780, 1000, 810, 960, 795, 0xffffff)
+    MingHui()
     RandomSleep(800, 1200)
     ; 进入终点
     Press('d', 2)

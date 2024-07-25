@@ -10,8 +10,10 @@ exitFuben() {
   ; 退出副本
   Press("Escape")
   RandomSleep(1000, 1500)
-  pixelSearchAndClick(1585, 1010, 1601, 1044, 1712, 1026, 0xcb0000)
+  ; 点击放弃
+  pixelSearchAndClick(1580, 960, 1600, 1050, 1712, 1026, 0xcb0000)
   RandomSleep(500, 800)
-  pixelSearchAndClick(1000, 608, 1020, 643, 1121, 625, 0x00cc0d)
+  ; 点击确定
+  pixelSearchAndClick(1000, 600, 1020, 650, 1121, 625, 0x00cc0d)
   RandomSleep(3800, 4000)
 }
