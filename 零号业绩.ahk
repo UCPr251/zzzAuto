@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/07/25
- * @version v1.1.4
+ * @date 2024/07/26
+ * @version v1.1.5
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -60,6 +60,7 @@ SetMouseDelay(-1)
 
 /** Alt+z 运行程序 */
 !z:: {
+  MsgBox("【开始运行】绝区零零号空洞自动刷取脚本", , "T2")
   main()
 }
 
@@ -80,7 +81,6 @@ global isDebugLog := 1
 /** 开始，检测所在页面 */
 main() {
   activateZZZ()
-  MsgBox("【开始运行】绝区零零号空洞自动刷取脚本", , "T2")
   /** 通过三个特殊定位点判断所处界面 */
   patterns1 := [
     [1171, 889, 1784, 901, 0xffffff, 30], ; M
@@ -125,6 +125,8 @@ main() {
 
 /** 运行刷取脚本，1：角色操作界面，2：关卡选择界面 */
 run(mode) {
+  ; 刷取次数
+  static count := 0
   if (mode = 1) {
     charOperation()
   }
@@ -151,14 +153,15 @@ run(mode) {
   saveBank()
   ; 退出副本
   exitFuben()
+  count++
   if (bank) {
-    MsgBox("银行模式，无限刷取，继续循环", , "T1")
+    MsgBox("银行模式，无限循环。已刷取" count "次", , "T2")
   } else {
     ; 判断是否达到上限
     if (isLimited()) {
-      return MsgBox("已达到上限，脚本结束")
+      return MsgBox("已达到上限，脚本结束。共刷取" count "次")
     }
-    MsgBox("未达到上限，继续刷取", , "T1")
+    MsgBox("未达到上限，继续刷取。已刷取" count "次", , "T2")
   }
   RandomSleep()
   ; 点击完成

@@ -26,7 +26,7 @@
 ## 下载、打开方法
 
 - 方法一：
-下载[release](https://gitee.com/UCPr251/zzzAuto/releases)的exe可执行文件（或自行下载源码编译）， **右键** 该exe文件选择 **以管理员方式运行**
+下载[release](https://gitee.com/UCPr251/zzzAuto/releases)最新版本的exe可执行文件（或自行下载源码编译）， **右键** 该exe文件选择 **以管理员方式运行**
 
 - 方法二：
 直接克隆源码使用（需已安装好[autohotkey](https://www.autohotkey.com) v2版解释器）， **右键** 零号业绩.ahk文件选择 **以管理员方式运行**
