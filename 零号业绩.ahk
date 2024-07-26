@@ -13,7 +13,6 @@ CoordMode("Mouse", "Window")
 CoordMode("Pixel", "Window")
 SendMode("Input")
 #SingleInstance Force
-SetTitleMatchMode(2)
 #WinActivateForce
 SetControlDelay(1)
 SetWinDelay(0)

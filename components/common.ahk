@@ -1,7 +1,7 @@
 ﻿/** 激活绝区零窗口 */
 activateZZZ() {
   try {
-    WinActivate("绝区零 ahk_class UnityWndClass")
+    WinActivate("ahk_exe ZenlessZoneZero.exe ahk_class UnityWndClass")
     RandomSleep()
   } catch {
     MsgBox("【错误】未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx")
