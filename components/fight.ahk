@@ -42,7 +42,7 @@ fight() {
       }
       Sleep(10)
     }
-    MsgBox("【战斗】战斗结束", , "T2")
+    debugLog("【战斗】战斗结束")
     RandomSleep()
     ; 点击确定
     SimulateClick(FoundX, FoundY, 2)

@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/07/26
- * @version v1.2.0
+ * @date 2024/07/27
+ * @version v1.2.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -33,7 +33,10 @@ SetMouseDelay(-1)
 
 /** Alt+q 退出程序 */
 !q:: {
-  ExitApp()
+  result := MsgBox("确定关闭零号业绩自动刷取脚本？Y/N", , "0x1")
+  if (result = "OK") {
+    ExitApp()
+  }
 }
 
 /** Ctrl+s 保存并重载程序 */
@@ -51,15 +54,22 @@ SetMouseDelay(-1)
   Reload()
 }
 
-/** Alt+p 暂停线程 */
+/** Alt+L 开关日志弹窗 */
+!l:: {
+  global isDebugLog
+  isDebugLog := !isDebugLog
+  MsgBox("已" (isDebugLog ? "开启" : "关闭") "调试日志弹窗，再次Alt+L可切换状态", , "T1")
+}
+
+/** Alt+p 暂停/恢复线程 */
 !p:: {
-  MsgBox("脚本已" (A_IsPaused ? "恢复" : "暂停") "，再次Alt+P可切换状态", , "T2")
+  MsgBox("脚本已" (A_IsPaused ? "恢复" : "暂停") "，再次Alt+P可切换状态", , "T1")
   Pause(-1)
 }
 
 /** Alt+z 运行程序 */
 !z:: {
-  MsgBox("【开始运行】绝区零零号空洞自动刷取脚本", , "T2")
+  MsgBox("【开始运行】绝区零零号空洞自动刷取脚本", , "T1")
   main()
 }
 
@@ -104,7 +114,7 @@ SetMouseDelay(-1)
 }
 
 init() {
-  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+P ：暂停脚本`n    Alt+Q ：退出脚本`n    Alt+R ：重启脚本`n    Alt+T ：查看刷取统计`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://gitee.com/UCPr251/zzzAuto", "UCPr", "0x40000")
+  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://gitee.com/UCPr251/zzzAuto", "UCPr", "0x40000")
   if (A_ScreenWidth / A_ScreenHeight != 16 / 9) {
     MsgBox("检测到当前显示器分辨率为" A_ScreenWidth "x" A_ScreenHeight "`n若此脚本无法正常运行，请尝试更改显示器分辨率比例为16:9", "警告", "Icon! 0x40000")
   }
@@ -112,8 +122,14 @@ init() {
 
 init()
 
+/** 是否开启调试日志信息输出 */
+global isDebugLog := true
+/** RGB颜色搜索允许的渐变值 */
+global variation := 40
 /** 是否处于银行模式 */
 global bank := 0
+/** 刷取统计数据 */
+global statistics := []
 
 /** 开始，检测所在页面 */
 main() {
@@ -152,15 +168,13 @@ main() {
   if (!mode) {
     return MsgBox("请位于 <零号空洞关卡选择界面> 或 <角色操作界面> 重试", "错误", "Iconx")
   } else if (mode = 1) {
-    MsgBox("【开始】模式：角色操作界面", , "T2")
+    debugLog("【开始】模式：角色操作界面")
   } else {
-    MsgBox("【开始】模式：零号空洞关卡选择界面", , "T2")
+    debugLog("【开始】模式：零号空洞关卡选择界面")
   }
   RandomSleep()
   run(mode)
 }
-
-global statistics := []
 
 /** 运行刷取脚本，1：角色操作界面，2：关卡选择界面 */
 run(mode) {
@@ -198,18 +212,18 @@ run(mode) {
   end := A_Now
   statistics.Push(DateDiff(end, start, "s"))
   if (bank) {
-    MsgBox("银行模式，无限循环。已刷取" statistics.Length "次", , "T2")
+    debugLog("银行模式，无限循环。已刷取" statistics.Length "次")
   } else {
     ; 判断是否达到上限
     if (isLimited()) {
       return MsgBox("已达到上限，脚本结束。共刷取" statistics.Length "次")
     }
-    MsgBox("未达到上限，继续刷取。已刷取" statistics.Length1 "次", , "T2")
+    debugLog("未达到上限，继续刷取。已刷取" statistics.Length1 "次")
   }
-  RandomSleep()
+  RandomSleep(800, 1000)
   ; 点击完成
   pixelSearchAndClick(1670, 970, 1730, 1038, 1699, 1027, 0xffffff)
-  RandomSleep(3800, 4000)
+  RandomSleep(4500, 4800)
   ; 继续循环
   run(2)
 }

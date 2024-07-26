@@ -9,10 +9,10 @@ activateZZZ() {
   }
 }
 
-global variation := 40
-
 debugLog(str) {
-  MsgBox(str, "调试信息", "T1")
+  if (isDebugLog) {
+    MsgBox(str, "调试信息", "T1")
+  }
 }
 
 /** 随机休眠，默认50~100ms */
