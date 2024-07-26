@@ -12,9 +12,6 @@ activateZZZ() {
 global variation := 40
 
 debugLog(str) {
-  if (IsSet(isDebugLog) && !isDebugLog) {
-    return
-  }
   MsgBox(str, "调试信息", "T1")
 }
 

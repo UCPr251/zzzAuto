@@ -115,8 +115,6 @@ init()
 
 /** 是否处于银行模式 */
 global bank := 0
-/** 是否输出步骤调试日志 */
-global isDebugLog := 1
 
 /** 开始，检测所在页面 */
 main() {
