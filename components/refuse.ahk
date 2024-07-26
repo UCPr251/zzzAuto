@@ -7,10 +7,7 @@ refuse() {
   debugLog("【step2】拒绝好意")
   RandomSleep()
   ; 开局铭徽(如果有)
-  if (PixelSearchPre(&X, &Y, 935, 780, 1000, 810, 0xffffff)) {
-    SimulateClick(X, Y, 2)
-    RandomSleep()
-  }
+  MingHui(true)
   ; 对话
   Press("Space", 10)
   ; 拒绝

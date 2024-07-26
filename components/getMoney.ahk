@@ -16,8 +16,8 @@ getMoney() {
   Press('d')
   ; 判断是否有零号业绩
   has := 0
-  loop(10) {
-    if (PixelSearchPre(&X, &Y, 850, 250, 1100, 450, 0x4d3dc6, 20)) {
+  loop(20) {
+    if (PixelSearchPre(&X, &Y, 850, 250, 1100, 450, 0x8a63b6, variation // 2)) {
       has := 1
       break
     }
@@ -27,8 +27,16 @@ getMoney() {
   if (has) {
     ; 加载动画
     RandomSleep(2500, 3000)
-    ; 点击确定
-    pixelSearchAndClick(930, 740, 1000, 780, 960, 760, 0xffffff)
+    ; 点击确定零号业绩
+    loop(5) {
+      ; 避免误操作
+      if (PixelSearchPre(&X, &Y, 720, 750, 1200, 810, 0xffffff, variation // 2)) {
+        SimulateClick(X, Y)
+        Sleep(3000)
+        Press('w', 2)
+      }
+      Sleep(100)
+    }
     RandomSleep(1200, 1500)
   }
 }

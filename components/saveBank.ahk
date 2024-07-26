@@ -17,7 +17,7 @@ saveBank() {
   ; 对话
   Press('Space', 8)
   ; 侵蚀
-  RandomSleep(3800, 4000)
+  RandomSleep(4000, 4500)
   ; 确定侵蚀
   pixelSearchAndClick(950, 630, 1000, 660, 970, 650, 0xffffff)
   RandomSleep(4500, 4800)
@@ -33,16 +33,14 @@ saveBank() {
   ; 存款
   Coords := pixelSearchAndClick(1360, 440, 1390, 500, 1640, 470, 0x296bfd)
   loop (6) {
-    SimulateClick(Coords[1], Coords[2], 2, false)
+    SimulateClick(Coords[1], Coords[2], 2)
     Press('Space', 3)
     ; 如果有礼包
     if (PixelSearchPre(&X, &Y, 1340, 540, 1380, 600, 0xaa7cff)) {
       pixelSearchAndClick(1400, 660, 1460, 690, 1653, 678, 0xffffff) ; 不要礼包
     }
     ; 如果弹出选择铭徽界面
-    if (PixelSearchPre(&X, &Y, 930, 760, 1000, 810, 0xffffff)) {
-      SimulateClick(X, Y, 2, false) ; 选择铭徽
-    }
+    MingHui(true)
     Press('Space', 3)
   }
 }

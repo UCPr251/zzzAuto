@@ -30,7 +30,7 @@ fight() {
   /** 判断战斗是否结束 */
   fightIsOver() {
     ; 周上限提示确定
-    if (PixelSearchPre(&X, &Y, 950, 610, 1000, 640, 0xffffff)) {
+    if (PixelSearchPre(&X, &Y, 950, 610, 1000, 640, 0xffffff, variation // 2)) {
       SimulateClick(X, Y)
       Sleep(1000)
     }
@@ -59,6 +59,9 @@ fight() {
 
   ; 战斗循环
   loop (60) {
+    if (A_Index != 1) {
+      Press("Shift") ; 闪避
+    }
     Send("{w Down}") ; 向前
     RandomSleep(300, 400)
     Click("Right Down") ; 右键蓄力，进入快蓄
@@ -76,9 +79,9 @@ fight() {
     ; 战斗动作
     loop (2) {
       Press("e") ; 使用技能
-      SimulateClick(, , 6) ; 普攻
+      SimulateClick(, , 4) ; 普攻
       Press("e") ; 使用技能
-      SimulateClick(, , 6) ; 普攻
+      SimulateClick(, , 8) ; 普攻
       Press("Shift") ; 闪避
       if (fightIsOver()) {
         return true

@@ -4,7 +4,7 @@ activateZZZ() {
     WinActivate("绝区零 ahk_class UnityWndClass")
     RandomSleep()
   } catch {
-    MsgBox("【错误】未找到绝区零窗口，请进入游戏后重试", "错误")
+    MsgBox("【错误】未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx")
     Exit()
   }
 }
@@ -22,20 +22,24 @@ debugLog(str) {
 RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(ms1, ms2))
 
 /** 选择铭徽 */
-MingHui() {
+MingHui(isTry := false) {
   X := 0, Y := 0
   loop (10) {
-    if (PixelSearchPre(&X, &Y, 930, 760, 1000, 810, 0xffffff)) {
+    if (PixelSearchPre(&X, &Y, 930, 760, 1000, 810, 0xffffff, variation // 2)) {
       break
     }
     Sleep(100)
   }
-  if (!X || !Y) {
-    MsgBox("未找到铭徽选择框，将使用默认位置", "警告", "T1")
+  if (!X && !Y) {
+    if (isTry) {
+      return false
+    }
+    MsgBox("未找到铭徽选择框，将使用默认位置", "警告", "Icon! T1")
     X := 960, Y := 790
     preprocess(&X, &Y) ; 缩放处理默认坐标
   }
-  SimulateClick(X, Y, 1, false)
+  SimulateClick(X, Y)
+  return true
 }
 
 /**
@@ -57,20 +61,14 @@ preprocess(&X, &Y) {
   if (A_ScreenWidth = 1920 && A_ScreenHeight = 1080) { ; 无需缩放
     return
   }
-  if (X > 1920 || Y > 1080) { ; 认为已是真实坐标
-    return
-  }
   scaleX := A_ScreenWidth / 1920
   scaleY := A_ScreenHeight / 1080
   X := Round(X * scaleX)
   Y := Round(Y * scaleY)
 }
 
-/** 鼠标随机移动至指定坐标 */
-RandomMouseMove(TargetX, TargetY, isPreprocess := true) {
-  if (isPreprocess) {
-    preprocess(&TargetX, &TargetY)
-  }
+/** 鼠标随机移动至指定真实坐标 */
+RandomMouseMove(TargetX, TargetY) {
   MouseGetPos(&StartX, &StartY)
   Distance := Sqrt((TargetX - StartX) ** 2 + (TargetY - StartY) ** 2)
   MinSpeed := 25
@@ -92,20 +90,20 @@ RandomMouseMove(TargetX, TargetY, isPreprocess := true) {
   }
 }
 
-/** 模拟点击行为，移动至指定坐标点击n次 */
-SimulateClick(x?, y?, clickCount := 1, isPreprocess := true) {
+/** 模拟点击行为，移动至指定真实坐标点击n次 */
+SimulateClick(x?, y?, clickCount := 1) {
   if (IsSet(x) && IsSet(y)) {
-    RandomMouseMove(x + Random(-2, 2), y + Random(-2, 2), isPreprocess)
+    RandomMouseMove(x + Random(-2, 2), y + Random(-2, 2))
   }
   Loop (clickCount) {
     Click("Left Down")
     RandomSleep()
     Click("Left Up")
-    RandomSleep(200, 220)
+    RandomSleep(150, 200)
   }
 }
 
-/** 对坐标进行缩放预处理的像素搜索 */
+/** 对坐标进行缩放预处理的像素搜索，取真实坐标 */
 PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := variation) {
   preprocess(&X1, &Y1)
   preprocess(&X2, &Y2)
@@ -113,7 +111,7 @@ PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := variation) {
 }
 
 /**
- * 搜索并点击像素点，返回真实X Y坐标数组
+ * 搜索并点击像素点，返回真实坐标数组
  * @param X1 搜索起点
  * @param Y1 搜索起点
  * @param X2 搜索终点
@@ -131,12 +129,12 @@ pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
     Sleep(100)
   }
   if (!X || !Y) {
-    MsgBox("未找到像素点" Color "，将使用默认位置", "警告", "T1")
+    MsgBox("未找到像素点" Color "，将使用默认位置", "警告", "Icon! T1")
     X := defaultX, Y := defaultY
     preprocess(&X, &Y) ; 缩放处理默认坐标
   }
   RandomSleep()
-  SimulateClick(X, Y, 1, false)
+  SimulateClick(X, Y)
   return [X, Y]
 }
 
@@ -191,13 +189,13 @@ pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
 ;   X := 0, Y := 0
 ;   preprocess(&X, &Y) ; 预处理默认坐标
 ;   if (!getImageXY(&X, &Y, params*)) {
-;     MsgBox("未找到" File "，将使用默认位置", "警告", "T1")
+;     MsgBox("未找到" File "，将使用默认位置", "警告", "Icon! T1")
 ;   } else {
 ;     CenterImgSrchCoords(File, &X, &Y)
 ;     X := defaultX, Y := defaultY
 ;     preprocess(&X, &Y) ; 缩放处理默认坐标
 ;   }
 ;   RandomSleep()
-;   SimulateClick(X, Y, 1, false)
+;   SimulateClick(X, Y)
 ;   return [X, Y]
 ; }

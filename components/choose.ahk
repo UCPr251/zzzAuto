@@ -14,6 +14,7 @@ choose() {
   rgbs := [
     [0xb2eb47, () => 1], ; 恢复身体
     [0x10cbf4, () => pixelSearchAndClick(930, 700, 1000, 760, 960, 730, 0xffffff)], ; 降压准备
+    [0xff802c, () => pixelSearchAndClick(930, 700, 1000, 760, 960, 730, 0xffffff)], ; 邦布插件
     [0xc01c00, 1], ; 侵蚀物资
     [0xaa7cff, 2], ; 垃圾物资或催化
   ]
@@ -22,7 +23,7 @@ choose() {
     for (rgb in rgbs) {
       PixelSearchPre(&FoundX, &FoundY, 1360, 490, 1390, 763, rgb[1])
       if (FoundX && FoundY) {
-        SimulateClick(FoundX, FoundY, 1, false)
+        SimulateClick(FoundX, FoundY)
         clickFnc := rgb[2]
         break
       }
