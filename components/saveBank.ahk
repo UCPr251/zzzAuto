@@ -32,7 +32,7 @@ saveBank() {
   }
   ; 存款
   Coords := pixelSearchAndClick(1360, 440, 1390, 500, 1640, 470, 0x296bfd)
-  loop (8) {
+  loop (6) {
     SimulateClick(Coords[1], Coords[2], 2)
     Press('Space', 2)
     ; 如果有礼包
