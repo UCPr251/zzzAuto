@@ -7,7 +7,7 @@ choose() {
   debugLog("【step5】选择增益")
   RandomSleep()
   ; 进入对话
-  Press("w")
+  Press("w", 3)
   RandomSleep(1000, 1200)
   ; 对话
   Press("Space", 16)

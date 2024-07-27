@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/07/27
- * @version v1.2.1
+ * @version v1.2.2
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -101,7 +101,7 @@ SetMouseDelay(-1)
   msg := title msg  
   g := Gui("AlwaysOnTop", "零号业绩刷取统计")
   g.SetFont('s15', '微软雅黑')
-  g.Add('Edit', 'w300 r' Min(20, statistics.Length + 3) ' ReadOnly', msg)
+  g.Add('Edit', 'w300 r' Min(20, statistics.Length + 4) ' ReadOnly', msg)
   g.Show()
   g.OnEvent("Close", (MyGui) => MyGui.Destroy() || (!paused && Pause(0)) || g := 0)
 }
@@ -173,14 +173,14 @@ main() {
     debugLog("【开始】模式：零号空洞关卡选择界面")
   }
   RandomSleep()
-  run(mode)
-}
-
-/** 运行刷取脚本，1：角色操作界面，2：关卡选择界面 */
-run(mode) {
   if (mode = 1) {
     charOperation()
   }
+  run()
+}
+
+/** 运行刷取脚本，1：角色操作界面，2：关卡选择界面 */
+run() {
   ; 时长统计
   start := A_Now
   status := 0
@@ -218,12 +218,12 @@ run(mode) {
     if (isLimited()) {
       return MsgBox("已达到上限，脚本结束。共刷取" statistics.Length "次")
     }
-    debugLog("未达到上限，继续刷取。已刷取" statistics.Length1 "次")
+    debugLog("未达到上限，继续刷取。已刷取" statistics.Length "次")
   }
   RandomSleep(800, 1000)
   ; 点击完成
   pixelSearchAndClick(1670, 970, 1730, 1038, 1699, 1027, 0xffffff)
   RandomSleep(4500, 4800)
   ; 继续循环
-  run(2)
+  run()
 }

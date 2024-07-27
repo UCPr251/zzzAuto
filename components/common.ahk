@@ -49,7 +49,7 @@ Press(key, times := 1) {
     Send("{" key " Down}")
     RandomSleep()
     Send("{" key " Up}")
-    RandomSleep(150, 200)
+    RandomSleep(200, 220)
   }
 }
 

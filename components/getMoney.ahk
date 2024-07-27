@@ -27,16 +27,10 @@ getMoney() {
   if (has) {
     ; 加载动画
     RandomSleep(2500, 3000)
-    ; 点击确定零号业绩
-    loop(5) {
-      ; 避免误操作
-      if (PixelSearchPre(&X, &Y, 720, 750, 1200, 810, 0xffffff, variation // 2)) {
-        SimulateClick(X, Y)
-        Sleep(3000)
-        Press('w', 2)
-      }
-      Sleep(100)
-    }
-    RandomSleep(1200, 1500)
+    X := 1800, Y := 1000
+    preprocess(&X, &Y)
+    SimulateClick(X, Y, 2)
+    RandomSleep(1600, 1800)
   }
+  RandomSleep()
 }
