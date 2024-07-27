@@ -42,12 +42,12 @@ choose() {
     ; 领取铭徽
     MingHui()
     ; 加载侵蚀动画
-    Sleep(5000)
+    RandomSleep(4800, 5200)
     loop (10) {
       ; 确认侵蚀 或 集齐四个同类铭徽触发的赠送铭徽确定（特殊）
       if (PixelSearchPre(&X, &Y, 840, 620, 1000, 810, 0x00cc0d)) {
         SimulateClick(X, Y)
-        Sleep(5000)
+        RandomSleep(4800, 5200)
       }
       Sleep(100)
     }
@@ -57,7 +57,7 @@ choose() {
       ; 点击确定
       if (PixelSearchPre(&X, &Y, 930, 750, 985, 810, 0xffffff)) {
         SimulateClick(X, Y)
-        Sleep(4000)
+        RandomSleep(4000, 4200)
       }
       Sleep(100)
     }

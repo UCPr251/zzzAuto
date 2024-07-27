@@ -18,7 +18,7 @@ getMoney() {
   Press('w')
   ; 加载动画
   RandomSleep(2600, 2800)
-  X := 1800, Y := 1000
+  X := 1800, Y := 900
   preprocess(&X, &Y)
   ; 点击确定（如果有）
   SimulateClick(X, Y, 2)

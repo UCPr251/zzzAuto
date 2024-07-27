@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/07/27
- * @version v1.2.2
+ * @date 2024/07/28
+ * @version v1.3.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -20,16 +20,29 @@ SetKeyDelay(-1)
 SetMouseDelay(-1)
 #Include ./components
 #Include charOperation.ahk
+#Include choose.ahk
 #Include common.ahk
 #Include enterFuben.ahk
 #Include exitFuben.ahk
 #Include fight.ahk
 #Include getMoney.ahk
 #Include isLimited.ahk
-#Include choose.ahk
-#Include refuse.ahk
 #Include reachEnd.ahk
+#Include recogLocation.ahk
+#Include refuse.ahk
 #Include saveBank.ahk
+
+/** 休眠系数，加载动画等待时长在原基础上的倍率，可通过修改该值延长/缩短全局等待时长 */
+global sleepCoefficient := 1
+/** RGB颜色搜索允许的渐变值 */
+global variation := 40
+/** 是否开启调试日志信息输出 */
+global isDebugLog := true
+
+/** 是否处于银行模式 */
+global bank := 0
+/** 刷取统计数据 */
+global statistics := []
 
 /** Alt+q 退出程序 */
 !q:: {
@@ -91,14 +104,14 @@ SetMouseDelay(-1)
   msg := ""
   sum := 0
   for (index, value in statistics) {
-    msg := msg "`n第" index "次刷取耗时：" (value // 60) "分" Mod(value, 60) "秒"
+    msg .= "`n第" index "次刷取耗时：" (value // 60) "分" Mod(value, 60) "秒"
     sum += value
   }
-  title := title "总计耗时：" (sum // 3600) "小时" Round(Mod(sum, 3600) / 60) "分钟`n"
+  title .= "总计耗时：" (sum // 3600) "小时" Round(Mod(sum, 3600) / 60) "分钟`n"
   if (statistics.Length > 0) {
-    title := title "平均耗时：" (sum // statistics.Length // 60) "分" Mod(sum // statistics.Length, 60) "秒`n"
+    title .= "平均耗时：" (sum // statistics.Length // 60) "分" Mod(sum // statistics.Length, 60) "秒`n"
   }
-  msg := title msg  
+  msg := title msg
   g := Gui("AlwaysOnTop", "零号业绩刷取统计")
   g.SetFont('s15', '微软雅黑')
   g.Add('Edit', 'w300 r' Min(20, statistics.Length + 4) ' ReadOnly', msg)
@@ -113,8 +126,9 @@ SetMouseDelay(-1)
   MsgBox("已" (bank ? "开启" : "关闭") "银行模式（无限循环刷取银行存款）", , "T2")
 }
 
+/** 初始化 */
 init() {
-  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://gitee.com/UCPr251/zzzAuto", "UCPr", "0x40000")
+  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
   if (A_ScreenWidth / A_ScreenHeight != 16 / 9) {
     MsgBox("检测到当前显示器分辨率为" A_ScreenWidth "x" A_ScreenHeight "`n若此脚本无法正常运行，请尝试更改显示器分辨率比例为16:9", "警告", "Icon! 0x40000")
   }
@@ -122,51 +136,12 @@ init() {
 
 init()
 
-/** 是否开启调试日志信息输出 */
-global isDebugLog := true
-/** RGB颜色搜索允许的渐变值 */
-global variation := 40
-/** 是否处于银行模式 */
-global bank := 0
-/** 刷取统计数据 */
-global statistics := []
-
 /** 开始，检测所在页面 */
 main() {
   activateZZZ()
-  /** 通过三个特殊定位点判断所处界面 */
-  patterns1 := [
-    [1170, 880, 1800, 920, 0xffffff], ; M
-    [1770, 1020, 1790, 1050, 0xffffff], ; Q
-    [1800, 100, 1850, 130, 0xffffff]  ; Tab
-  ]
-  patterns2 := [
-    [240, 700, 260, 750, 0x78cc00], ; 资质考核
-    [580, 780, 600, 850, 0x78cc00], ; 旧都列车
-    [680, 410, 700, 450, 0x78cc00] ; 施工废墟
-  ]
-  mode := 0
-  /** 判断是否位于对应界面 */
-  judge(patterns) {
-    for (index, pattern in patterns) {
-      if (!PixelSearchPre(&FoundX, &FoundY, pattern*)) {
-        return false
-      }
-    }
-    return true
-  }
-  loop (20) {
-    if (judge(patterns1)) {
-      mode := 1
-      break
-    }
-    if (judge(patterns2)) {
-      mode := 2
-      break
-    }
-  }
+  mode := recogLocation()
   if (!mode) {
-    return MsgBox("请位于 <零号空洞关卡选择界面> 或 <角色操作界面> 重试", "错误", "Iconx")
+    return MsgBox("请位于 <零号空洞关卡选择界面> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
   } else if (mode = 1) {
     debugLog("【开始】模式：角色操作界面")
   } else {
@@ -174,12 +149,68 @@ main() {
   }
   RandomSleep()
   if (mode = 1) {
-    charOperation()
+    if (!charOperation()) {
+      return MsgBox("进入零号空洞关卡选择界面失败，请手动进入后重试", "错误", "Iconx 0x40000")
+    }
   }
   run()
 }
 
-/** 运行刷取脚本，1：角色操作界面，2：关卡选择界面 */
+/** 出现异常后重试 */
+retry(reason) {
+  ; 如果连一次都没有刷取成功，直接退出
+  if (statistics.Length = 0) {
+    return MsgBox("【错误】" reason, "错误", "Iconx")
+  }
+  static errTimes := 0
+  static errReasons := []
+  errTimes++
+  errReasons.Push(reason)
+  getErrorMsg() {
+    errMsg := ""
+    loop (errReasons.Length) {
+      errMsg .= "`n异常" A_Index "：" errReasons[A_Index]
+    }
+    ; 重置异常数据
+    errTimes := 0
+    errReasons := []
+    return errMsg
+  }
+  if (errTimes > 3) {
+    return MsgBox("【错误】异常次数过多，脚本结束" getErrorMsg(), "错误", "Iconx 0x40000")
+  }
+  MsgBox("【错误】连续刷取过程中出现异常：`n" reason "`n`n将在6s后重试", "错误", "Iconx T6")
+  RandomSleep()
+  ; 如果有确认框或选择框
+  loop (3) {
+    if (PixelSearchPre(&X, &Y, 650, 620, 1250, 820, 0xffffff, 0)) {
+      SimulateClick(X, Y)
+      Sleep(5000)
+    }
+    Sleep(200)
+  }
+  ; 先Esc偶数次，避免进入了什么奇怪的界面
+  Press("Escape")
+  RandomSleep(1000, 1200)
+  Press("Escape")
+  ; 退出副本
+  exitFuben()
+  ; 点击完成
+  pixelSearchAndClick(1670, 970, 1730, 1040, 1700, 1027, 0xffffff)
+  RandomSleep(4600, 4800)
+  ; 重新识别所处界面
+  mode := recogLocation()
+  if (mode = 2) {
+    return run()
+  } else if (mode = 1) {
+    if (charOperation()) {
+      return run()
+    }
+  }
+  return MsgBox("【重试失败】未找到零号空洞关卡选择界面，脚本结束`n重试原因：" reason "`n异常次数：" errTimes "`n历史异常：" getErrorMsg(), "错误", "Iconx 0x40000")
+}
+
+/** 运行刷取脚本 */
 run() {
   ; 时长统计
   start := A_Now
@@ -191,17 +222,17 @@ run() {
   ; 前往终点
   status := reachEnd()
   if (status = 0) {
-    return MsgBox("【识别地图类型】地图类型识别失败", "错误", "Iconx")
+    return retry("地图类型识别失败")
   }
   ; 战斗
   status := fight()
   if (status = 0) {
-    return MsgBox("【战斗】战斗超时或检测异常", "错误", "Iconx")
+    return retry("战斗超时或检测异常")
   }
   ; 选择增益
   status := choose()
   if (status = 0) {
-    return MsgBox("【选择增益】未找到对应增益选项", "错误", "Iconx")
+    return retry("未找到对应增益选项")
   }
   ; 获得零号业绩
   getMoney()
@@ -222,8 +253,8 @@ run() {
   }
   RandomSleep(800, 1000)
   ; 点击完成
-  pixelSearchAndClick(1670, 970, 1730, 1038, 1699, 1027, 0xffffff)
-  RandomSleep(4500, 4800)
+  pixelSearchAndClick(1670, 970, 1730, 1040, 1700, 1027, 0xffffff)
+  RandomSleep(4600, 4800)
   ; 继续循环
   run()
 }

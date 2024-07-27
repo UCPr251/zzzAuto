@@ -1,6 +1,6 @@
 ﻿/**
  * - step 0
- * - 角色操作界面
+ * - 角色操作界面进入零号空洞选择界面
  */
 charOperation() {
   activateZZZ()
@@ -9,7 +9,7 @@ charOperation() {
   Press('Escape')
   RandomSleep(1300, 1500)
   pixelSearchAndClick(699, 949, 734, 996, 712, 972, 0xffffff)
-  Sleep(1000)
+  RandomSleep(1000, 1200)
   ; 点击挑战
   if (PixelSearchPre(&X, &Y, 1490, 160, 1535, 200, 0xbbbbbb)) {
     SimulateClick(X, Y)
@@ -26,4 +26,9 @@ charOperation() {
   ; 点击确定(传送)
   pixelSearchAndClick(1000, 600, 1100, 640, 1125, 620, 0x00cc0d)
   RandomSleep(3000, 4000)
+  mode := recogLocation()
+  if (mode != 2) {
+    return false
+  }
+  return true
 }

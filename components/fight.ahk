@@ -29,18 +29,25 @@ fight() {
 
   /** 判断战斗是否结束 */
   fightIsOver() {
-    ; 周上限提示确定
-    if (PixelSearchPre(&X, &Y, 950, 610, 1000, 640, 0xffffff, variation // 2)) {
-      SimulateClick(X, Y)
-      Sleep(1000)
-    }
-    loop (10) {
-      for (index, pattern in patterns) {
-        if (!PixelSearchPre(&FoundX, &FoundY, pattern*)) {
-          return false
+    judge() {
+      loop (10) {
+        for (index, pattern in patterns) {
+          if (!PixelSearchPre(&FoundX, &FoundY, pattern*)) {
+            return false
+          }
         }
+        Sleep(10)
       }
-      Sleep(10)
+      return true
+    }
+    FoundX := 0, FoundY := 0
+    if (!judge()) {
+      ; 周上限提示确定
+      if (PixelSearchPre(&X, &Y, 950, 610, 1000, 640, 0xffffff, variation // 2)) {
+        SimulateClick(X, Y)
+        RandomSleep(800, 1000)
+      }
+      return false
     }
     debugLog("【战斗】战斗结束")
     RandomSleep()
@@ -50,15 +57,14 @@ fight() {
     ; 选择铭徽
     MingHui()
     ; 加载动画
-    Sleep(7000)
+    RandomSleep(7500, 8000)
     return true
   }
 
   ; 加载动画
-  Sleep(16000)
-
-  ; 战斗循环
-  loop (60) {
+  RandomSleep(16000, 16200)
+  ; 战斗循环，约8s一循环
+  loop (12) {
     if (A_Index != 1) {
       Press("Shift") ; 闪避
     }

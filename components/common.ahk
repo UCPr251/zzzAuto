@@ -16,7 +16,7 @@ debugLog(str) {
 }
 
 /** 随机休眠，默认50~100ms */
-RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(ms1, ms2))
+RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(Round(ms1 * sleepCoefficient), Round(ms2 * sleepCoefficient)))
 
 /** 选择铭徽 */
 MingHui(isTry := false) {

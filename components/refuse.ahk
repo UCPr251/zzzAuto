@@ -15,5 +15,5 @@ refuse() {
   ; 对话
   Press("Space", 10)
   ; 加载动画
-  Sleep(5000)
+  RandomSleep(5000, 5200)
 }

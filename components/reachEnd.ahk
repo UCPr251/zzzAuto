@@ -44,7 +44,7 @@ reachEnd() {
     bomb()
     ; 向右移动
     Press("d")
-    RandomSleep(1800, 2000)
+    RandomSleep(2400, 2600)
     ; 选择铭徽
     MingHui()
     RandomSleep(1200, 1500)
@@ -83,6 +83,6 @@ reachEnd() {
     below()
   }
   ; 加载动画
-  Sleep(2000)
+  RandomSleep(2000, 2200)
   return true
 }
