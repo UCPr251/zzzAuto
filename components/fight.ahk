@@ -31,7 +31,7 @@ fight() {
   fightIsOver() {
     judge() {
       loop (10) {
-        for (index, pattern in patterns) {
+        for (pattern in patterns) {
           if (!PixelSearchPre(&FoundX, &FoundY, pattern*)) {
             return false
           }

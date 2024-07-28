@@ -38,9 +38,9 @@ global sleepCoefficient := 1
 global variation := 40
 /** 是否开启调试日志信息输出 */
 global isDebugLog := true
+/** 是否开启银行模式 */
+global bank := false
 
-/** 是否处于银行模式 */
-global bank := 0
 /** 刷取统计数据 */
 global statistics := []
 
