@@ -23,8 +23,8 @@ fight() {
   /** 通过三个特殊定位点判断所处界面 */
   patterns := [
     [1230, 430, 1370, 610, 0xffc300], ; 战斗计时
-    [1000, 840, 1040, 1020, 0x00cc0d], ; 确定绿勾
-    [1130, 840, 1190, 1020, 0xffffff] ; 确定键
+    [1130, 840, 1190, 1020, 0xffffff], ; 确定键
+    [1000, 840, 1040, 1020, 0x00cc0d] ; 确定绿勾
   ]
 
   /** 判断战斗是否结束 */
@@ -42,11 +42,6 @@ fight() {
     }
     FoundX := 0, FoundY := 0
     if (!judge()) {
-      ; 周上限提示确定
-      if (PixelSearchPre(&X, &Y, 950, 610, 1000, 640, 0xffffff, variation // 2)) {
-        SimulateClick(X, Y)
-        RandomSleep(800, 1000)
-      }
       return false
     }
     debugLog("【战斗】战斗结束")
@@ -94,5 +89,8 @@ fight() {
       }
     }
   }
-  return false
+  ; 如果战斗时长超过设置好的循环次数，可能是因为周上限提示需要点击确定，尝试使用Esc退出确认窗口，否则可以暂停战斗
+  Press('Escape')
+  RandomSleep(800, 1000)
+  return fightIsOver()
 }

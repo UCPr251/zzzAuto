@@ -59,7 +59,7 @@ reachEnd() {
     Press('s')
     RandomSleep(800, 1200)
     Press("Space", 6)
-    RandomSleep(2800, 3000)
+    RandomSleep(2400, 2600)
     ; 取消接应
     pixelSearchAndClick(1400, 650, 1620, 685, 1545, 672, 0xffffff)
     Press("Space", 6)

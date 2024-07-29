@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/07/28
- * @version v1.3.0
+ * @date 2024/07/29
+ * @version v1.3.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -40,6 +40,8 @@ global variation := 40
 global isDebugLog := true
 /** 是否开启银行模式 */
 global bank := false
+/** 是否存银行 */
+global save := true
 
 /** 刷取统计数据 */
 global statistics := []
@@ -67,7 +69,14 @@ global statistics := []
   Reload()
 }
 
-/** Alt+L 开关日志弹窗 */
+/** Alt+s 开启/关闭银行存款 */
+!s:: {
+  global save
+  save := !save
+  MsgBox("已" (save ? "开启" : "关闭") "银行存款，再次Alt+S可切换状态", , "T1")
+}
+
+/** Alt+L 开启/关闭日志弹窗 */
 !l:: {
   global isDebugLog
   isDebugLog := !isDebugLog
@@ -76,7 +85,7 @@ global statistics := []
 
 /** Alt+p 暂停/恢复线程 */
 !p:: {
-  MsgBox("脚本已" (A_IsPaused ? "恢复" : "暂停") "，再次Alt+P可切换状态", , "T1")
+  MsgBox("已" (A_IsPaused ? "恢复" : "暂停") "脚本，再次Alt+P可切换状态", , "T1")
   Pause(-1)
 }
 
@@ -128,7 +137,7 @@ global statistics := []
 
 /** 初始化 */
 init() {
-  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
+  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+S ：关闭/开启银行存款（关闭后不再存银行）`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
   if (A_ScreenWidth / A_ScreenHeight != 16 / 9) {
     MsgBox("检测到当前显示器分辨率为" A_ScreenWidth "x" A_ScreenHeight "`n若此脚本无法正常运行，请尝试更改显示器分辨率比例为16:9", "警告", "Icon! 0x40000")
   }
@@ -237,7 +246,9 @@ run() {
   ; 获得零号业绩
   getMoney()
   ; 存银行
-  saveBank()
+  if (save) {
+    saveBank()
+  }
   ; 退出副本
   exitFuben()
   end := A_Now

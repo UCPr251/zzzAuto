@@ -15,5 +15,5 @@ exitFuben() {
   RandomSleep(600, 700)
   ; 点击确定
   pixelSearchAndClick(1000, 600, 1020, 650, 1121, 625, 0x00cc0d)
-  RandomSleep(3800, 4000)
+  RandomSleep(4400, 4600)
 }
