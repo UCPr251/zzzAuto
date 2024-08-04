@@ -1,7 +1,4 @@
-*
-!.gitignore
-!*.ahk
-!components
-!*.md
+/历史版本
+*.exe
 test*.ahk
 /取坐标.ahk
