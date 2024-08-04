@@ -1,5 +1,5 @@
 name: Bug
-description: 提交Bug报告
+description: 提交异常、错误报告
 title: 问题：
 labels: ["bug"]
 body:
@@ -47,11 +47,13 @@ body:
     validations:
       required: true
 
-  - type: input
+  - type: dropdown
     attributes:
       label: 是否开启HDR？
-      description: 是否开启HDR？
-      placeholder: 是/否
+      description: 是否开启显示器HDR？
+      options:
+        - 是
+        - 否
     validations:
       required: true
 
