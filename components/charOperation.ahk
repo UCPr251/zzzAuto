@@ -8,7 +8,7 @@ charOperation() {
   ; 进入快捷手册
   Press('Escape')
   RandomSleep(1300, 1500)
-  pixelSearchAndClick(699, 949, 734, 996, 712, 972, 0xffffff)
+  pixelSearchAndClick(699, 949, 734, 996, 730, 970, 0xffffff)
   RandomSleep(1000, 1200)
   ; 点击挑战
   if (PixelSearchPre(&X, &Y, 1490, 160, 1535, 200, 0xbbbbbb)) {
