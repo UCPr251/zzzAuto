@@ -5,7 +5,6 @@
 getMoney() {
   activateZZZ()
   debugLog("【step6】获得零号业绩")
-  RandomSleep()
   ; 进入零号业绩格子
   Press('d')
   Press('w', 2)

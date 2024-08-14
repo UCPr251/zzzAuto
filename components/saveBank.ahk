@@ -20,7 +20,7 @@ saveBank() {
   RandomSleep(1800, 2000)
   ; 确定侵蚀
   Press('Escape')
-  RandomSleep(4200, 4400)
+  RandomSleep(3800, 4000)
   Press('a', 3)
   RandomSleep(1000, 1200)
   ; 对话

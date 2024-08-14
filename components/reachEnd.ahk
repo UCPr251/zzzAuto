@@ -79,7 +79,6 @@ reachEnd() {
   }
 
   debugLog("【step3】前往终点")
-  RandomSleep()
   if (mode = 1) {
     above()
   } else {

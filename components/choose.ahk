@@ -5,7 +5,6 @@
 choose() {
   activateZZZ()
   debugLog("【step5】选择增益")
-  RandomSleep()
   ; 进入对话
   Press("w", 3)
   RandomSleep(1000, 1200)

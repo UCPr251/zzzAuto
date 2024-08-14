@@ -5,7 +5,6 @@
 enterFuben() {
   activateZZZ()
   debugLog("【step1】进入副本")
-  RandomSleep()
   pixelSearchAndClick(c.零号选择.旧都列车*)
   pixelSearchAndClick(c.旧都列车.前线*)
   pixelSearchAndClick(c.旧都列车.下一步*)

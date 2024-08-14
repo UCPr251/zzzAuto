@@ -45,7 +45,6 @@ fight() {
       return false
     }
     debugLog("【战斗】战斗结束")
-    RandomSleep()
     ; 点击确定
     SimulateClick(FoundX, FoundY, 2)
     RandomSleep(500, 800)

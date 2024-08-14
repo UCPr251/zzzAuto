@@ -5,7 +5,6 @@
 refuse() {
   activateZZZ()
   debugLog("【step2】拒绝好意")
-  RandomSleep()
   ; 开局铭徽(如果有)
   MingHui(true)
   ; 对话

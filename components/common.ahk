@@ -12,6 +12,7 @@ activateZZZ() {
 debugLog(str) {
   if (isDebugLog) {
     MsgBox(str, "调试信息", "T1")
+    RandomSleep()
   }
 }
 
