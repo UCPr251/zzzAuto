@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/08/15
- * @version v1.4.0
+ * @version v1.4.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -138,7 +138,22 @@ global statistics := []
 
 /** 初始化 */
 init() {
-  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+S ：关闭/开启银行存款（关闭后不再存银行）`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
+  cmd := DllCall("GetCommandLine", "str")
+  if (!A_IsAdmin) {
+    if (!RegExMatch(cmd, " /restart(?!\S)")) {
+      try {
+        if (A_IsCompiled) {
+          Run('*RunAs "' A_ScriptFullPath '" /restart')
+        } else {
+          Run('*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"')
+        }
+      }
+    } else {
+      MsgBox("请右键脚本选择以管理员身份运行脚本", "错误", "Iconx 0x40000")
+    }
+    ExitApp()
+  }
+  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+S ：关闭/开启银行存款（关闭后不再存银行）`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
   setRatio()
 }
 
@@ -166,7 +181,7 @@ main() {
       return MsgBox("进入零号空洞关卡选择界面失败，请手动进入后重试", "错误", "Iconx 0x40000")
     }
   }
-  run()
+  runAutoZZZ()
 }
 
 /** 出现异常后重试 */
@@ -214,17 +229,17 @@ retry(reason) {
   ; 重新识别所处界面
   mode := recogLocation()
   if (mode = 2) {
-    return run()
+    return runAutoZZZ()
   } else if (mode = 1) {
     if (charOperation()) {
-      return run()
+      return runAutoZZZ()
     }
   }
   return MsgBox("【重试失败】未找到零号空洞关卡选择界面，脚本结束`n重试原因：" reason "`n异常次数：" errTimes "`n历史异常：" getErrorMsg(), "错误", "Iconx 0x40000")
 }
 
 /** 运行刷取脚本 */
-run() {
+runAutoZZZ() {
   ; 时长统计
   start := A_Now
   status := 0
@@ -271,5 +286,5 @@ run() {
   pixelSearchAndClick(c.空洞.结算.完成*)
   RandomSleep(4800, 5000)
   ; 继续循环
-  run()
+  runAutoZZZ()
 }

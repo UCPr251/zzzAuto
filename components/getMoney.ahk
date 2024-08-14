@@ -21,5 +21,5 @@ getMoney() {
   preprocess(&X, &Y)
   ; 点击确定（如果有）
   SimulateClick(X, Y, 2)
-  RandomSleep(800, 1000)
+  RandomSleep(700, 800)
 }
