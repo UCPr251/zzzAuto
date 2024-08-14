@@ -17,10 +17,10 @@ getMoney() {
   ; 获得零号业绩（如果有）
   Press('w')
   ; 加载动画
-  RandomSleep(2000, 2200)
+  RandomSleep(1600, 1800)
   X := 1800, Y := 900
   preprocess(&X, &Y)
   ; 点击确定（如果有）
   SimulateClick(X, Y, 2)
-  RandomSleep(1000, 1200)
+  RandomSleep(800, 1000)
 }

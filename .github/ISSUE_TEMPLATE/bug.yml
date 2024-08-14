@@ -32,9 +32,16 @@ body:
 
   - type: input
     attributes:
+      label: 录屏链接
+      description: 请输入该问题出现前后全过程的录屏链接。如果问题无法复现，在前面描述清楚忽略此项即可
+      placeholder: https://lanzou.com
+    validations:
+      required: true
+
+  - type: input
+    attributes:
       label: 使用的版本？
-      description: 所使用的脚本的版本
-      placeholder: v1.3.1
+      description: 所使用的脚本的版本，如v1.4.0
       value: v1.
     validations:
       required: true
@@ -67,11 +74,3 @@ body:
     attributes:
       label: 其他说明
       description: 如果有任何补充说明，请在此补充
-
-  - type: input
-    attributes:
-      label: 录屏链接
-      description: 请输入该问题出现前后全过程的录屏链接
-      placeholder: https://lanzou.com
-    validations:
-      required: true

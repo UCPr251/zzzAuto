@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/07/29
- * @version v1.3.1
+ * @date 2024/08/15
+ * @version v1.4.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -19,6 +19,7 @@ SetWinDelay(0)
 SetKeyDelay(-1)
 SetMouseDelay(-1)
 #Include ./components
+#Include coordsData.ahk
 #Include charOperation.ahk
 #Include choose.ahk
 #Include common.ahk
@@ -35,7 +36,7 @@ SetMouseDelay(-1)
 /** 休眠系数，加载动画等待时长在原基础上的倍率，可通过修改该值延长/缩短全局等待时长 */
 global sleepCoefficient := 1
 /** RGB颜色搜索允许的渐变值 */
-global variation := 40
+global variation := 60
 /** 是否开启调试日志信息输出 */
 global isDebugLog := true
 /** 是否开启银行模式 */
@@ -54,7 +55,7 @@ global statistics := []
   }
 }
 
-/** Ctrl+s 保存并重载程序 */
+; /** Ctrl+s 保存并重载程序 */
 ; ~^s:: {
 ;   if (InStr(WinGetTitle("A"), "Visual Studio Code") && InStr(WinGetTitle("A"), A_ScriptName)) {
 ;     Send("^s")
@@ -138,9 +139,7 @@ global statistics := []
 /** 初始化 */
 init() {
   MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n注意：此脚本必须在管理员模式下运行才能使用`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+S ：关闭/开启银行存款（关闭后不再存银行）`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
-  if (A_ScreenWidth / A_ScreenHeight != 16 / 9) {
-    MsgBox("检测到当前显示器分辨率为" A_ScreenWidth "x" A_ScreenHeight "`n若此脚本无法正常运行，请尝试更改显示器分辨率比例为16:9", "警告", "Icon! 0x40000")
-  }
+  setRatio()
 }
 
 init()
@@ -148,6 +147,11 @@ init()
 /** 开始，检测所在页面 */
 main() {
   activateZZZ()
+  WinGetClientPos(, , &w, &h, "ahk_exe ZenlessZoneZero.exe ahk_class UnityWndClass")
+  if (w != A_ScreenWidth && h != A_ScreenHeight) {
+    MsgBox("【错误】请全屏运行游戏", "错误", "Iconx 0x40000")
+    Exit()
+  }
   mode := recogLocation()
   if (!mode) {
     return MsgBox("请位于 <零号空洞关卡选择界面> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
@@ -205,8 +209,8 @@ retry(reason) {
   ; 退出副本
   exitFuben()
   ; 点击完成
-  pixelSearchAndClick(1670, 970, 1730, 1040, 1700, 1027, 0xffffff)
-  RandomSleep(4600, 4800)
+  pixelSearchAndClick(c.空洞.结算.完成*)
+  RandomSleep(4800, 5000)
   ; 重新识别所处界面
   mode := recogLocation()
   if (mode = 2) {
@@ -226,7 +230,7 @@ run() {
   status := 0
   ; 进入副本
   enterFuben()
-  ; 拒绝好意，结束对话
+  ; 拒绝好意
   refuse()
   ; 前往终点
   status := reachEnd()
@@ -264,8 +268,8 @@ run() {
   }
   RandomSleep(800, 1000)
   ; 点击完成
-  pixelSearchAndClick(1670, 970, 1730, 1040, 1700, 1027, 0xffffff)
-  RandomSleep(4600, 4800)
+  pixelSearchAndClick(c.空洞.结算.完成*)
+  RandomSleep(4800, 5000)
   ; 继续循环
   run()
 }

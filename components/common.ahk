@@ -22,7 +22,7 @@ RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(Round(ms1 * sleepCoefficient)
 MingHui(isTry := false) {
   X := 0, Y := 0
   loop (10) {
-    if (PixelSearchPre(&X, &Y, 930, 760, 1000, 810, 0xffffff, variation // 2)) {
+    if (PixelSearchPre(&X, &Y, c.空洞.铭徽*)) {
       break
     }
     Sleep(100)
@@ -32,7 +32,7 @@ MingHui(isTry := false) {
       return false
     }
     MsgBox("未找到铭徽选择框，将使用默认位置", "警告", "Icon! T1")
-    X := 960, Y := 790
+    X := c.空洞.铭徽[5], Y := c.空洞.铭徽[6]
     preprocess(&X, &Y) ; 缩放处理默认坐标
   }
   SimulateClick(X, Y)
@@ -69,8 +69,9 @@ RandomMouseMove(TargetX, TargetY) {
   MouseGetPos(&StartX, &StartY)
   Distance := Sqrt((TargetX - StartX) ** 2 + (TargetY - StartY) ** 2)
   MinSpeed := 25
-  MaxSpeed := 35
-  Speed := MinSpeed + Random() * (MaxSpeed - MinSpeed)
+  MaxSpeed := 30
+  ; 鼠标移动速度，适当缩放确保效果
+  Speed := (MinSpeed + Random() * (MaxSpeed - MinSpeed)) * (A_ScreenWidth / 1920)
   ; 生成随机控制点用于贝塞尔曲线
   ControlPoint1X := StartX + Random() * (TargetX - StartX) / 2
   ControlPoint1Y := StartY + Random() * (TargetY - StartY) / 2
@@ -101,7 +102,15 @@ SimulateClick(x?, y?, clickCount := 1) {
 }
 
 /** 对坐标进行缩放预处理的像素搜索，取真实坐标 */
-PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := variation) {
+PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := variation, transColor?, transTolerance?) {
+  if (IsSet(transColor)) {
+    Color := transColor
+    if (IsSet(transTolerance)) {
+      Tolerance := transTolerance
+    } else {
+      Tolerance := variation
+    }
+  }
   preprocess(&X1, &Y1)
   preprocess(&X2, &Y2)
   return PixelSearch(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance)
@@ -119,19 +128,19 @@ PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := variation) {
  */
 pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
   X := 0, Y := 0
-  loop (10) {
+  loop (25) {
     if (PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color)) {
       break
     }
     Sleep(100)
   }
   if (!X || !Y) {
-    MsgBox("未找到像素点" Color "，将使用默认位置", "警告", "Icon! T1")
+    MsgBox(Format("未找到像素点{1:#x}，使用默认位置" defaultX " " defaultY, Color), "警告", "Icon! T1")
     X := defaultX, Y := defaultY
     preprocess(&X, &Y) ; 缩放处理默认坐标
   }
-  RandomSleep()
   SimulateClick(X, Y)
+  RandomSleep()
   return [X, Y]
 }
 
