@@ -147,9 +147,11 @@ init() {
         } else {
           Run('*RunAs "' A_AhkPath '" /restart "' A_ScriptFullPath '"')
         }
+      } catch {
+        MsgBox("自动获取管理员权限失败，请右键脚本选择以管理员身份运行", "错误", "Iconx 0x40000")
       }
     } else {
-      MsgBox("请右键脚本选择以管理员身份运行脚本", "错误", "Iconx 0x40000")
+      MsgBox("请右键脚本选择以管理员身份运行", "错误", "Iconx 0x40000")
     }
     ExitApp()
   }
