@@ -20,7 +20,7 @@ recogLocation() {
     return true
   }
   mode := 0
-  loop (10) {
+  loop (15) {
     if (judge(patterns1)) {
       mode := 1
       break

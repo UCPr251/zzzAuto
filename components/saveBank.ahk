@@ -17,28 +17,18 @@ saveBank() {
   ; 对话
   Press('Space', 8)
   ; 侵蚀
-  RandomSleep(1800, 2000)
-  ; 确定侵蚀
-  Press('Escape')
+  RandomSleep(800, 1000)
+  ; 确认侵蚀
+  pixelSearchAndClick(c.空洞.确认*)
   RandomSleep(3800, 4000)
   Press('a', 3)
   RandomSleep(1000, 1200)
   ; 对话
   Press('Space', 18)
-  ; 如果有礼包
-  if (PixelSearchPre(&X, &Y, c.空洞.2.银行.礼包*)) {
-    pixelSearchAndClick(c.空洞.2.银行.不要礼包*)
-    Press('Space', 4)
-  }
   ; 存款
   loop (6) {
     Press('1')
     Press('Space', 2)
-    ; 如果有礼包
-    if (PixelSearchPre(&X, &Y, c.空洞.2.银行.礼包*)) {
-      pixelSearchAndClick(c.空洞.2.银行.不要礼包*)
-      Press('Space', 2)
-    }
     ; 如果弹出选择铭徽界面
     MingHui(true)
     Press('Space', 2)

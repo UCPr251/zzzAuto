@@ -44,10 +44,10 @@ reachEnd() {
     bomb()
     ; 向右移动
     Press("d")
-    RandomSleep(2400, 2600)
+    RandomSleep(800, 1200)
     ; 选择铭徽
     MingHui()
-    RandomSleep(1200, 1500)
+    RandomSleep(1000, 1200)
     ; 进入终点
     Press("d")
     Press("w", 2)
@@ -61,11 +61,10 @@ reachEnd() {
     Press("Space", 4)
     RandomSleep(800, 1000)
     ; 接应
-    Press('1')
-    RandomSleep(800, 1000)
-    Press('1')
-    RandomSleep(800, 1000)
-    Press('Escape')
+    Press('1', 2)
+    RandomSleep(800, 900)
+    Press('1', 2)
+    pixelSearchAndClick(c.空洞.确认*)
     RandomSleep(1800, 2000)
     ; 使用炸弹
     bomb()
@@ -85,6 +84,6 @@ reachEnd() {
     below()
   }
   ; 加载动画
-  RandomSleep(2000, 2200)
+  RandomSleep(1800, 2000)
   return true
 }

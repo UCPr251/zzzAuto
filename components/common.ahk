@@ -1,7 +1,7 @@
 ﻿/** 激活绝区零窗口 */
 activateZZZ() {
   try {
-    WinActivate("ahk_exe ZenlessZoneZero.exe ahk_class UnityWndClass")
+    WinActivate("ahk_exe ZenlessZoneZero.exe")
     RandomSleep()
   } catch {
     MsgBox("【错误】未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx")
@@ -10,20 +10,20 @@ activateZZZ() {
 }
 
 debugLog(str) {
-  if (isDebugLog) {
+  if (setting.isDebugLog) {
     MsgBox(str, "调试信息", "T1")
     RandomSleep()
   }
 }
 
 /** 随机休眠，默认50~100ms */
-RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(Round(ms1 * sleepCoefficient), Round(ms2 * sleepCoefficient)))
+RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(Round(ms1 * setting.sleepCoefficient), Round(ms2 * setting.sleepCoefficient)))
 
 /** 选择铭徽 */
 MingHui(isTry := false) {
   X := 0, Y := 0
-  loop (10) {
-    if (PixelSearchPre(&X, &Y, c.空洞.铭徽*)) {
+  loop (15) {
+    if (PixelSearchPre(&X, &Y, c.空洞.确定*)) {
       break
     }
     Sleep(100)
@@ -33,7 +33,7 @@ MingHui(isTry := false) {
       return false
     }
     MsgBox("未找到铭徽选择框，将使用默认位置", "警告", "Icon! T1")
-    X := c.空洞.铭徽[5], Y := c.空洞.铭徽[6]
+    X := c.空洞.确定[5], Y := c.空洞.确定[6]
     preprocess(&X, &Y) ; 缩放处理默认坐标
   }
   SimulateClick(X, Y)
@@ -103,13 +103,13 @@ SimulateClick(x?, y?, clickCount := 1) {
 }
 
 /** 对坐标进行缩放预处理的像素搜索，取真实坐标 */
-PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := variation, transColor?, transTolerance?) {
+PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := setting.variation, transColor?, transTolerance?) {
   if (IsSet(transColor)) {
     Color := transColor
     if (IsSet(transTolerance)) {
       Tolerance := transTolerance
     } else {
-      Tolerance := variation
+      Tolerance := setting.variation
     }
   }
   preprocess(&X1, &Y1)

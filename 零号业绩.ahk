@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/08/15
- * @version v1.4.1
+ * @date 2024/08/16
+ * @version v1.5.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -33,27 +33,25 @@ SetMouseDelay(-1)
 #Include refuse.ahk
 #Include saveBank.ahk
 
-/** 休眠系数，加载动画等待时长在原基础上的倍率，可通过修改该值延长/缩短全局等待时长 */
-global sleepCoefficient := 1
-/** RGB颜色搜索允许的渐变值 */
-global variation := 60
-/** 是否开启调试日志信息输出 */
-global isDebugLog := true
-/** 是否开启银行模式 */
-global bank := false
-/** 是否存银行 */
-global save := true
+/** 设置项 */
+global setting := {
+  /** 休眠系数，加载动画等待时长在原基础上的倍率，可通过修改该值延长/缩短全局等待时长 */
+  sleepCoefficient: 1.0,
+  /** RGB颜色搜索允许的渐变值 */
+  variation: 60,
+  /** 是否开启调试日志信息输出 */
+  isDebugLog: true,
+  /** 刷完业绩后是否自动关闭游戏 */
+  autoClose: false,
+  /** 是否开启银行模式 */
+  bank: false,
+  /** 是否存银行 */
+  save: true,
+  exit: false
+}
 
 /** 刷取统计数据 */
 global statistics := []
-
-/** Alt+q 退出程序 */
-!q:: {
-  result := MsgBox("确定关闭零号业绩自动刷取脚本？Y/N", , "0x1")
-  if (result = "OK") {
-    ExitApp()
-  }
-}
 
 ; /** Ctrl+s 保存并重载程序 */
 ; ~^s:: {
@@ -64,24 +62,10 @@ global statistics := []
 ;   }
 ; }
 
-/** Alt+r 重启程序 */
-!r:: {
-  MsgBox("重启脚本" A_ScriptName, , "T1")
-  Reload()
-}
-
-/** Alt+s 开启/关闭银行存款 */
-!s:: {
-  global save
-  save := !save
-  MsgBox("已" (save ? "开启" : "关闭") "银行存款，再次Alt+S可切换状态", , "T1")
-}
-
-/** Alt+L 开启/关闭日志弹窗 */
-!l:: {
-  global isDebugLog
-  isDebugLog := !isDebugLog
-  MsgBox("已" (isDebugLog ? "开启" : "关闭") "调试日志弹窗，再次Alt+L可切换状态", , "T1")
+/** Alt+Z 运行程序 */
+!z:: {
+  MsgBox("【开始运行】绝区零零号空洞自动刷取脚本", , "T1")
+  main()
 }
 
 /** Alt+p 暂停/恢复线程 */
@@ -90,14 +74,121 @@ global statistics := []
   Pause(-1)
 }
 
-/** Alt+z 运行程序 */
-!z:: {
-  MsgBox("【开始运行】绝区零零号空洞自动刷取脚本", , "T1")
-  main()
+/** Alt+C 控制面板 */
+!c:: ControlPanel()
+
+/** Alt+T 刷取统计 */
+!t:: StatisticsPanel()
+
+/** 控制面板 */
+ControlPanel() {
+  static g := 0
+  static paused
+  if (g) {
+    g.Destroy()
+    g := 0
+    if (!paused) {
+      Pause(0)
+    }
+    return
+  }
+  paused := A_IsPaused
+  Pause(1)
+  g := Gui('AlwaysOnTop', '零号业绩刷取脚本控制面板Alt+C')
+  g.SetFont('s9', '微软雅黑')
+  setRatio()
+  g.AddText('X72', '分辨率：' A_ScreenWidth "x" A_ScreenHeight "`t模式：" c.mode)
+  g.SetFont('s13')
+  g.AddText('X30 Y40', '休眠系数：')
+  g.AddEdit('X+10 w60 Limit4', setting.sleepCoefficient).OnEvent('Change', changeSleepCoefficient)
+  g.AddText('X30 Y80', '颜色搜索允许渐变值：')
+  g.AddEdit('X+10 w60 Limit3 Number').OnEvent('Change', changeVariation)
+  g.AddUpDown('H30 Range0-255', setting.variation).OnEvent('Change', changeVariation)
+  g.AddCheckBox('visDebugLog X30 Checked' setting.isDebugLog, '调试日志弹窗').OnEvent('Click', switchSetting)
+  g.AddCheckBox('vautoClose Checked' setting.autoClose, '刷完业绩自动关闭游戏').OnEvent('Click', switchSetting)
+  g.AddCheckBox('vbank Checked' setting.bank, '银行模式（无限循环刷取）').OnEvent('Click', switchSetting)
+  g.AddCheckBox('vsave Checked' setting.save, '银行存款（关闭后不再存银行）').OnEvent('Click', switchSetting)
+  g.SetFont('s9')
+  g.AddText('X20 Y+10', '其他：Alt+Z: 开始刷取 Alt+P: 暂停/恢复 Alt+T: 刷取统计')
+  g.SetFont('s12')
+  g.AddButton('X15 Y+15', '退出').OnEvent('Click', quit)
+  g.AddButton('X+5', '重启').OnEvent('Click', (*) => Reload())
+  g.AddButton('X+5', paused ? '取消暂停' : '暂停刷取').OnEvent('Click', pauseS)
+  g.AddButton('X+5', setting.exit ? '取消结束' : '结束刷取').OnEvent('Click', end)
+  g.AddButton('X+5 Default', '确定').OnEvent('Click', destroyGui)
+  g.Show()
+  g.OnEvent('Close', destroyGui)
+  g.OnEvent('Escape', destroyGui)
+
+  destroyGui(*) {
+    g.Destroy()
+    if (!paused)
+      Pause(0)
+    g := 0
+  }
+
+  switchSetting(g, *) {
+    global setting
+    setting.%g.Name% := !setting.%g.Name%
+  }
+
+  changeVariation(g, *) {
+    value := g.Value
+    if (value >= 0 && value <= 255) {
+      setting.variation := value
+    } else {
+      MsgBox('颜色搜索允许渐变值须介于0-255', '错误', 'Iconx 0x40000')
+    }
+  }
+
+  changeSleepCoefficient(g, *) {
+    value := g.Value
+    if (IsNumber(value)) {
+      setting.sleepCoefficient := Round(value, 2)
+    } else {
+      MsgBox('休眠系数必须为数字类型', '错误', 'Iconx 0x40000')
+    }
+  }
+
+  quit(*) {
+    result := MsgBox("确认关闭零号业绩自动刷取脚本？Y/N", , "0x1 0x40000")
+    if (result = "OK") {
+      ExitApp()
+    }
+  }
+
+  pauseS(g, *) {
+    if (!ing) {
+      return MsgBox("当前未处于刷取期间", , "Icon! 0x40000")
+    }
+    if (paused) {
+      Pause(0)
+      g.Text := "暂停刷取"
+    } else {
+      Pause(1)
+      g.Text := "取消暂停"
+    }
+    paused := !paused
+  }
+
+  end(g, *) {
+    if (!ing) {
+      return MsgBox("当前未处于刷取期间", , "Icon! 0x40000")
+    }
+    global setting
+    setting.exit := !setting.exit
+    if (setting.exit) {
+      MsgBox("将在当前执行的步骤完成后结束本次刷取`n再次启动：Alt+Z", , "0x40000")
+      g.Text := "取消结束"
+    } else {
+      g.Text := "结束刷取"
+    }
+  }
+
 }
 
-/** Alt+t 查看统计 */
-!t:: {
+/** 刷取统计 */
+StatisticsPanel() {
   static g := 0
   static paused
   if (g) {
@@ -126,14 +217,14 @@ global statistics := []
   g.SetFont('s15', '微软雅黑')
   g.Add('Edit', 'w300 r' Min(20, statistics.Length + 4) ' ReadOnly', msg)
   g.Show()
-  g.OnEvent("Close", (MyGui) => MyGui.Destroy() || (!paused && Pause(0)) || g := 0)
-}
-
-/** Alt+b 银行模式，无限循环 */
-!b:: {
-  global bank
-  bank := !bank
-  MsgBox("已" (bank ? "开启" : "关闭") "银行模式（无限循环刷取银行存款）", , "T2")
+  g.OnEvent("Close", destroyGui)
+  g.OnEvent("Escape", destroyGui)
+  destroyGui(*) {
+    g.Destroy()
+    if (!paused)
+      Pause(0)
+    g := 0
+  }
 }
 
 /** 初始化 */
@@ -155,16 +246,18 @@ init() {
     }
     ExitApp()
   }
-  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n使用方法：`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+S ：关闭/开启银行存款（关闭后不再存银行）`n    Alt+L ：关闭/开启日志弹窗`n    Alt+P ：暂停/恢复脚本`n    Alt+R ：重启脚本`n    Alt+Q ：退出脚本`n    Alt+B ：银行模式（开启此模式后，无论是否达到上限都会一直刷取）`n`n仓库地址：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
   setRatio()
+  MsgBox("`t`t绝区零零号空洞自动刷取脚本`n`n使用方法：`n`n    Alt+Z ：启动脚本（默认情况下会循环刷取直至零号业绩达到周上限）`n    Alt+T ：查看/关闭刷取统计`n    Alt+P ：暂停/恢复脚本`n    Alt+C ：打开/关闭控制面板`n`n仓库地址 ：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
+  ControlPanel()
 }
 
 init()
 
 /** 开始，检测所在页面 */
 main() {
+  setRatio()
   activateZZZ()
-  WinGetClientPos(, , &w, &h, "ahk_exe ZenlessZoneZero.exe ahk_class UnityWndClass")
+  WinGetClientPos(, , &w, &h, "ahk_exe ZenlessZoneZero.exe")
   if (w != A_ScreenWidth && h != A_ScreenHeight) {
     MsgBox("【错误】请全屏运行游戏", "错误", "Iconx 0x40000")
     Exit()
@@ -207,13 +300,14 @@ retry(reason) {
     return errMsg
   }
   if (errTimes > 3) {
+    global ing := false
     return MsgBox("【错误】异常次数过多，脚本结束" getErrorMsg(), "错误", "Iconx 0x40000")
   }
   MsgBox("【错误】连续刷取过程中出现异常：`n" reason "`n`n将在6s后重试", "错误", "Iconx T6")
   RandomSleep()
   ; 如果有确认框或选择框
   loop (3) {
-    if (PixelSearchPre(&X, &Y, 650, 620, 1250, 820, 0xffffff, 0)) {
+    if (PixelSearchPre(&X, &Y, c.空洞.确定*)) {
       SimulateClick(X, Y)
       Sleep(5000)
     }
@@ -240,53 +334,84 @@ retry(reason) {
   return MsgBox("【重试失败】未找到零号空洞关卡选择界面，脚本结束`n重试原因：" reason "`n异常次数：" errTimes "`n历史异常：" getErrorMsg(), "错误", "Iconx 0x40000")
 }
 
+global ing := false
+
 /** 运行刷取脚本 */
 runAutoZZZ() {
+  global ing := true
+  judgeExit()
   ; 时长统计
   start := A_Now
   status := 0
   ; 进入副本
   enterFuben()
+  judgeExit()
   ; 拒绝好意
   refuse()
+  judgeExit()
   ; 前往终点
   status := reachEnd()
+  judgeExit()
   if (status = 0) {
     return retry("地图类型识别失败")
   }
   ; 战斗
   status := fight()
+  judgeExit()
   if (status = 0) {
     return retry("战斗超时或检测异常")
   }
   ; 选择增益
   status := choose()
+  judgeExit()
   if (status = 0) {
     return retry("未找到对应增益选项")
   }
   ; 获得零号业绩
   getMoney()
+  judgeExit()
   ; 存银行
-  if (save) {
+  if (setting.save) {
     saveBank()
+    judgeExit()
   }
   ; 退出副本
   exitFuben()
+  judgeExit()
   end := A_Now
   statistics.Push(DateDiff(end, start, "s"))
-  if (bank) {
+  if (setting.bank) {
     debugLog("银行模式，无限循环。已刷取" statistics.Length "次")
   } else {
     ; 判断是否达到上限
     if (isLimited()) {
-      return MsgBox("已达到上限，脚本结束。共刷取" statistics.Length "次")
+      judgeExit()
+      if (setting.autoClose) {
+        WinClose("ahk_exe ZenlessZoneZero.exe")
+      }
+      global ing := false
+      return MsgBox("已达到周上限，脚本结束。共刷取" statistics.Length "次")
     }
-    debugLog("未达到上限，继续刷取。已刷取" statistics.Length "次")
+    debugLog("未达到周上限，继续刷取。已刷取" statistics.Length "次")
   }
+  judgeExit()
   RandomSleep(800, 1000)
   ; 点击完成
   pixelSearchAndClick(c.空洞.结算.完成*)
-  RandomSleep(4800, 5000)
+  judgeExit()
+  while (recogLocation() != 2) {
+    Sleep(100)
+  }
+  judgeExit()
   ; 继续循环
   runAutoZZZ()
+}
+
+judgeExit() {
+  if (setting.exit) {
+    setting.exit := false
+    global ing := false
+    MsgBox("已结束当前刷取线程", , "0x40000")
+    Exit()
+  }
 }

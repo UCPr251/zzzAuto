@@ -19,7 +19,7 @@ choose() {
   clickFnc := 0
   loop (10) {
     for (rgb in rgbs) {
-      clone := c.空洞.选项框.Clone()
+      clone := c.空洞.2.选项框.Clone()
       clone.Push(rgb[1])
       PixelSearchPre(&FoundX, &FoundY, clone*)
       if (FoundX && FoundY) {
@@ -33,7 +33,7 @@ choose() {
     }
     Sleep(100)
   }
-  RandomSleep(2200, 2400)
+  RandomSleep(2200, 2300)
   ; 未找到对应选项
   if (clickFnc = 0) {
     return false
@@ -43,8 +43,8 @@ choose() {
     ; 加载侵蚀动画
     RandomSleep(1800, 2000)
     loop (10) {
-      ; 确认侵蚀 或 集齐四个同类铭徽触发的赠送铭徽确定（特殊）
-      if (PixelSearchPre(&X, &Y, c.空洞.侵蚀*) || PixelSearchPre(&X, &Y, c.空洞.集齐铭徽*)) {
+      ; 确认侵蚀 或 集齐四个同类铭徽触发的赠送铭徽确认（特殊）
+      if (PixelSearchPre(&X, &Y, c.空洞.确认*)) {
         SimulateClick(X, Y)
         RandomSleep(1800, 2000)
       }

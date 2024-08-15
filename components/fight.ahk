@@ -47,23 +47,29 @@ fight() {
     debugLog("【战斗】战斗结束")
     ; 点击确定
     SimulateClick(FoundX, FoundY, 2)
-    RandomSleep(500, 800)
+    RandomSleep(500, 600)
     ; 选择铭徽
     MingHui()
     ; 加载动画
     RandomSleep(7500, 8000)
     return true
   }
-
   ; 加载动画
-  RandomSleep(16300, 16400)
+  Sleep(10000)
+  count := 0
+  while (!PixelSearchPre(&X, &Y, c.空洞.1.战斗.开始*)) {
+    if (++count > 200) {
+      break
+    }
+    Sleep(100)
+  }
   ; 战斗循环，约8s一循环
   loop (12) {
     if (A_Index != 1) {
       Press("Shift") ; 闪避
     }
     Send("{w Down}") ; 向前
-    RandomSleep(300, 400)
+    RandomSleep(300, 320)
     Click("Right Down") ; 右键蓄力，进入快蓄
     RandomSleep(580, 600)
     Click("Right Up") ; 快蓄完毕，释放右键

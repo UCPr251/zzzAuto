@@ -8,7 +8,7 @@ body:
     attributes:
       label: 这个问题是否已有说明？
       options:
-        - label: 我已查看[注意事项](https://gitee.com/UCPr251/zzzAuto#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)及现有issues：[gitee](https://gitee.com/UCPr251/zzzAuto/issues) [github](https://github.com/UCPr251/zzzAuto/issues)并未发现相同问题
+        - label: 我已查看[注意事项](https://gitee.com/UCPr251/zzzAuto#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)及现有issues：[Gitee](https://gitee.com/UCPr251/zzzAuto/issues) [Github](https://github.com/UCPr251/zzzAuto/issues)并未发现相同问题
           required: true
 
   - type: textarea
@@ -41,7 +41,7 @@ body:
   - type: input
     attributes:
       label: 使用的版本？
-      description: 所使用的脚本的版本，如v1.4.0
+      description: 所使用的脚本的版本，如v1.5.0
       value: v1.
     validations:
       required: true
