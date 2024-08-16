@@ -22,9 +22,9 @@ debugLog(str) {
 RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(Round(ms1 * setting.sleepCoefficient), Round(ms2 * setting.sleepCoefficient)))
 
 /** 选择铭徽 */
-MingHui(isTry := false) {
+MingHui(isTry := false, searchTimes := 20) {
   X := 0, Y := 0
-  loop (15) {
+  loop (searchTimes) {
     if (PixelSearchPre(&X, &Y, c.空洞.确定*)) {
       break
     }

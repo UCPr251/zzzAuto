@@ -30,7 +30,7 @@ saveBank() {
     Press('1')
     Press('Space', 2)
     ; 如果弹出选择铭徽界面
-    MingHui(true)
+    MingHui(true, 5)
     Press('Space', 2)
   }
 }
