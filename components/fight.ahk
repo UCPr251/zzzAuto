@@ -8,7 +8,7 @@ fight() {
   RandomSleep()
 
   ; 进入战斗
-  Press("1")
+  Press("1", 3)
 
   /** 判断是否位于对应界面 */
   judge(patterns) {
@@ -59,6 +59,9 @@ fight() {
   count := 0
   while (!PixelSearchPre(&X, &Y, c.空洞.1.战斗.开始*)) {
     if (++count > 200) {
+      if (!setting.errHandler) {
+        throw Error('识别战斗开始画面失败')
+      }
       break
     }
     Sleep(100)

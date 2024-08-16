@@ -32,9 +32,13 @@ reachEnd() {
 
   /** 使用炸弹 */
   bomb() {
-    Send("{r Down}")
-    RandomSleep(800, 1000)
-    Send("{r Up}")
+    if (setting.bombMode = 1) {
+      Send("{r Down}")
+      RandomSleep(800, 1000)
+      Send("{r Up}")
+    } else if (setting.bombMode = 2) {
+      Press("r")
+    }
     RandomSleep(1900, 2100)
   }
 

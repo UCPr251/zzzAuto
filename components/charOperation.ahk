@@ -6,7 +6,7 @@ charOperation() {
   activateZZZ()
   RandomSleep()
   ; 进入快捷手册
-  Press('F2')
+  Press(setting.handbook)
   RandomSleep(1000, 1200)
   if (PixelSearchPre(&X, &Y, c.快捷手册.挑战_灰色*)) {
     SimulateClick(X, Y)

@@ -263,16 +263,17 @@
   for (key, value in coordsData.OwnProps()) {
     sp := StrSplit(key, "x")
     designRatio := sp[1] / sp[2]
-    absRatio := Abs(designRatio - ratio)
-    if (absRatio < bestRatio.diff) {
-      bestRatio.diff := absRatio
-      bestRatio.key := key
-    }
     if (designRatio = ratio) {
       global c := value
+      c.compatible := false
       return
     }
+    ratioDiff := Abs(designRatio - ratio)
+    if (ratioDiff < bestRatio.diff) {
+      bestRatio.diff := ratioDiff
+      bestRatio.key := key
+    }
   }
-  MsgBox("警告：`n当前显示器分辨率" A_ScreenWidth "x" A_ScreenHeight "无内置数据`n将使用" bestRatio.key "的分辨率比例数据进行缩放处理`n`n若无法正常运行，请更改分辨率比例为16:9，如1920*1080", "警告", "Icon! 0x40000")
   global c := coordsData.%bestRatio.key%
+  c.compatible := true
 }

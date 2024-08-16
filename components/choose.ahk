@@ -62,6 +62,6 @@ choose() {
   } else {
     clickFnc()
   }
-  Press("Space", 8)
+  Press("Space", 10)
   return true
 }

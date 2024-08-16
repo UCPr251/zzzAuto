@@ -4,13 +4,15 @@ activateZZZ() {
     WinActivate("ahk_exe ZenlessZoneZero.exe")
     RandomSleep()
   } catch {
-    MsgBox("【错误】未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx")
+    MsgBox("未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx 0x40000")
+    global nextExit := false
+    global ing := false
     Exit()
   }
 }
 
 debugLog(str) {
-  if (setting.isDebugLog) {
+  if (setting.isStepLog) {
     MsgBox(str, "调试信息", "T1")
     RandomSleep()
   }
@@ -31,6 +33,9 @@ MingHui(isTry := false) {
   if (!X && !Y) {
     if (isTry) {
       return false
+    }
+    if (!setting.errHandler) {
+      throw Error('未找到铭徽选择框')
     }
     MsgBox("未找到铭徽选择框，将使用默认位置", "警告", "Icon! T1")
     X := c.空洞.确定[5], Y := c.空洞.确定[6]
@@ -136,6 +141,9 @@ pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
     Sleep(100)
   }
   if (!X || !Y) {
+    if (!setting.errHandler) {
+      throw Error(Format("未找到像素点{1:#x}", Color))
+    }
     MsgBox(Format("未找到像素点{1:#x}，使用默认位置" defaultX " " defaultY, Color), "警告", "Icon! T1")
     X := defaultX, Y := defaultY
     preprocess(&X, &Y) ; 缩放处理默认坐标
@@ -196,6 +204,9 @@ pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
 ;   X := 0, Y := 0
 ;   preprocess(&X, &Y) ; 预处理默认坐标
 ;   if (!getImageXY(&X, &Y, params*)) {
+;     if (!setting.errHandler) {
+;       throw Error("未找到" File)
+;     }
 ;     MsgBox("未找到" File "，将使用默认位置", "警告", "Icon! T1")
 ;   } else {
 ;     CenterImgSrchCoords(File, &X, &Y)
