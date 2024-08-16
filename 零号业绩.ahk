@@ -68,6 +68,9 @@ init()
 
 /** Alt+P 暂停/恢复线程 */
 !p:: {
+  if (!ing) {
+    return MsgBox("当前未处于刷取期间", , "Icon! 0x40000 T3")
+  }
   MsgBox("已" (A_IsPaused ? "恢复" : "暂停") "脚本，再次Alt+P可切换状态", , "T1")
   Pause(-1)
 }
