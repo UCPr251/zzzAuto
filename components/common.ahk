@@ -4,7 +4,7 @@ activateZZZ() {
     WinActivate("ahk_exe ZenlessZoneZero.exe")
     RandomSleep()
   } catch {
-    MsgBox("未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx 0x40000")
+    MsgBox("未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx 0x40000 T3")
     global nextExit := false
     global ing := false
     Exit()

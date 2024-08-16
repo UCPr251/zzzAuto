@@ -33,6 +33,8 @@ SetMouseDelay(-1)
 #Include refuse.ahk
 #Include saveBank.ahk
 
+global Version := "v1.5.2"
+
 /** 设置项 */
 global setting := {
   /** 快捷手册 */
@@ -112,8 +114,9 @@ ControlPanel() {
   CPGui.AddButton('X+5 w75', '重启').OnEvent('Click', (*) => Reload())
   CPGui.AddButton('X+5 w75', paused ? '继续' : '暂停').OnEvent('Click', pauseS)
   CPGui.AddButton('X+5 Default w75', '确定').OnEvent('Click', destroyGui)
-  CPGui.AddButton('X15 Y+10 w150', '刷取统计').OnEvent('Click', StatisticsPanel)
-  CPGui.AddButton('X+15 w150', ing ? (nextExit ? '取消结束' : '结束刷取') : '开始刷取').OnEvent('Click', start)
+  CPGui.AddButton('X15 Y+10 w100', '检查更新').OnEvent('Click', checkUpdate)
+  CPGui.AddButton('X+8 w100', '刷取统计').OnEvent('Click', StatisticsPanel)
+  CPGui.AddButton('X+8 w100', ing ? (nextExit ? '取消结束' : '结束刷取') : '开始刷取').OnEvent('Click', start)
 
   CPGui.Show()
 
@@ -156,7 +159,7 @@ ControlPanel() {
 
   pauseS(g, *) {
     if (!ing) {
-      return MsgBox("当前未处于刷取期间", , "Icon! 0x40000")
+      return MsgBox("当前未处于刷取期间", , "Icon! 0x40000 T3")
     }
     if (paused) {
       Pause(0)
@@ -188,6 +191,37 @@ ControlPanel() {
       main()
     }
   }
+
+  checkUpdate(*) {
+    static urls := ["https://gitee.com/UCPr251/zzzAuto/releases/latest", "https://github.com/UCPr251/zzzAuto/releases/latest"]
+    err := 0
+    for (url in urls) {
+      try {
+        hObject := ComObject("WinHttp.WinHttpRequest.5.1")
+        hObject.SetTimeouts(1000, 1000, 5000, 5000)
+        hObject.Open("GET", url)
+        hObject.Send()
+        hObject.WaitForResponse()
+        text := hObject.responseText
+        RegExMatch(text, "v\d+\.\d+\.\d+", &OutputVar)
+      } catch Error as e {
+        err := e
+      }
+      if (OutputVar.Len) {
+        latestVersion := OutputVar[0]
+        if (Version = latestVersion) {
+          return MsgBox("当前已是最新版本：" latestVersion, , '0x40000 T3')
+        } else {
+          destroyGui()
+          return Run(url)
+        }
+      }
+    }
+    if (err) {
+      throw err
+    }
+  }
+
 }
 
 /** 刷取统计 */
