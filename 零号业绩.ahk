@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/08/16
- * @version v1.5.1
+ * @date 2024/08/17
+ * @version v1.5.2
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -258,7 +258,7 @@ init() {
         MsgBox("自动获取管理员权限失败，请右键脚本选择以管理员身份运行", "错误", "Iconx 0x40000")
       }
     } else {
-      MsgBox("请右键脚本选择以管理员身份运行", "错误", "Iconx 0x40000")
+      MsgBox("自动获取管理员权限失败，请右键脚本选择以管理员身份运行", "错误", "Iconx 0x40000")
     }
     ExitApp()
   }
@@ -284,7 +284,7 @@ main() {
   setRatio()
   WinGetClientPos(, , &w, &h, "ahk_exe ZenlessZoneZero.exe")
   if (w != A_ScreenWidth && h != A_ScreenHeight) {
-    MsgBox("【错误】请全屏运行游戏", "错误", "Iconx 0x40000")
+    MsgBox("请全屏运行游戏", "错误", "Iconx 0x40000")
     Exit()
   }
   global ing := true
@@ -292,16 +292,16 @@ main() {
   mode := recogLocation()
   if (!mode) {
     ing := false
-    return MsgBox("请位于 <零号空洞关卡选择界面> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
+    return MsgBox("请位于 <零号空洞主页> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
   } else if (mode = 1) {
     debugLog("【开始】模式：角色操作界面")
   } else {
-    debugLog("【开始】模式：零号空洞关卡选择界面")
+    debugLog("【开始】模式：零号空洞主页")
   }
   RandomSleep()
   if (mode = 1) {
     if (!charOperation()) {
-      return MsgBox("进入零号空洞关卡选择界面失败，请手动进入后重试", "错误", "Iconx 0x40000")
+      return MsgBox("进入零号空洞主页失败，请手动进入后重试", "错误", "Iconx 0x40000")
     }
   }
   runAutoZZZ()
