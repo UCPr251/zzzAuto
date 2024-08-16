@@ -22,7 +22,6 @@ saveBank() {
   pixelSearchAndClick(c.空洞.确认*)
   RandomSleep(3800, 4000)
   Press('a', 3)
-  RandomSleep(1000, 1200)
   ; 对话
   Press('Space', 18)
   ; 存款
