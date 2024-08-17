@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/08/17
- * @version v1.5.2
+ * @version v1.5.3
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -33,7 +33,7 @@ SetMouseDelay(-1)
 #Include refuse.ahk
 #Include saveBank.ahk
 
-global Version := "v1.5.2"
+global Version := "v1.5.3"
 
 /** 设置项 */
 global setting := {
@@ -101,7 +101,7 @@ ControlPanel() {
   CPGui.AddText('X30 Y40', '使用炸弹：')
   CPGui.AddDropDownList("X+10 W60 Choose" setting.bombMode, ["长按", "点击"]).OnEvent("Change", (g, *) => setting.bombMode := g.Value)
   CPGui.AddText('X30 Y75', '快捷手册：')
-  CPGui.AddEdit('X+10 w60 h25 Limit2', setting.handbook).OnEvent('Change', (g, *) => setting.handbook := Trim(g.Value))
+  CPGui.AddHotkey('X+10 w60 h25 Limit14', setting.handbook).OnEvent('Change', changeHandbook)
   CPGui.AddText('X30 Y110', '休眠系数：')
   CPGui.AddEdit('X+10 w60 h25 Limit4', setting.sleepCoefficient).OnEvent('Change', changeSleepCoefficient)
   CPGui.AddText('X30 Y145', '颜色搜索允许渐变值：')
@@ -138,6 +138,19 @@ ControlPanel() {
   switchSetting(g, *) {
     global setting
     setting.%g.Name% := !setting.%g.Name%
+  }
+
+  changeHandbook(g, *) {
+    value := g.Value
+    if (value) {
+      if (Instr(value, '^!') || StrLen(value) > 2) {
+        g.Value := setting.handbook
+      } else {
+        setting.handbook := value
+      }
+    } else {
+      g.Value := setting.handbook
+    }
   }
 
   changeVariation(g, *) {
@@ -210,10 +223,17 @@ ControlPanel() {
       } catch Error as e {
         err := e
       }
-      if (OutputVar.Len) {
+      if (IsSet(OutputVar) && OutputVar[0]) {
         latestVersion := OutputVar[0]
         if (Version = latestVersion) {
-          return MsgBox("当前已是最新版本：" latestVersion, , '0x40000 T3')
+          CPGui.Opt('+Disabled')
+          g := Gui('-MinimizeBox +Owner' CPGui.Hwnd, '零号业绩检查更新')
+          g.SetFont('s12', '微软雅黑')
+          g.AddLink('x60 h25 w251', '当前已是最新版本：<a href="' url '"> ' latestVersion ' </a>').OnEvent('Click', (Ctrl, ID, HREF) => Run(HREF) || destroyGui())
+          g.Show()
+          g.OnEvent('Close', (*) => g.Destroy() || CPGui.Opt('-Disabled'))
+          g.OnEvent('Escape', (*) => g.Destroy() || CPGui.Opt('-Disabled'))
+          return
         } else {
           destroyGui()
           return Run(url)
@@ -222,6 +242,8 @@ ControlPanel() {
     }
     if (err) {
       throw err
+    } else {
+      MsgBox('检查更新失败，请稍后重试', '错误', 'Iconx 0x40000')
     }
   }
 
@@ -235,21 +257,21 @@ StatisticsPanel(*) {
     g := 0
     return
   }
-  title := "已刷取" statistics.Length "次`n"
-  msg := ""
+  general := "已刷取" statistics.Length "次"
+  detail := ""
   sum := 0
   for (index, value in statistics) {
-    msg .= "`n第" index "次刷取耗时：" (value // 60) "分" Mod(value, 60) "秒"
+    detail .= "`n第" index "次刷取耗时：" (value // 60) "分" Mod(value, 60) "秒"
     sum += value
   }
-  title .= "总计耗时：" (sum // 3600) "小时" Round(Mod(sum, 3600) / 60) "分钟`n"
+  general .= "`n总计耗时：" (sum // 3600) "小时" Round(Mod(sum, 3600) / 60) "分钟"
   if (statistics.Length > 0) {
-    title .= "平均耗时：" (sum // statistics.Length // 60) "分" Mod(sum // statistics.Length, 60) "秒`n"
+    general .= "`n平均耗时：" (sum // statistics.Length // 60) "分" Mod(sum // statistics.Length, 60) "秒"
   }
-  msg := title msg
-  g := Gui("AlwaysOnTop -MinimizeBox +Owner" CPGui.Hwnd, "零号业绩刷取统计")
+  g := Gui("-MinimizeBox +Owner" CPGui.Hwnd, "零号业绩刷取统计")
   g.SetFont('s15', '微软雅黑')
-  g.Add('Edit', 'w300 r' Min(20, statistics.Length + 4) ' ReadOnly', msg)
+  g.AddText(, general)
+  g.AddEdit('w300 r' Min(20, statistics.Length) ' ReadOnly', Trim(detail, '`n'))
   g.Show()
   g.OnEvent("Close", destroyGui)
   g.OnEvent("Escape", destroyGui)
