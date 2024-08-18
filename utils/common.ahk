@@ -5,8 +5,7 @@ activateZZZ() {
     RandomSleep()
   } catch {
     MsgBox("未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx 0x40000 T3")
-    global nextExit := false
-    global ing := false
+    Ctrl.stop()
     Exit()
   }
 }
@@ -108,15 +107,16 @@ SimulateClick(x?, y?, clickCount := 1) {
 }
 
 /** 对坐标进行缩放预处理的像素搜索，取真实坐标 */
-PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := setting.variation, transColor?, transTolerance?) {
+PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := 1, transColor?, transTolerance?) {
   if (IsSet(transColor)) {
     Color := transColor
     if (IsSet(transTolerance)) {
       Tolerance := transTolerance
     } else {
-      Tolerance := setting.variation
+      Tolerance := 1
     }
   }
+  Tolerance := Round(Tolerance * setting.variation)
   preprocess(&X1, &Y1)
   preprocess(&X2, &Y2)
   return PixelSearch(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance)
@@ -131,11 +131,12 @@ PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := setting.variation, tr
  * @param defaultX 默认X
  * @param defaultY 默认Y
  * @param Color 搜索颜色
+ * @param Tolerance 容差倍率
  */
-pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color) {
+pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color, Tolerance := 1) {
   X := 0, Y := 0
-  loop (25) {
-    if (PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color)) {
+  loop (30) {
+    if (PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance)) {
       break
     }
     Sleep(100)
