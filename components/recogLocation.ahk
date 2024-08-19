@@ -1,5 +1,6 @@
 ﻿/** 识别所处界面 1：角色操作界面，2：关卡选择界面 */
 recogLocation() {
+  activateZZZ()
   /** 通过三个特殊定位点判断所处界面 */
   patterns1 := [
     c.角色操作.M,

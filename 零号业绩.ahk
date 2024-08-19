@@ -46,7 +46,19 @@ init()
   if (!Ctrl.ing) {
     return MsgBox("当前未处于刷取期间", , "Icon! 0x40000 T3")
   }
-  MsgBox("已" (A_IsPaused ? "恢复" : "暂停") "脚本，再次Alt+P可切换状态", , "T1")
+  if (p.CP) {
+    if (!p.paused) {
+      if (p.CP.pauseButton) {
+        Pause(1)
+        p.CP.pauseButton.Text := "&P 继续"
+        p.paused := !p.paused
+      }
+      return
+    }
+    p.CP.destroyGui()
+  } else {
+    MsgBox("已" (A_IsPaused ? "恢复" : "暂停") "脚本，再次Alt+P可切换状态", , "T1")
+  }
   Pause(-1)
 }
 
