@@ -169,12 +169,12 @@ class Panel {
         latestVersion := OutputVar[0]
         if (Version = latestVersion) {
           this.UP := Gui('AlwaysOnTop -MinimizeBox' (this.CP ? ' +Owner' this.CP.Hwnd : ''), '零号业绩检查更新')
+          this.UP.destroyGui := destroyGui
           this.UP.SetFont('s12', '微软雅黑')
-          this.UP.AddLink('x60 h25 w251', '当前已是最新版本：<a href="' url '"> ' latestVersion ' </a>').OnEvent('Click', (Ctrl, ID, HREF) => Run(HREF) || destroyGui())
+          this.UP.AddLink('x60 h25 w251', '当前已是最新版本：<a href="' url '"> ' latestVersion ' </a>').OnEvent('Click', (Ctrl, ID, HREF) => Run(HREF) || destroyGui() || (this.CP ? this.CP.destroyGui() : 0))
           this.UP.Show()
           this.UP.OnEvent('Close', destroyGui)
           this.UP.OnEvent('Escape', destroyGui)
-          this.UP.destroyGui := destroyGui
           return
         } else {
           if (this.CP)
