@@ -1,22 +1,26 @@
 /** 面板 */
 class Panel {
+
   __New() {
     this.CP := 0
     this.SP := 0
+    this.UP := 0
     this.paused := false
     this.lastPos := 0
     this.init()
   }
 
   /** 控制面板 */
-  ControlPanel() {
+  ControlPanel(*) {
     if (this.CP) {
       return destroyGui()
     }
     this.paused := A_IsPaused
     Pause(1) ; 暂停脚本
+    A_TrayMenu.Check('控制面板')
 
     this.CP := Gui('AlwaysOnTop -MinimizeBox', '零号业绩控制面板 ' Version)
+    this.CP.destroyGui := destroyGui
     this.CP.SetFont('s9', '微软雅黑')
     this.CP.MarginX := 15
     this.CP.AddText('X70 w251', '分辨率：' A_ScreenWidth "x" A_ScreenHeight "   模式：" c.mode (c.compatible ? "(兼容)" : ""))
@@ -40,9 +44,9 @@ class Panel {
     this.CP.AddButton('X+5 w75', '&R 重启').OnEvent('Click', (*) => Reload())
     this.CP.AddButton('X+5 w75', '&P ' (this.paused ? '继续' : '暂停')).OnEvent('Click', pauseS)
     this.CP.AddButton('X+5 Default w75', '&C 确定').OnEvent('Click', destroyGui)
-    this.CP.AddButton('X15 Y+10 w100', '&U 检查更新').OnEvent('Click', checkUpdate)
+    this.CP.AddButton('X15 Y+10 w100', '&U 检查更新').OnEvent('Click', this.checkUpdate.Bind(this))
     this.CP.AddButton('X+8 w100', '&T 刷取统计').OnEvent('Click', this.StatisticsPanel.Bind(this))
-    this.CP.AddButton('X+8 w100', '&Z ' (Ctrl.ing ? (Ctrl.nextExit ? '取消结束' : '结束刷取') : '开始刷取')).OnEvent('Click', start)
+    this.CP.AddButton('X+8 w100', '&Z ' (Ctrl.ing ? (Ctrl.nextExit ? '取消结束' : '本轮结束') : '开始刷取')).OnEvent('Click', start)
     this.CP.AddStatusBar(, '`tAlt+字母 = 点击按钮')
 
     this.CP.Show()
@@ -51,10 +55,20 @@ class Panel {
     this.CP.OnEvent('Escape', destroyGui)
 
     static destroyGui(*) {
-      p.CP.Destroy()
-      p.CP := 0
-      if (!p.paused)
+      A_TrayMenu.Uncheck('控制面板')
+      if (!p.paused) {
         Pause(0)
+      }
+      if (p.CP) {
+        p.CP.Destroy()
+        p.CP := 0
+      }
+      if (p.SP) {
+        p.SP.destroyGui()
+      }
+      if (p.UP) {
+        p.UP.destroyGui()
+      }
     }
 
     static switchSetting(g, *) {
@@ -76,7 +90,10 @@ class Panel {
 
     static changeVariation(g, *) {
       value := g.Value
-      if (value >= 0 && value <= 255) {
+      if (value = '') {
+        setting.variation := 0
+        g.Value := 0
+      } else if (value >= 0 && value <= 255) {
         setting.variation := value
       } else {
         MsgBox('颜色搜索允许渐变值须介于0~255', '错误', 'Iconx 0x40000')
@@ -103,7 +120,7 @@ class Panel {
         destroyGui()
       } else {
         Pause(1)
-        g.Text := "继续"
+        g.Text := "&P 继续"
       }
       p.paused := !p.paused
     }
@@ -113,14 +130,9 @@ class Panel {
       if (Ctrl.ing) {
         Ctrl.nextExit := !Ctrl.nextExit
         if (Ctrl.nextExit) {
-          static once := 1
-          if (once) {
-            MsgBox("将在当前执行的步骤完成后结束本次刷取，结束后可再次启动", , "0x40000")
-          }
-          once := 0
-          g.Text := "取消结束"
+          g.Text := "&Z 取消结束"
         } else {
-          g.Text := "结束刷取"
+          g.Text := "&Z 本轮结束"
         }
       } else {
         activateZZZ()
@@ -129,45 +141,64 @@ class Panel {
       }
     }
 
-    static checkUpdate(*) {
-      static urls := ["https://gitee.com/UCPr251/zzzAuto/releases/latest", "https://github.com/UCPr251/zzzAuto/releases/latest"]
-      err := 0
-      for (url in urls) {
-        try {
-          hObject := ComObject("WinHttp.WinHttpRequest.5.1")
-          hObject.SetTimeouts(1000, 1000, 5000, 5000)
-          hObject.Open("GET", url)
-          hObject.Send()
-          hObject.WaitForResponse()
-          text := hObject.responseText
-          RegExMatch(text, "v\d+\.\d+\.\d+", &OutputVar)
-        } catch Error as e {
-          err := e
-        }
-        if (IsSet(OutputVar) && OutputVar[0]) {
-          latestVersion := OutputVar[0]
-          if (Version = latestVersion) {
-            p.CP.Opt('+Disabled')
-            g := Gui('-MinimizeBox +Owner' p.CP.Hwnd, '零号业绩检查更新')
-            g.SetFont('s12', '微软雅黑')
-            g.AddLink('x60 h25 w251', '当前已是最新版本：<a href="' url '"> ' latestVersion ' </a>').OnEvent('Click', (Ctrl, ID, HREF) => Run(HREF) || destroyGui())
-            g.Show()
-            g.OnEvent('Close', (*) => g.Destroy() || p.CP.Opt('-Disabled'))
-            g.OnEvent('Escape', (*) => g.Destroy() || p.CP.Opt('-Disabled'))
-            return
-          } else {
-            destroyGui()
-            return Run(url)
-          }
-        }
+  }
+
+  /** 检查更新 */
+  checkUpdate(*) {
+    if (this.UP) {
+      return destroyGui()
+    }
+    A_TrayMenu.Check('检查更新')
+
+    static urls := ["https://gitee.com/UCPr251/zzzAuto/releases/latest", "https://github.com/UCPr251/zzzAuto/releases/latest"]
+    err := 0
+    for (url in urls) {
+      try {
+        hObject := ComObject("WinHttp.WinHttpRequest.5.1")
+        hObject.SetTimeouts(1000, 1000, 5000, 5000)
+        hObject.Open("GET", url)
+        hObject.Send()
+        hObject.WaitForResponse()
+        text := hObject.responseText
+        RegExMatch(text, "v\d+\.\d+\.\d+", &OutputVar)
+      } catch Error as e {
+        err := e
       }
-      if (err) {
-        throw err
-      } else {
-        MsgBox('检查更新失败，请稍后重试', '错误', 'Iconx 0x40000')
+      if (IsSet(OutputVar) && OutputVar[0]) {
+        latestVersion := OutputVar[0]
+        if (Version = latestVersion) {
+          this.UP := Gui('AlwaysOnTop -MinimizeBox' (this.CP ? ' +Owner' this.CP.Hwnd : ''), '零号业绩检查更新')
+          this.UP.SetFont('s12', '微软雅黑')
+          this.UP.AddLink('x60 h25 w251', '当前已是最新版本：<a href="' url '"> ' latestVersion ' </a>').OnEvent('Click', (Ctrl, ID, HREF) => Run(HREF) || destroyGui())
+          this.UP.Show()
+          this.UP.OnEvent('Close', destroyGui)
+          this.UP.OnEvent('Escape', destroyGui)
+          this.UP.destroyGui := destroyGui
+          return
+        } else {
+          if (this.CP)
+            this.CP.destroyGui()
+          destroyGui()
+          return Run(url)
+        }
       }
     }
+    if (err) {
+      throw err
+    } else {
+      MsgBox('检查更新失败，请稍后重试', '错误', 'Iconx 0x40000')
+    }
 
+    destroyGui(*) {
+      A_TrayMenu.Uncheck('检查更新')
+      if (this.UP) {
+        this.UP.Destroy()
+        this.UP := 0
+      }
+      if (this.SP) {
+        this.SP.destroyGui()
+      }
+    }
   }
 
   /** 初始化刷取统计数据 */
@@ -198,7 +229,11 @@ class Panel {
     if (this.SP) {
       return destroyGui()
     }
-    this.SP := Gui("-MinimizeBox +Owner" this.CP.Hwnd, "零号业绩刷取统计")
+    A_TrayMenu.Check('刷取统计')
+
+    this.SP := Gui("AlwaysOnTop -MinimizeBox" (this.CP ? ' +Owner' this.CP.Hwnd : ''), "零号业绩刷取统计")
+    this.SP.destroyGui := destroyGui
+    this.SP.changed := 0
     this.SP.SetFont('s15', '微软雅黑')
     this.refreshGeneral()
     this.SP.AddText(, this.general)
@@ -221,25 +256,30 @@ class Panel {
     this.SP.OnEvent("Close", destroyGui)
     this.SP.OnEvent("Escape", destroyGui)
 
-    static destroyGui(*) {
-      p.SP.Destroy()
-      p.SP := 0
-      ; 处理稀疏数组
-      newStatistics := []
-      for (item in setting.statistics) {
-        if (IsSet(item) && item.time && item.duration) {
-          newStatistics.Push(item)
+    destroyGui(*) {
+      A_TrayMenu.Uncheck('刷取统计')
+      if (this.SP) {
+        if (this.SP.changed) {
+          ; 处理稀疏数组
+          newStatistics := []
+          for (item in setting.statistics) {
+            if (IsSet(item) && item.time && item.duration) {
+              newStatistics.Push(item)
+            }
+          }
+          setting.statistics := newStatistics
+          setting.SaveStatistics()
+          newDetail := []
+          for (item in this.detail) {
+            if (IsSet(item) && item[1] && item[2]) {
+              newDetail.Push(item)
+            }
+          }
+          this.detail := newDetail
         }
+        this.SP.Destroy()
+        this.SP := 0
       }
-      setting.statistics := newStatistics
-      setting.SaveStatistics()
-      newDetail := []
-      for (item in p.detail) {
-        if (IsSet(item) && item[1] && item[2]) {
-          newDetail.Push(item)
-        }
-      }
-      p.detail := newDetail
     }
 
     Select(g, item, *) {
@@ -277,6 +317,7 @@ class Panel {
       if (!sign) {
         return
       }
+      this.SP.changed := 1
       this.SP.GetPos(&x, &y)
       this.lastPos := [x * 96 / A_ScreenDPI, y * 96 / A_ScreenDPI]
       destroyGui()

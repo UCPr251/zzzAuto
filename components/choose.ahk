@@ -15,6 +15,7 @@ choose() {
     [0x10cbf4, () => pixelSearchAndClick(c.空洞.2.降压准备*)], ; 降压准备
     [0xc01c00, 1], ; 侵蚀物资
     [0xaa7cff, 2], ; 垃圾物资或催化
+    [0xff802c, () => pixelSearchAndClick(c.空洞.2.降压准备*)], ; 邦布插件
   ]
   clickFnc := 0
   loop (10) {

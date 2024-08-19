@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/08/19
- * @version v1.6.0
+ * @version v1.6.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -37,7 +37,7 @@ SetMouseDelay(-1)
 #Include refuse.ahk
 #Include saveBank.ahk
 
-global Version := "v1.6.0"
+global Version := "v1.6.1"
 
 init()
 
@@ -52,6 +52,12 @@ init()
 
 /** Alt+C 控制面板 */
 !c:: p.ControlPanel()
+
+!t:: {
+  if (p.CP) {
+    p.StatisticsPanel()
+  }
+}
 
 /** 初始化 */
 init() {
@@ -75,6 +81,16 @@ init() {
   global setting := Config()
   global c := CoordsData()
   global p := Panel()
+  A_TrayMenu.Delete()
+  A_TrayMenu.Add("控制面板", p.ControlPanel.Bind(p))
+  A_TrayMenu.Default := "控制面板"
+  A_TrayMenu.Add("刷取统计", p.StatisticsPanel.Bind(p))
+  A_TrayMenu.Add()
+  A_TrayMenu.Add("前往仓库", (*) => Run('https://gitee.com/UCPr251/zzzAuto'))
+  A_TrayMenu.Add("检查更新", p.checkUpdate.Bind(p))
+  A_TrayMenu.Add()
+  A_TrayMenu.Add("重启", (*) => Reload())
+  A_TrayMenu.Add("退出", (*) => ExitApp())
   global Ctrl := Controller()
   OnError(errHandler)
   errHandler(err, *) {
@@ -107,7 +123,6 @@ main() {
   } else {
     debugLog("【开始】模式：零号空洞主页")
   }
-  judgeExit()
   RandomSleep()
   if (mode = 1) {
     if (!charOperation()) {
@@ -115,7 +130,6 @@ main() {
       return MsgBox("进入零号空洞主页失败，请手动进入后重试", "错误", "Iconx 0x40000")
     }
   }
-  judgeExit()
   runAutoZZZ()
 }
 
@@ -147,29 +161,63 @@ retry(reason) {
   }
   MsgBox("【错误】连续刷取过程中出现异常：`n" reason "`n`n将在6s后重试", "错误", "Iconx T6 0x40000")
   RandomSleep()
-  judgeExit()
-  ; 如果有确认框或选择框
-  loop (3) {
-    if (PixelSearchPre(&X, &Y, c.空洞.确定*)) {
+  mode := 0
+  ; 卡在空洞走格子界面
+  loop (5) {
+    Press('Space', 2)
+    if (PixelSearchPre(&X, &Y, c.空洞.确认*)) { ; 确认？
       SimulateClick(X, Y)
-      Sleep(5000)
+      RandomSleep(1800, 2000)
     }
+    Press('Space', 2)
+    MingHui(true, 5) ; 铭徽？
     Sleep(200)
+    Press('Space', 2)
+    Press('Escape') ; 尝试退出或退出页面
+    RandomSleep(700, 800)
+    if (PixelSearchPre(&X, &Y, c.空洞.退出副本.放弃*)) {
+      SimulateClick(X, Y)
+      RandomSleep(700, 800)
+      loop (5) {
+        if (PixelSearchPre(&X, &Y, c.空洞.退出副本.确认*)) {
+          SimulateClick(X, Y, 2)
+          RandomSleep(6400, 6500)
+          pixelSearchAndClick(c.空洞.结算.完成*)
+          RandomSleep(5600, 5800)
+          mode := recogLocation()
+          if (mode)
+            break
+        }
+        Sleep(100)
+      }
+    }
+    if (mode)
+      break
   }
-  judgeExit()
-  ; 先Esc偶数次，避免进入了什么奇怪的界面
-  Press("Escape")
-  RandomSleep(1000, 1200)
-  Press("Escape")
-  RandomSleep(1000, 1200)
-  exitFuben()
-  judgeExit()
-  pixelSearchAndClick(c.空洞.结算.完成*)
-  RandomSleep(4800, 5000)
-  judgeExit()
+  ; 卡在战斗结算界面
+  if (!mode) {
+    if (PixelSearchPre(&X, &Y, c.空洞.1.战斗.确定绿勾*)) {
+      SimulateClick(X, Y, 2)
+      RandomSleep(500, 600)
+      MingHui()
+      RandomSleep(7500, 8000)
+      exitFuben()
+      RandomSleep(800, 1000)
+      pixelSearchAndClick(c.空洞.结算.完成*)
+      RandomSleep(5600, 5800)
+      mode := recogLocation()
+    }
+  }
+  ; 卡在副本结算界面
+  if (!mode) {
+    if (PixelSearchPre(&X, &Y, c.空洞.结算.完成*)) {
+      SimulateClick(X, Y, 2)
+      RandomSleep(5600, 5800)
+    }
+  }
+  Sleep(251)
   ; 重新识别所处界面
   mode := recogLocation()
-  judgeExit()
   if (mode = 2) {
     return runAutoZZZ()
   } else if (mode = 1) {
@@ -182,51 +230,44 @@ retry(reason) {
 
 /** 运行刷取脚本 */
 runAutoZZZ() {
-  judgeExit()
   Ctrl.start()
   status := 0
   ; 进入副本
   enterFuben()
-  judgeExit()
   ; 拒绝好意
   refuse()
-  judgeExit()
   ; 前往终点
   status := reachEnd()
-  judgeExit()
   if (status = 0) {
     return retry("地图类型识别失败")
   }
   ; 战斗
   status := fight()
-  judgeExit()
   if (status = 0) {
     return retry("战斗超时或检测异常")
   }
   ; 选择增益
   status := choose()
-  judgeExit()
   if (status = 0) {
     return retry("未找到对应增益选项")
   }
   ; 获得零号业绩
   getMoney()
-  judgeExit()
   ; 存银行
   if (setting.isSaveBank) {
     saveBank()
-    judgeExit()
   }
   ; 退出副本
   exitFuben()
   Ctrl.finish()
-  judgeExit()
-  if (setting.bankMode) {
+  if (Ctrl.nextExit) {
+    Ctrl.stop()
+    return MsgBox("本次刷取已结束。共刷取" setting.statistics.Length "次")
+  } else if (setting.bankMode) {
     debugLog("银行模式，无限循环。已刷取" setting.statistics.Length "次")
   } else {
     ; 判断是否达到上限
     if (isLimited()) {
-      judgeExit()
       if (setting.isAutoClose) {
         WinClose("ahk_exe ZenlessZoneZero.exe")
       }
@@ -235,23 +276,11 @@ runAutoZZZ() {
     }
     debugLog("未达到周上限，继续刷取。已刷取" setting.statistics.Length "次")
   }
-  judgeExit()
   RandomSleep(800, 1000)
-  ; 点击完成
   pixelSearchAndClick(c.空洞.结算.完成*)
-  judgeExit()
   while (recogLocation() != 2) {
     Sleep(100)
   }
-  judgeExit()
   ; 继续循环
   runAutoZZZ()
-}
-
-judgeExit() {
-  if (Ctrl.nextExit) {
-    Ctrl.stop()
-    MsgBox("已结束当前刷取线程", , "0x40000 T3")
-    Exit()
-  }
 }
