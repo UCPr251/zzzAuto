@@ -3,6 +3,7 @@
  * - 存银行
  */
 saveBank() {
+  activateZZZ()
   debugLog("【step7】存银行")
   Press('s')
   Press('a', 3)
