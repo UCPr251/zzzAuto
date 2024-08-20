@@ -1,12 +1,12 @@
 ﻿/**
- * - step 2
  * - 拒绝好意
  */
-refuse() {
+refuse(step := 2) {
   activateZZZ()
-  debugLog("【step2】拒绝好意")
+  stepLog("【step" step "】拒绝好意")
+
   ; 开局铭徽(如果有)
-  MingHui(true)
+  MingHui(true, 15)
   ; 对话
   Press("Space", 10)
   ; 拒绝

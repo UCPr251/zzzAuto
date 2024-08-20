@@ -1,10 +1,8 @@
 ﻿/**
- * - step 0
  * - 角色操作界面进入零号空洞选择界面
  */
 charOperation() {
   activateZZZ()
-  RandomSleep()
   ; 进入快捷手册
   Press(setting.handbook)
   RandomSleep(1000, 1200)

@@ -3,24 +3,26 @@ Class Config {
 
   /** 默认配置 */
   oriSetting := {
-    /** 快捷手册 */
-    handbook: 'F2',
     /** 炸弹使用：长按1，点击2 */
     bombMode: 1,
+    /** 快捷手册 */
+    handbook: 'F2',
     /** 休眠系数，加载动画等待时长在原基础上的倍率，可通过修改该值延长/缩短全局等待时长 */
     sleepCoefficient: 1.0,
-    /** RGB颜色搜索允许的渐变值 */
+    /** 允许总的异常时重试的次数 */
+    retryTimes: 3,
+    /** 颜色搜索允许的RGB值容差 */
     variation: 60,
+    /** 刷取模式：0：全都要；1：只要业绩；2：只存银行 */
+    gainMode: 0,
+    /** 循环模式：0：业绩上限；-1：无限循环；正整数：刷取指定次数 */
+    loopMode: 0,
     /** 异常处理 */
     errHandler: true,
     /** 是否开启步骤信息弹窗 */
     isStepLog: true,
-    /** 刷完业绩后是否自动关闭游戏 */
+    /** 刷完后是否自动关闭游戏 */
     isAutoClose: false,
-    /** 是否开启银行模式 */
-    bankMode: false,
-    /** 是否存银行 */
-    isSaveBank: true,
   }
 
   __New() {
@@ -67,6 +69,9 @@ Class Config {
       try {
         for (key, value in this.setting.OwnProps()) {
           value := IniRead(this.iniFile, this.section1, key, value)
+          if (IsNumber(this.setting.%key%)) {
+            value := Number(value)
+          }
           this.setting.%key% := value
         }
       }
@@ -82,7 +87,7 @@ Class Config {
           if (time = "" && duration = "")
             break
           if (time && duration) {
-            this.statistics.Push({ time: time, duration: duration })
+            this.statistics.Push({ time: time, duration: Integer(duration) })
           }
         }
       }

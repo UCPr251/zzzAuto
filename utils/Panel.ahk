@@ -16,7 +16,7 @@ class Panel {
       return destroyGui()
     }
     this.paused := A_IsPaused
-    Pause(1) ; 暂停脚本
+    Pause(1)
     A_TrayMenu.Check('控制面板')
 
     this.CP := Gui('AlwaysOnTop -MinimizeBox', '零号业绩控制面板 ' Version)
@@ -25,20 +25,50 @@ class Panel {
     this.CP.MarginX := 15
     this.CP.AddText('X70 w251', '分辨率：' A_ScreenWidth "x" A_ScreenHeight "   模式：" c.mode (c.compatible ? "(兼容)" : ""))
     this.CP.SetFont('s13')
+
     this.CP.AddText('X30 Y40', '使用炸弹：')
     this.CP.AddDropDownList("X+10 W60 Choose" setting.bombMode, ["长按", "点击"]).OnEvent("Change", (g, *) => setting.bombMode := g.Value)
-    this.CP.AddText('X30 Y75', '快捷手册：')
+
+    this.CP.AddText('X30', '快捷手册：')
     this.CP.AddHotkey('X+10 w60 h25 Limit14', setting.handbook).OnEvent('Change', changeHandbook)
-    this.CP.AddText('X30 Y110', '休眠系数：')
+
+    this.CP.AddText('X30', '休眠系数：')
     this.CP.AddEdit('X+10 w60 h25 Limit4', setting.sleepCoefficient).OnEvent('Change', changeSleepCoefficient)
-    this.CP.AddText('X30 Y145', '颜色搜索允许渐变值：')
+
+    this.CP.AddText('X30', '异常重试次数：')
+    this.CP.AddEdit('X+10 w51 h25 Limit2 Number').OnEvent('Change', changeRetryTimes)
+    this.CP.AddUpDown('Range0-99', setting.retryTimes).OnEvent('Change', changeRetryTimes)
+
+    this.CP.AddText('X30', '颜色搜索允许RGB容差：')
     this.CP.AddEdit('X+10 w60 h25 Limit3 Number').OnEvent('Change', changeVariation)
     this.CP.AddUpDown('Range0-255', setting.variation).OnEvent('Change', changeVariation)
+
+    ; this.CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
+
+    this.CP.AddText('X30', '刷取模式：')
+    this.CP.SetFont('s10')
+    this.CP.AddRadio('X50 Y+10 vgain0 Checked' (setting.gainMode = 0), '我全都要').OnEvent('Click', gainModeSelected)
+    this.CP.AddRadio('X+2 vgain1 Checked' (setting.gainMode = 1), '只要业绩').OnEvent('Click', gainModeSelected)
+    this.CP.AddRadio('X+2 vgain2 Checked' (setting.gainMode = 2), '只存银行').OnEvent('Click', gainModeSelected)
+
+    this.CP.SetFont('s13')
+    this.CP.AddText('X30', '循环模式：')
+    this.CP.SetFont('s10')
+    this.CP.AddRadio('X50 Y+10 vloop0 Checked' (setting.loopMode = 0), '业绩上限').OnEvent('Click', loopModeSelected)
+    this.CP.AddRadio('X+2 vloop-1 Checked' (setting.loopMode = -1), '无限循环').OnEvent('Click', loopModeSelected)
+    this.CP.AddRadio('X+2 vloopN Checked' (setting.loopMode > 0), '指定次数').OnEvent('Click', loopModeSelected)
+    this.loopEditGui := this.CP.AddEdit('X+0 w45 h20 Number Limit3 Hidden' (setting.loopMode <= 0), setting.loopMode > 0 ? setting.loopMode : 10)
+    this.loopEditGui.OnEvent('Change', changeLoopMode)
+    this.loopUpDownGui := this.CP.AddUpDown('Range1-999 Hidden' (setting.loopMode <= 0), setting.loopMode > 0 ? setting.loopMode : 10)
+    this.loopUpDownGui.OnEvent('Change', changeLoopMode)
+
+    ; this.CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
+
+    this.CP.SetFont('s13')
     this.CP.AddCheckBox('verrHandler X30 Checked' setting.errHandler, '异常处理').OnEvent('Click', switchSetting)
     this.CP.AddCheckBox('visStepLog Checked' setting.isStepLog, '步骤信息弹窗').OnEvent('Click', switchSetting)
-    this.CP.AddCheckBox('visAutoClose Checked' setting.isAutoClose, '刷完业绩自动关闭游戏').OnEvent('Click', switchSetting)
-    this.CP.AddCheckBox('vbankMode Checked' setting.bankMode, '银行模式（无限循环刷取）').OnEvent('Click', switchSetting)
-    this.CP.AddCheckBox('visSaveBank Checked' setting.isSaveBank, '银行存款（关闭后不再存银行）').OnEvent('Click', switchSetting)
+    this.CP.AddCheckBox('visAutoClose Checked' setting.isAutoClose, '刷完关闭游戏').OnEvent('Click', switchSetting)
+
     this.CP.SetFont('s12')
     this.CP.AddButton('X15 Y+15 w75', '&Q 退出').OnEvent('Click', (*) => ExitApp())
     this.CP.AddButton('X+5 w75', '&R 重启').OnEvent('Click', (*) => Reload())
@@ -89,16 +119,55 @@ class Panel {
       }
     }
 
+    static loopModeSelected(g, *) {
+      name := StrReplace(g.Name, 'loop', '')
+      if (name = '0') {
+        setting.loopMode := 0
+      } else if (name = '-1') {
+        setting.loopMode := -1
+      }
+      if (name = 'N') {
+        setting.loopMode := 10
+        p.loopEditGui.Value := 10
+        p.loopEditGui.Visible := true
+        p.loopUpDownGui.Visible := true
+      } else {
+        p.loopEditGui.Visible := false
+        p.loopUpDownGui.Visible := false
+      }
+    }
+
+    static gainModeSelected(g, *) {
+      setting.gainMode := Integer(StrReplace(g.Name, 'gain', ''))
+    }
+
+    static changeLoopMode(g, *) {
+      value := g.Value
+      if (IsInteger(value) && value >= 1) {
+        setting.loopMode := Integer(value)
+      }
+    }
+
     static changeVariation(g, *) {
       value := g.Value
-      if (value = '') {
-        setting.variation := 0
-        g.Value := 0
-      } else if (value >= 0 && value <= 255) {
-        setting.variation := value
-      } else {
-        MsgBox('颜色搜索允许渐变值须介于0~255', '错误', 'Iconx 0x40000')
-        g.Value := setting.variation
+      if (IsInteger(value)) {
+        if (value >= 0 && value <= 255) {
+          setting.variation := Integer(value)
+        } else {
+          MsgBox('颜色搜索允许渐变值须介于0~255', '错误', 'Iconx 0x40000')
+          g.Value := setting.variation
+        }
+      }
+    }
+
+    static changeRetryTimes(g, *) {
+      value := g.Value
+      if (IsInteger(value)) {
+        if (value >= 0 && value <= 99) {
+          setting.retryTimes := Integer(value)
+        } else {
+          g.Value := setting.retryTimes
+        }
       }
     }
 

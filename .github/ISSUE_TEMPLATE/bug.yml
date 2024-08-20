@@ -41,7 +41,7 @@ body:
   - type: input
     attributes:
       label: 使用的版本？
-      description: 所使用的脚本的版本，如v1.6.0
+      description: 所使用的脚本的版本，如v1.7.0
       value: v1.
     validations:
       required: true

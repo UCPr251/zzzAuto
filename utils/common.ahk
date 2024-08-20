@@ -10,9 +10,9 @@ activateZZZ() {
   }
 }
 
-debugLog(str) {
+stepLog(str) {
   if (setting.isStepLog) {
-    MsgBox(str, "调试信息", "T1")
+    MsgBox(str, "步骤信息", "T1")
     RandomSleep()
   }
 }
@@ -21,7 +21,7 @@ debugLog(str) {
 RandomSleep(ms1 := 50, ms2 := 100) => Sleep(Random(Round(ms1 * setting.sleepCoefficient), Round(ms2 * setting.sleepCoefficient)))
 
 /** 选择铭徽 */
-MingHui(isTry := false, searchTimes := 20) {
+MingHui(isTry := false, searchTimes := 30) {
   X := 0, Y := 0
   loop (searchTimes) {
     if (PixelSearchPre(&X, &Y, c.空洞.确定*)) {

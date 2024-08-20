@@ -1,8 +1,24 @@
 ﻿/**
- * - step3
  * - 抵达终点
  */
-reachEnd() {
+reachEnd(step := 3) {
+  activateZZZ()
+  stepLog("【step" step "】前往终点")
+  
+  ; 判断地图类型
+  mode := judgeMap()
+  if (!mode) {
+    return false
+  }
+  
+  if (mode = 1) {
+    above()
+  } else {
+    below()
+  }
+  ; 加载动画
+  RandomSleep(1800, 2000)
+  return true
 
   /** 判断地图类型 */
   judgeMap() {
@@ -21,13 +37,6 @@ reachEnd() {
       Sleep(100)
     }
     return mode
-  }
-
-  activateZZZ()
-  ; 判断地图类型
-  mode := judgeMap()
-  if (!mode) {
-    return false
   }
 
   /** 使用炸弹 */
@@ -81,13 +90,4 @@ reachEnd() {
     Press('d', 2)
   }
 
-  debugLog("【step3】前往终点")
-  if (mode = 1) {
-    above()
-  } else {
-    below()
-  }
-  ; 加载动画
-  RandomSleep(1800, 2000)
-  return true
 }

@@ -1,11 +1,9 @@
 ﻿/**
- * - step4
  * - 战斗
  */
-fight() {
+fight(step := 4) {
   activateZZZ()
-  debugLog("【step4】战斗")
-  RandomSleep()
+  stepLog("【step" step "】战斗")
 
   ; 进入战斗
   Press("1", 3)
@@ -44,7 +42,7 @@ fight() {
     if (!judge()) {
       return false
     }
-    debugLog("【战斗】战斗结束")
+    stepLog("【战斗】战斗结束")
     ; 点击确定
     SimulateClick(FoundX, FoundY, 2)
     RandomSleep(500, 600)

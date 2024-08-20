@@ -1,10 +1,10 @@
 ﻿/**
- * - step6
  * - 获得零号业绩
  */
-getMoney() {
+getMoney(step := 6) {
   activateZZZ()
-  debugLog("【step6】获得零号业绩")
+  stepLog("【step" step "】获得零号业绩")
+
   ; 进入零号业绩格子
   Press('d')
   Press('w', 2)

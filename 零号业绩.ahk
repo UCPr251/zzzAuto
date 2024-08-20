@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/08/20
- * @version v1.6.2
+ * @version v1.7.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -37,7 +37,7 @@ SetMouseDelay(-1)
 #Include refuse.ahk
 #Include saveBank.ahk
 
-global Version := "v1.6.2"
+global Version := "v1.7.0"
 
 init()
 
@@ -73,8 +73,8 @@ init()
 
 /** 初始化 */
 init() {
-  cmd := DllCall("GetCommandLine", "str")
   if (!A_IsAdmin) {
+    cmd := DllCall("GetCommandLine", "str")
     if (!RegExMatch(cmd, " /restart(?!\S)")) {
       try {
         if (A_IsCompiled) {
@@ -131,9 +131,9 @@ main() {
     Ctrl.ing := false
     return MsgBox("请位于 <零号空洞主页> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
   } else if (mode = 1) {
-    debugLog("【开始】模式：角色操作界面")
+    stepLog("【开始】模式：角色操作界面")
   } else {
-    debugLog("【开始】模式：零号空洞主页")
+    stepLog("【开始】模式：零号空洞主页")
   }
   RandomSleep()
   if (mode = 1) {
@@ -150,10 +150,6 @@ retry(reason) {
   if (!setting.errHandler) {
     throw Error(reason)
   }
-  ; 如果连一次都没有刷取成功，直接退出
-  if (setting.statistics.Length = 0) {
-    return MsgBox("【错误】" reason, "错误", "Iconx 0x40000")
-  }
   static errTimes := 0
   static errReasons := []
   errTimes++
@@ -167,9 +163,9 @@ retry(reason) {
     errReasons := []
     return errMsg
   }
-  if (errTimes > 3) {
+  if (errTimes > setting.retryTimes) {
     Ctrl.stop()
-    return MsgBox("【错误】异常次数过多，脚本结束" getErrorMsg(), "错误", "Iconx 0x40000")
+    return MsgBox("【错误】异常重试次数过多，脚本结束" getErrorMsg(), "错误", "Iconx 0x40000")
   }
   MsgBox("【错误】连续刷取过程中出现异常：`n" reason "`n`n将在6s后重试", "错误", "Iconx T6 0x40000")
   RandomSleep()
@@ -244,49 +240,74 @@ retry(reason) {
 runAutoZZZ() {
   Ctrl.start()
   status := 0
+  step := 0
   ; 进入副本
-  enterFuben()
+  enterFuben(++step)
   ; 拒绝好意
-  refuse()
+  refuse(++step)
   ; 前往终点
-  status := reachEnd()
+  status := reachEnd(++step)
   if (status = 0) {
     return retry("地图类型识别失败")
   }
   ; 战斗
-  status := fight()
+  status := fight(++step)
   if (status = 0) {
     return retry("战斗超时或检测异常")
   }
   ; 选择增益
-  status := choose()
+  status := choose(++step)
   if (status = 0) {
     return retry("未找到对应增益选项")
   }
-  ; 获得零号业绩
-  getMoney()
-  ; 存银行
-  if (setting.isSaveBank) {
-    saveBank()
+  gainMode := setting.gainMode
+  ; 全都要
+  if (gainMode = 0) {
+    getMoney(++step)
+    saveBank(++step, gainMode)
+    ; 只要业绩
+  } else if (gainMode = 1) {
+    getMoney(++step)
+    ; 只存银行
+  } else if (gainMode = 2) {
+    saveBank(++step, gainMode)
   }
   ; 退出副本
-  exitFuben()
+  exitFuben(++step)
   Ctrl.finish()
+  ; 本轮结束
   if (Ctrl.nextExit) {
     Ctrl.stop()
     return MsgBox("本次刷取已结束。共刷取" setting.statistics.Length "次")
-  } else if (setting.bankMode) {
-    debugLog("银行模式，无限循环。已刷取" setting.statistics.Length "次")
-  } else {
+  }
+  ; 业绩上限模式
+  if (setting.loopMode = 0) {
     ; 判断是否达到上限
-    if (isLimited()) {
+    if (isLimited()) { ; 达到上限
       if (setting.isAutoClose) {
         WinClose("ahk_exe ZenlessZoneZero.exe")
       }
       Ctrl.stop()
-      return MsgBox("已达到周上限，脚本结束。共刷取" setting.statistics.Length "次")
+      return MsgBox("业绩已达周上限，脚本结束。共刷取" setting.statistics.Length "次")
     }
-    debugLog("未达到周上限，继续刷取。已刷取" setting.statistics.Length "次")
+    stepLog("业绩未达周上限，继续刷取。已刷取" setting.statistics.Length "次")
+    ; 无限循环模式
+  } else if (setting.loopMode = -1) {
+    stepLog("无限循环模式。已刷取" setting.statistics.Length "次")
+    ; 指定次数模式
+  } else {
+    setting.loopMode--
+    ; 刷取完毕
+    if (setting.loopMode <= 0) {
+      if (setting.isAutoClose) {
+        WinClose("ahk_exe ZenlessZoneZero.exe")
+      }
+      Ctrl.stop()
+      return MsgBox("已刷完指定次数，脚本结束。共刷取" setting.statistics.Length "次")
+      ; 未刷完
+    } else {
+      stepLog("指定次数剩余" setting.loopMode "次，继续刷取。已刷取" setting.statistics.Length "次")
+    }
   }
   RandomSleep(800, 1000)
   pixelSearchAndClick(c.空洞.结算.完成*)
