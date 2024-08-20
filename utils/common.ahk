@@ -119,7 +119,11 @@ PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := 1, transColor?, trans
   Tolerance := Round(Tolerance * setting.variation)
   preprocess(&X1, &Y1)
   preprocess(&X2, &Y2)
-  return PixelSearch(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance)
+  try {
+    return PixelSearch(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance)
+  } catch {
+    return false
+  }
 }
 
 /**
