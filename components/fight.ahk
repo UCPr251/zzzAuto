@@ -8,16 +8,6 @@ fight(step := 4) {
   ; 进入战斗
   Press("1", 3)
 
-  /** 判断是否位于对应界面 */
-  judge(patterns) {
-    for (index, pattern in patterns) {
-      if (!PixelSearchPre(&FoundX, &FoundY, pattern*)) {
-        return false
-      }
-    }
-    return true
-  }
-
   /** 通过三个特殊定位点判断所处界面 */
   patterns := [
     c.空洞.1.战斗.计时,
@@ -25,8 +15,55 @@ fight(step := 4) {
     c.空洞.1.战斗.确定绿勾
   ]
 
+  ; 加载动画
+  Sleep(10000)
+  while (!PixelSearchPre(&X, &Y, c.空洞.1.战斗.开始*)) {
+    if (A_Index > 251) {
+      if (!setting.errHandler) {
+        throw Error('识别战斗开始画面失败')
+      }
+      break
+    }
+    Sleep(100)
+  }
+  ; 战斗循环，约8s一循环
+  loop (10) {
+    if (A_Index != 1) {
+      Press("Shift") ; 闪避
+    }
+    Send("{w Down}") ; 向前
+    RandomSleep(300, 320)
+    Click("Right Down") ; 右键蓄力，进入快蓄
+    RandomSleep(580, 600)
+    Click("Right Up") ; 快蓄完毕，释放右键
+    RandomSleep()
+    Click("Left Down") ; 普攻蓄力
+    if (fightIsOver(patterns)) {
+      return true
+    }
+    RandomSleep(1500, 1800)
+    Click("Left Up") ; 完成蓄力普攻
+    Send("{w Up}") ; 停止移动
+    RandomSleep()
+    ; 战斗动作
+    loop (2) {
+      Press("e") ; 使用技能
+      SimulateClick(, , 4) ; 普攻
+      Press("e") ; 使用技能
+      SimulateClick(, , 8) ; 普攻
+      Press("Shift") ; 闪避
+      if (fightIsOver(patterns)) {
+        return true
+      }
+    }
+  }
+  ; 如果战斗时长超过设置好的循环次数，可能是因为周上限提示需要点击确定，尝试使用Esc退出确认窗口，否则可以暂停战斗
+  Press('Escape')
+  RandomSleep(800, 1000)
+  return fightIsOver(patterns)
+
   /** 判断战斗是否结束 */
-  fightIsOver() {
+  static fightIsOver(patterns) {
     judge() {
       loop (10) {
         for (pattern in patterns) {
@@ -52,51 +89,4 @@ fight(step := 4) {
     RandomSleep(7500, 8000)
     return true
   }
-  ; 加载动画
-  Sleep(10000)
-  count := 0
-  while (!PixelSearchPre(&X, &Y, c.空洞.1.战斗.开始*)) {
-    if (++count > 200) {
-      if (!setting.errHandler) {
-        throw Error('识别战斗开始画面失败')
-      }
-      break
-    }
-    Sleep(100)
-  }
-  ; 战斗循环，约8s一循环
-  loop (12) {
-    if (A_Index != 1) {
-      Press("Shift") ; 闪避
-    }
-    Send("{w Down}") ; 向前
-    RandomSleep(300, 320)
-    Click("Right Down") ; 右键蓄力，进入快蓄
-    RandomSleep(580, 600)
-    Click("Right Up") ; 快蓄完毕，释放右键
-    RandomSleep()
-    Click("Left Down") ; 普攻蓄力
-    if (fightIsOver()) {
-      return true
-    }
-    RandomSleep(1500, 1800)
-    Click("Left Up") ; 完成蓄力普攻
-    Send("{w Up}") ; 停止移动
-    RandomSleep()
-    ; 战斗动作
-    loop (2) {
-      Press("e") ; 使用技能
-      SimulateClick(, , 4) ; 普攻
-      Press("e") ; 使用技能
-      SimulateClick(, , 8) ; 普攻
-      Press("Shift") ; 闪避
-      if (fightIsOver()) {
-        return true
-      }
-    }
-  }
-  ; 如果战斗时长超过设置好的循环次数，可能是因为周上限提示需要点击确定，尝试使用Esc退出确认窗口，否则可以暂停战斗
-  Press('Escape')
-  RandomSleep(800, 1000)
-  return fightIsOver()
 }

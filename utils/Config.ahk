@@ -69,8 +69,10 @@ Class Config {
       try {
         for (key, value in this.setting.OwnProps()) {
           value := IniRead(this.iniFile, this.section1, key, value)
-          if (IsNumber(this.setting.%key%)) {
-            value := Number(value)
+          if (IsInteger(this.setting.%key%)) {
+            value := Integer(value)
+          } else if (IsFloat(this.setting.%key%)) {
+            value := Round(value, 2)
           }
           this.setting.%key% := value
         }

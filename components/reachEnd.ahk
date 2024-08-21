@@ -21,7 +21,7 @@ reachEnd(step := 3) {
   return true
 
   /** 判断地图类型 */
-  judgeMap() {
+  static judgeMap() {
     mode := 0
     loop (50) {
       ; 对指定区域进行RGB检测
@@ -40,7 +40,7 @@ reachEnd(step := 3) {
   }
 
   /** 使用炸弹 */
-  bomb() {
+  static bomb() {
     if (setting.bombMode = 1) {
       Send("{r Down}")
       RandomSleep(800, 1000)
@@ -48,11 +48,11 @@ reachEnd(step := 3) {
     } else if (setting.bombMode = 2) {
       Press("r")
     }
-    RandomSleep(1900, 2100)
+    RandomSleep(2200, 2400)
   }
 
   /** 右上终点 */
-  above() {
+  static above() {
     ; 使用炸弹
     bomb()
     ; 向右移动
@@ -67,7 +67,7 @@ reachEnd(step := 3) {
   }
 
   /** 右下终点 */
-  below() {
+  static below() {
     ; 代理人接应窗口
     Press('s')
     RandomSleep(1000, 1200)

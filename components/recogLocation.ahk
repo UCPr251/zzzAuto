@@ -13,7 +13,7 @@ recogLocation() {
     c.零号选择.旧都列车,
     c.零号选择.施工废墟
   ]
-  judge(patterns) {
+  static judge(patterns) {
     for (pattern in patterns) {
       if (!PixelSearchPre(&FoundX, &FoundY, pattern*)) {
         return false

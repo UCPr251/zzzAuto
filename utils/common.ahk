@@ -52,9 +52,9 @@ MingHui(isTry := false, searchTimes := 30) {
 Press(key, times := 1) {
   loop (times) {
     Send("{" key " Down}")
-    RandomSleep()
+    Sleep(Random(50, 100))
     Send("{" key " Up}")
-    RandomSleep(200, 220)
+    Sleep(Random(200, 220))
   }
 }
 
@@ -73,8 +73,8 @@ preprocess(&X, &Y) {
 RandomMouseMove(TargetX, TargetY) {
   MouseGetPos(&StartX, &StartY)
   Distance := Sqrt((TargetX - StartX) ** 2 + (TargetY - StartY) ** 2)
-  MinSpeed := 25
-  MaxSpeed := 30
+  MinSpeed := 30
+  MaxSpeed := 35
   ; 鼠标移动速度，适当缩放确保效果
   Speed := (MinSpeed + Random() * (MaxSpeed - MinSpeed)) * (A_ScreenWidth / 1920)
   ; 生成随机控制点用于贝塞尔曲线
@@ -100,9 +100,9 @@ SimulateClick(x?, y?, clickCount := 1) {
   }
   Loop (clickCount) {
     Click("Left Down")
-    RandomSleep()
+    Sleep(Random(50, 80))
     Click("Left Up")
-    RandomSleep(150, 200)
+    Sleep(Random(160, 251))
   }
 }
 

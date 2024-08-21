@@ -8,12 +8,12 @@ body:
     attributes:
       label: 这个问题是否已有说明？
       options:
-        - label: 我已查看[注意事项](https://gitee.com/UCPr251/zzzAuto#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)及现有issues：[Gitee](https://gitee.com/UCPr251/zzzAuto/issues) [Github](https://github.com/UCPr251/zzzAuto/issues)并未发现相同问题
+        - label: 我已查看[注意事项](https://gitee.com/UCPr251/zzzAuto#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9)及现有issues：[Gitee](https://gitee.com/UCPr251/zzzAuto/issues) [Github](https://github.com/UCPr251/zzzAuto/issues)并未发现相关说明
           required: true
 
   - type: textarea
     attributes:
-      label: 你所遇见的问题？
+      label: 你所遇见的问题
       description: 请简短准确地描述你所遇到的问题
     validations:
       required: true
@@ -33,14 +33,14 @@ body:
   - type: input
     attributes:
       label: 录屏链接
-      description: 请输入该问题出现前后全过程的录屏链接。如果问题无法复现，在前面描述清楚忽略此项即可
+      description: 请输入该问题出现前后全过程的录屏链接。如果问题无法复现，在前面描述清楚后忽略此项即可
       placeholder: https://lanzou.com
     validations:
       required: true
 
   - type: input
     attributes:
-      label: 使用的版本？
+      label: 使用的版本
       description: 所使用的脚本的版本，如v1.7.0
       value: v1.
     validations:
@@ -52,30 +52,6 @@ body:
       description: 请提供Alt+C控制面板截图
     validations:
       required: true
-
-  - type: input
-    attributes:
-      label: 屏幕的分辨率？
-      description: 使用的屏幕分辨率
-      placeholder: 1920*1080
-    validations:
-      required: true
-
-  - type: dropdown
-    attributes:
-      label: 是否开启HDR？
-      description: 是否开启显示器HDR？
-      options:
-        - 是
-        - 否
-    validations:
-      required: true
-
-  - type: input
-    attributes:
-      label: 联系方式？
-      description: 如果你希望更高效地解决问题，可选择留下你的联系方式（或私信告知）
-      placeholder: q/v
 
   - type: textarea
     attributes:

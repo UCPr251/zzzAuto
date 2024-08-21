@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/08/20
- * @version v1.7.0
+ * @date 2024/08/22
+ * @version v1.7.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -37,7 +37,7 @@ SetMouseDelay(-1)
 #Include refuse.ahk
 #Include saveBank.ahk
 
-global Version := "v1.7.0"
+global Version := "v1.7.1"
 
 init()
 
@@ -171,6 +171,7 @@ retry(reason) {
   RandomSleep()
   mode := 0
   ; 卡在空洞走格子界面
+  uc:
   loop (5) {
     Press('Space', 2)
     if (PixelSearchPre(&X, &Y, c.空洞.确认*)) { ; 确认？
@@ -194,13 +195,11 @@ retry(reason) {
           RandomSleep(5600, 5800)
           mode := recogLocation()
           if (mode)
-            break
+            break uc
         }
         Sleep(100)
       }
     }
-    if (mode)
-      break
   }
   ; 卡在战斗结算界面
   if (!mode) {

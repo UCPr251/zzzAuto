@@ -18,7 +18,8 @@ choose(step := 5) {
     [0xff802c, () => pixelSearchAndClick(c.空洞.2.降压准备*)], ; 邦布插件
   ]
   clickFnc := 0
-  loop (10) {
+  uc:
+  loop (30) {
     for (rgb in rgbs) {
       clone := c.空洞.2.选项框.Clone()
       clone.Push(rgb[1])
@@ -26,15 +27,11 @@ choose(step := 5) {
       if (FoundX && FoundY) {
         SimulateClick(FoundX, FoundY)
         clickFnc := rgb[2]
-        break
+        break uc
       }
     }
-    if (clickFnc) {
-      break
-    }
-    Sleep(100)
+    Press("Space")
   }
-  RandomSleep(2200, 2300)
   ; 未找到对应选项
   if (clickFnc = 0) {
     return false
@@ -56,7 +53,7 @@ choose(step := 5) {
       ; 点击确定
       if (PixelSearchPre(&X, &Y, c.空洞.确定*)) {
         SimulateClick(X, Y)
-        RandomSleep(4000, 4200)
+        RandomSleep(3800, 4000)
       }
       Sleep(100)
     }

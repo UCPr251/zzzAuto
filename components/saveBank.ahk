@@ -5,7 +5,7 @@ saveBank(step := 7, gainMode := 0) {
   activateZZZ()
   stepLog("【step" step "】存银行")
 
-  reachDoor() {
+  static reachDoor(gainMode) {
     if (gainMode = 2) { ; 只存银行，直接去银行
       Press('a')
       Press('w', 2)
@@ -21,7 +21,7 @@ saveBank(step := 7, gainMode := 0) {
   }
 
   ; 进检疫门
-  reachDoor()
+  reachDoor(gainMode)
   RandomSleep(2400, 2500)
   ; 强行闯入
   Press("2")
@@ -32,13 +32,13 @@ saveBank(step := 7, gainMode := 0) {
   RandomSleep(3800, 4000)
   Press('a', 3)
   ; 对话
-  Press('Space', 18)
+  Press('Space', 16)
   ; 存款
-  loop (6) {
+  loop (5) {
     Press('1')
     Press('Space', 2)
     ; 如果弹出选择铭徽界面
-    MingHui(true, 5)
+    MingHui(true, 3)
     Press('Space', 2)
   }
   ; 最后判断一下是否有铭徽选择框
