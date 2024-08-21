@@ -102,7 +102,7 @@ fight(step := 4) {
     static X5 := Integer(A_ScreenWidth * 0.62), X6 := Integer(A_ScreenWidth * 0.8)
     static Y1 := Integer(A_ScreenHeight * 0.12), Y2 := Integer(A_ScreenHeight * 0.88)
     static lastTick := 0
-    static variation := Max(Round(setting.variation * 0.5), 3)
+    static variation := Max(Round(setting.variation * 0.5), 20)
     randomMs := Random(ms1, ms2)
     start := A_TickCount
     X := 0, Y := 0
