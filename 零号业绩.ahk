@@ -277,6 +277,9 @@ runAutoZZZ() {
   Ctrl.finish()
   ; 本轮结束
   if (Ctrl.nextExit) {
+    if (setting.loopMode > 0) {
+      setting.loopMode--
+    }
     Ctrl.stop()
     return MsgBox("本次刷取已结束。共刷取" setting.statistics.Length "次")
   }
@@ -298,7 +301,7 @@ runAutoZZZ() {
   } else {
     setting.loopMode--
     ; 刷取完毕
-    if (setting.loopMode <= 0) {
+    if (setting.loopMode = 0) {
       if (setting.isAutoClose) {
         WinClose("ahk_exe ZenlessZoneZero.exe")
       }
