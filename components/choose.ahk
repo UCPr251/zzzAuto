@@ -53,7 +53,7 @@ choose(step := 5) {
       ; 点击确定
       if (PixelSearchPre(&X, &Y, c.空洞.确定*)) {
         SimulateClick(X, Y)
-        RandomSleep(3800, 4000)
+        RandomSleep(2800, 3000)
       }
       Sleep(100)
     }

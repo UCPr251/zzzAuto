@@ -27,7 +27,7 @@ class Panel {
     this.CP.SetFont('s13')
 
     this.CP.AddText('X30 Y40', '使用炸弹：')
-    this.CP.AddDropDownList("X+10 W60 Choose" setting.bombMode, ["长按", "点击"]).OnEvent("Change", (g, *) => setting.bombMode := g.Value)
+    this.CP.AddDropDownList("X+10 W60 Choose" setting.bombMode, ["长按", "点击"]).OnEvent("Change", (g, *) => setting.bombMode := Integer(g.Value))
 
     this.CP.AddText('X30', '快捷手册：')
     this.CP.AddHotkey('X+10 w60 h25 Limit14', setting.handbook).OnEvent('Change', changeHandbook)
@@ -44,6 +44,9 @@ class Panel {
     this.CP.AddUpDown('Range0-255', setting.variation).OnEvent('Change', changeVariation)
 
     ; this.CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
+
+    this.CP.AddText('X30', '战斗模式：')
+    this.CP.AddDropDownList("X+10 W60 Choose" setting.fightMode, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightMode := Integer(g.Value))
 
     this.CP.AddText('X30', '刷取模式：')
     this.CP.SetFont('s10')
@@ -68,6 +71,7 @@ class Panel {
     this.CP.AddCheckBox('verrHandler X30 Checked' setting.errHandler, '异常处理').OnEvent('Click', switchSetting)
     this.CP.AddCheckBox('visStepLog Checked' setting.isStepLog, '步骤信息弹窗').OnEvent('Click', switchSetting)
     this.CP.AddCheckBox('visAutoClose Checked' setting.isAutoClose, '刷完关闭游戏').OnEvent('Click', switchSetting)
+    this.CP.AddCheckBox('visAutoDodge Checked' setting.isAutoDodge, '战斗红光自动闪避').OnEvent('Click', switchSetting)
 
     this.CP.SetFont('s12')
     this.CP.AddButton('X15 Y+15 w75', '&Q 退出').OnEvent('Click', (*) => ExitApp())

@@ -1,6 +1,8 @@
 /** 配置 */
 Class Config {
 
+  fightModeArr := ['通用', '艾莲']
+
   /** 默认配置 */
   oriSetting := {
     /** 炸弹使用：长按1，点击2 */
@@ -13,6 +15,8 @@ Class Config {
     retryTimes: 3,
     /** 颜色搜索允许的RGB值容差 */
     variation: 60,
+    /** 战斗模式：1：通用；2：艾莲 */
+    fightMode: 1,
     /** 刷取模式：0：全都要；1：只要业绩；2：只存银行 */
     gainMode: 0,
     /** 循环模式：0：业绩上限；-1：无限循环；正整数：刷取指定次数 */
@@ -23,6 +27,8 @@ Class Config {
     isStepLog: true,
     /** 刷完后是否自动关闭游戏 */
     isAutoClose: false,
+    /** 战斗时是否自动识别红光闪避 */
+    isAutoDodge: false,
   }
 
   __New() {

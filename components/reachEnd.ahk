@@ -4,13 +4,13 @@
 reachEnd(step := 3) {
   activateZZZ()
   stepLog("【step" step "】前往终点")
-  
+
   ; 判断地图类型
   mode := judgeMap()
   if (!mode) {
     return false
   }
-  
+
   if (mode = 1) {
     above()
   } else {
@@ -73,11 +73,19 @@ reachEnd(step := 3) {
     RandomSleep(1000, 1200)
     Press("Space", 4)
     RandomSleep(800, 1000)
-    ; 接应
-    Press('1', 2)
-    RandomSleep(800, 900)
-    Press('1', 2)
-    pixelSearchAndClick(c.空洞.确认*)
+    ; 开启战斗自动躲避红光后，选择取消接应
+    if (setting.isAutoDodge) {
+      Press('2', 2)
+      RandomSleep(800, 900)
+      Press('3', 2)
+      MingHui()
+    } else {
+      ; 接应
+      Press('1', 2)
+      RandomSleep(800, 900)
+      Press('1', 2)
+      pixelSearchAndClick(c.空洞.确认*)
+    }
     RandomSleep(1800, 2000)
     ; 使用炸弹
     bomb()

@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/08/22
- * @version v1.7.1
+ * @version v1.8.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -37,7 +37,7 @@ SetMouseDelay(-1)
 #Include refuse.ahk
 #Include saveBank.ahk
 
-global Version := "v1.7.1"
+global Version := "v1.8.0"
 
 init()
 
