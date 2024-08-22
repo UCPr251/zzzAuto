@@ -1,7 +1,7 @@
 /** 配置 */
 Class Config {
 
-  fightModeArr := ['通用', '艾莲']
+  fightModeArr := ['通用·普通攻击', '艾莲']
 
   /** 默认配置 */
   oriSetting := {
@@ -15,7 +15,7 @@ Class Config {
     retryTimes: 3,
     /** 颜色搜索允许的RGB值容差 */
     variation: 60,
-    /** 战斗模式：1：通用；2：艾莲 */
+    /** 战斗模式 */
     fightMode: 1,
     /** 刷取模式：0：全都要；1：只要业绩；2：只存银行 */
     gainMode: 0,
@@ -68,6 +68,9 @@ Class Config {
   Save(*) {
     this.SaveSetting()
     this.SaveStatistics()
+    try {
+      IniWrite(Version, this.iniFile, 'Version', 'Version')
+    }
   }
 
   LoadSetting(*) {
@@ -91,11 +94,13 @@ Class Config {
       try {
         Loop {
           time := IniRead(this.iniFile, this.section2, "time" A_Index, "")
-          duration := IniRead(this.iniFile, this.section2, "duration" A_Index, "")
-          if (time = "" && duration = "")
+          fightDuration := IniRead(this.iniFile, this.section2, "fightDuration" A_Index, 0)
+          duration := IniRead(this.iniFile, this.section2, "duration" A_Index, 0)
+          if (time = "" && duration = 0 && fightDuration = 0) {
             break
+          }
           if (time && duration) {
-            this.statistics.Push({ time: time, duration: Integer(duration) })
+            this.statistics.Push({ time: time, fightDuration: Integer(fightDuration), duration: Integer(duration) })
           }
         }
       }
@@ -116,15 +121,16 @@ Class Config {
       Loop (this.statistics.Length) {
         item := this.statistics[A_Index]
         IniWrite(item.time, this.iniFile, this.section2, "time" A_Index)
+        IniWrite(item.fightDuration, this.iniFile, this.section2, "fightDuration" A_Index)
         IniWrite(item.duration, this.iniFile, this.section2, "duration" A_Index)
       }
     }
   }
 
-  newStatistics(time, duration) {
-    this.statistics.Push({ time: time, duration: duration })
+  newStatistics(time, fightDuration, duration) {
+    this.statistics.Push({ time: time, fightDuration: fightDuration, duration: duration })
     this.SaveStatistics()
-    p.newDetail(time, duration)
+    p.newDetail(time, fightDuration, duration)
   }
 
   watch() {

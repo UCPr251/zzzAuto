@@ -27,24 +27,37 @@ fight(step := 4) {
     Sleep(100)
   }
 
-  ; 战斗循环
-  ; 通用战斗模式
+  static XStart := 0.2, XEnd := 0.8, XHierarchy := 3, XInteval := 0.03
+  static YStart := 0.1, YEnd := 0.8, YHierarchy := 4, YInteval := 0
+  variation := Min(Max(Round(setting.variation * 0.5), 10), 30)
+  X := Cal(A_ScreenWidth, XStart, XEnd, XHierarchy, XInteval)
+  Y := Cal(A_ScreenHeight, YStart, YEnd, YHierarchy, YInteval)
+  ; 战斗开始
+  Ctrl.startFight()
+  ; 通用·普通攻击战斗模式
   if (setting.fightMode = 1) {
     Send("{w Down}") ; 向前
-    autoDodge(1400, 1500)
+    Press("Shift", 2)
+    autoDodge(200, 300)
     Send("{w Up}")
-    ; 约3s一循环
-    loop (30) {
+    ; 约5s一循环
+    loop (16) {
       ; 战斗动作
       sAttack() ; 使用技能
-      attack(4) ; 普攻
+      attack(4)
+      if (!setting.isAutoDodge) {
+        Press("Shift") ; 闪避
+      }
       if (fightIsOver(patterns)) {
         return true
       }
       sAttack() ; 使用技能
-      attack(8) ; 普攻
+      attack(8)
       if (fightIsOver(patterns)) {
         return true
+      }
+      if (!setting.isAutoDodge) {
+        Press("Shift") ; 闪避
       }
       Send("{w Down}") ; 向前
       autoDodge(500, 600)
@@ -52,18 +65,18 @@ fight(step := 4) {
     }
     ; 艾莲战斗模式
   } else if (setting.fightMode = 2) {
-    ; 约8s一循环
-    loop (10) {
+    ; 约10s一循环
+    loop (8) {
       if (A_Index != 1 && !setting.isAutoDodge) {
         Press("Shift") ; 闪避
       }
       Send("{w Down}") ; 向前
-      autoDodge(300, 320)
+      autoDodge(200, 220)
       Click("Right Down") ; 右键蓄力，进入快蓄
-      autoDodge(580, 600)
+      autoDodge(500, 520)
       Click("Right Up") ; 快蓄完毕，释放右键
-      autoDodge()
       Click("Left Down") ; 普攻蓄力
+      autoDodge()
       if (fightIsOver(patterns)) {
         return true
       }
@@ -95,35 +108,59 @@ fight(step := 4) {
   /** 自动闪避 */
   autoDodge(ms1 := 50, ms2 := 100) {
     if (!setting.isAutoDodge) {
-      return Sleep(Random(ms1, ms2))
+      return RandomSleep(ms1, ms2)
     }
-    static X1 := Integer(A_ScreenWidth * 0.2), X2 := Integer(A_ScreenWidth * 0.38)
-    static X3 := Integer(A_ScreenWidth * 0.42), X4 := Integer(A_ScreenWidth * 0.58)
-    static X5 := Integer(A_ScreenWidth * 0.62), X6 := Integer(A_ScreenWidth * 0.8)
-    static Y1 := Integer(A_ScreenHeight * 0.12), Y2 := Integer(A_ScreenHeight * 0.88)
     static lastTick := 0
-    static variation := Max(Round(setting.variation * 0.5), 20)
     randomMs := Random(ms1, ms2)
     start := A_TickCount
-    X := 0, Y := 0
-    loop (251) {
-      if (PixelSearch(&X, &Ymatch1, X1, Y1, X2, Y2, 0xff5e57, variation)
-        && PixelSearch(&X, &Ymatch2, X3, Y1, X4, Y2, 0xff5e57, variation)
-        && PixelSearch(&X, &Ymatch3, X5, Y1, X6, Y2, 0xff5e57, variation)) {
-        if ((A_TickCount - lastTick > 251) && (Abs(Ymatch1 - Ymatch2) < 100 && Abs(Ymatch2 - Ymatch3) < 100)) {
-          lastTick := A_TickCount
-          Press("Shift")
-          passed := A_TickCount - start
-          if (passed > randomMs) {
-            return
-          }
-          Sleep(passed - randomMs)
+    loop {
+      if (A_TickCount - lastTick < 500) { ; 闪避CD中
+        leftCD := 500 - (A_TickCount - lastTick) ; 剩余CD时长
+        passed := A_TickCount - start ; 已过的时长
+        if (passed + leftCD > randomMs) { ; 如果剩余CD时长+已过的时长>需休眠时长，休眠至函数结束
+          return Sleep(randomMs - passed)
+        } else { ; 否则休眠至CD结束，继续下一次检测
+          Sleep(leftCD)
         }
       }
-      if (A_TickCount - start > randomMs - 50) {
+      if (HierarchicalSearch(X, XHierarchy, Y, YHierarchy, 0xff6565, variation)) {
+        lastTick := A_TickCount
+        Send("{Shift Down}")
+        Sleep(Random(80, 100))
+        Send("{Shift Up}")
+        attack(1)
+      }
+      if (A_TickCount - start > randomMs - 30) {
         return
       }
     }
+  }
+
+  ; 分层搜索，需Y轴某一层匹配成功，X轴每一层都匹配成功
+  static HierarchicalSearch(X, XHierarchy, Y, YHierarchy, Color, variation) {
+    loop (YHierarchy) { ; 对Y轴每层进行遍历
+      YNowStart := Y[A_Index * 2 - 1] ; Y轴该层的起始坐标
+      YNowEnd := Y[A_Index * 2] ; Y轴该层的终止坐标
+      if (PixelSearch(&Xmatch, &Ymatch, X[1], YNowStart, X[2], YNowEnd, Color, variation)) { ; 对X轴第一层进行匹配
+        loop (XHierarchy - 1) { ; 对X轴其余每一层进行匹配
+          if (!PixelSearch(&Xmatch, &Ymatch, X[A_Index * 2 + 1], Ymatch - 30, X[A_Index * 2 + 2], Ymatch + 30, Color, variation)) {
+            return false
+          }
+        }
+        return true ; X轴每层都匹配成功
+      }
+    }
+    return false
+  }
+
+  static Cal(len, Start, End, Hierarchy, Inteval) {
+    data := [Round(len * Start)]
+    IntevalLen := Round(len * Inteval)
+    HierarchyLen := Round((len * (End - Start) - IntevalLen * (Hierarchy - 1)) / Hierarchy)
+    loop (Hierarchy * 2 - 1) {
+      data.Push(data[A_Index] + (Mod(A_Index, 2) ? HierarchyLen : IntevalLen))
+    }
+    return data
   }
 
   /** 普攻 */
@@ -161,14 +198,26 @@ fight(step := 4) {
     if (!judge()) {
       return false
     }
+    Ctrl.finishFight()
     stepLog("【战斗】战斗结束")
     ; 点击确定
     SimulateClick(FoundX, FoundY, 2)
     RandomSleep(500, 600)
-    ; 选择铭徽
     MingHui()
     ; 加载动画
-    RandomSleep(7500, 8000)
+    Sleep(3000)
+    startX := Integer(A_ScreenWidth * 0.3), endX := Integer(A_ScreenWidth * 0.7)
+    startY := Integer(A_ScreenHeight * 0.8), endY := Integer(A_ScreenHeight * 0.95)
+    while (!PixelSearch(&X, &Y, startX, startY, endX, endY, 0x009dff, setting.variation)) {
+      if (A_Index > 50) {
+        if (!setting.errHandler) {
+          throw Error('识别进入副本·第一层失败')
+        }
+        break
+      }
+      Sleep(200)
+    }
+    RandomSleep(1000, 1200)
     return true
   }
 }

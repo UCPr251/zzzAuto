@@ -5,6 +5,9 @@ class Panel {
     this.CP := 0
     this.SP := 0
     this.UP := 0
+    this.detail := []
+    this.sum := 0
+    this.fightSum := 0
     this.paused := false
     this.lastPos := 0
     this.init()
@@ -46,7 +49,7 @@ class Panel {
     ; this.CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
 
     this.CP.AddText('X30', '战斗模式：')
-    this.CP.AddDropDownList("X+10 W60 Choose" setting.fightMode, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightMode := Integer(g.Value))
+    this.CP.AddDropDownList("X+10 W140 Choose" setting.fightMode, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightMode := Integer(g.Value))
 
     this.CP.AddText('X30', '刷取模式：')
     this.CP.SetFont('s10')
@@ -277,16 +280,15 @@ class Panel {
 
   /** 初始化刷取统计数据 */
   init() {
-    this.detail := []
-    this.sum := 0
     for (value in setting.statistics) {
-      this.newDetail(value.time, value.duration)
+      this.newDetail(value.time, value.fightDuration, value.duration)
     }
   }
 
-  newDetail(time, duration) {
+  newDetail(time, fightDuration, duration) {
     this.sum += duration
-    this.detail.Push([time, (duration // 60) "分" SubStr("0" Mod(duration, 60), -2) "秒"])
+    this.fightSum += fightDuration
+    this.detail.Push([time, fightDuration = 0 ? '无' : (fightDuration '秒'),(duration // 60) "分" SubStr("0" Mod(duration, 60), -2) "秒"])
   }
 
   refreshGeneral() {
@@ -294,7 +296,8 @@ class Panel {
     this.general := "已刷取" count "次"
     this.general .= "`n总计耗时：" (this.sum // 3600) "小时" Round(Mod(this.sum, 3600) / 60) "分钟"
     if (count > 0) {
-      this.general .= "`n平均耗时：" (this.sum // count // 60) "分" Mod(this.sum // count, 60) "秒"
+      this.general .= "`n平均战斗耗时：" Round(this.fightSum // count) "秒"
+      this.general .= "`n平均刷取耗时：" (this.sum // count // 60) "分" Mod(this.sum // count, 60) "秒"
     }
   }
 
@@ -308,20 +311,21 @@ class Panel {
     this.SP := Gui("AlwaysOnTop -MinimizeBox" (this.CP ? ' +Owner' this.CP.Hwnd : ''), "零号业绩刷取统计")
     this.SP.destroyGui := destroyGui
     this.SP.changed := 0
-    this.SP.SetFont('s15', '微软雅黑')
+    this.SP.SetFont('s13', '微软雅黑')
     this.refreshGeneral()
     this.SP.AddText(, this.general)
-    LV := this.SP.AddListView('w332 Checked Count' this.detail.Length ' LV0x1 r' Min(16, this.detail.Length) ' ReadOnly', ["序号", "刷取开始时间", "刷取耗时"])
-    LV.ModifyCol(1, '53 Integer Center')
+    LV := this.SP.AddListView('w370 Checked Count' this.detail.Length ' LV0x1 r' Min(16, this.detail.Length) ' ReadOnly', ["序号", "开始时间", "战斗", "耗时"])
+    LV.ModifyCol(1, '55 Integer Center')
     LV.ModifyCol(2, '160 Center')
-    LV.ModifyCol(3, '100 Center')
+    LV.ModifyCol(3, '50 Center')
+    LV.ModifyCol(4, '100 Center')
     for (item in this.detail) {
       LV.Add(, A_Index, item*)
     }
     LV.OnEvent('Click', Select)
-    this.SP.AddButton('w100', '重置数据').OnEvent('Click', Reset)
-    this.SP.AddButton('x+15 w100', '删除').OnEvent('Click', Delete)
-    this.SP.AddButton('x+15 w100 Default', '确定').OnEvent('Click', destroyGui)
+    this.SP.AddButton('w110', '重置数据').OnEvent('Click', Reset)
+    this.SP.AddButton('x+13 w110', '删除选中').OnEvent('Click', Delete)
+    this.SP.AddButton('x+13 w110 Default', '确定').OnEvent('Click', destroyGui)
     this.SP.Show()
     if (this.lastPos) {
       this.SP.Move(this.lastPos*)
@@ -384,6 +388,7 @@ class Panel {
         }
         index := LV.GetText(item, 1)
         this.sum -= setting.statistics[index].duration
+        this.fightSum -= setting.statistics[index].fightDuration
         setting.statistics.Delete(index)
         this.detail.Delete(index)
         sign := 1

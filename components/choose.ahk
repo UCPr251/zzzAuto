@@ -49,7 +49,7 @@ choose(step := 5) {
       Sleep(100)
     }
   } else if (clickFnc = 2) { ; 垃圾物资或催化
-    loop (10) {
+    loop (30) {
       ; 点击确定
       if (PixelSearchPre(&X, &Y, c.空洞.确定*)) {
         SimulateClick(X, Y)

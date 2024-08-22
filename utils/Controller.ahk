@@ -7,6 +7,8 @@ class Controller {
     this.nextExit := false
     this.startTime := 0
     this.finishTime := 0
+    this.startFightTime := 0
+    this.fightDuration := 0
   }
 
   /** 开始刷取 */
@@ -14,6 +16,17 @@ class Controller {
     this.ing := true
     ; 时长统计
     this.startTime := A_Now
+  }
+
+  /** 战斗开始 */
+  startFight() {
+    this.startFightTime := A_Now
+  }
+
+  /** 战斗完成 */
+  finishFight() {
+    this.fightDuration := DateDiff(A_Now, this.startFightTime, "Seconds")
+    this.startFightTime := 0
   }
 
   /** 刷取终止 */
@@ -28,9 +41,10 @@ class Controller {
   finish() {
     this.finishTime := A_Now
     duration := DateDiff(this.finishTime, this.startTime, "Seconds")
-    setting.newStatistics(FormatTime(this.startTime, "M-dd HH:mm:ss"), duration)
+    setting.newStatistics(FormatTime(this.startTime, "M-dd HH:mm:ss"), this.fightDuration, duration)
     this.startTime := 0
     this.finishTime := 0
+    this.fightDuration := 0
   }
 
 }
