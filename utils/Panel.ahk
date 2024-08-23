@@ -314,11 +314,11 @@ class Panel {
     this.SP.SetFont('s13', '微软雅黑')
     this.refreshGeneral()
     this.SP.AddText(, this.general)
-    LV := this.SP.AddListView('w370 Checked Count' this.detail.Length ' LV0x1 r' Min(16, this.detail.Length) ' ReadOnly', ["序号", "开始时间", "战斗", "耗时"])
+    LV := this.SP.AddListView('w375 Checked Count' this.detail.Length ' LV0x1 r' Min(16, this.detail.Length) ' ReadOnly', ["序号", "开始时间", "战斗", "耗时"])
     LV.ModifyCol(1, '55 Integer Center')
-    LV.ModifyCol(2, '160 Center')
-    LV.ModifyCol(3, '50 Center')
-    LV.ModifyCol(4, '100 Center')
+    LV.ModifyCol(2, '150 Center')
+    LV.ModifyCol(3, '60 Center')
+    LV.ModifyCol(4, '90 Center')
     for (item in this.detail) {
       LV.Add(, A_Index, item*)
     }

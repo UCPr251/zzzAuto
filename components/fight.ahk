@@ -202,13 +202,25 @@ fight(step := 4) {
     stepLog("【战斗】战斗结束")
     ; 点击确定
     SimulateClick(FoundX, FoundY, 2)
-    RandomSleep(500, 600)
+    RandomSleep(800, 1000)
     MingHui()
-    ; 加载动画
+
     Sleep(3000)
-    startX := Integer(A_ScreenWidth * 0.3), endX := Integer(A_ScreenWidth * 0.7)
-    startY := Integer(A_ScreenHeight * 0.8), endY := Integer(A_ScreenHeight * 0.95)
-    while (!PixelSearch(&X, &Y, startX, startY, endX, endY, 0x009dff, setting.variation)) {
+    awaitLoading() {
+      static startX := Integer(A_ScreenWidth * 0.3), endX := Integer(A_ScreenWidth * 0.7)
+      static startY := Integer(A_ScreenHeight * 0.8), endY := Integer(A_ScreenHeight * 0.95)
+      loop (5) {
+        if (!PixelSearch(&X, &Y, startX, startY, endX, endY, 0x009dff, setting.variation)) {
+          return false
+        }
+        Sleep(100)
+      }
+      return true
+    }
+    loop {
+      if (awaitLoading()) {
+        break
+      }
       if (A_Index > 50) {
         if (!setting.errHandler) {
           throw Error('识别进入副本·第一层失败')

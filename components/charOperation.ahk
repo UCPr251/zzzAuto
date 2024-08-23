@@ -14,7 +14,7 @@ charOperation() {
   pixelSearchAndClick(c.快捷手册.零号空洞*)
   pixelSearchAndClick(c.快捷手册.前往*)
   pixelSearchAndClick(c.快捷手册.传送*)
-  RandomSleep(3000, 4000)
+  RandomSleep(3800, 4000)
   ; 验证是否成功进入零号空洞选择界面
   mode := recogLocation()
   if (mode != 2) {
