@@ -57,7 +57,7 @@ reachEnd(step := 3) {
     bomb()
     ; 向右移动
     Press("d")
-    RandomSleep(800, 1200)
+    RandomSleep(1100, 1200)
     ; 选择铭徽
     MingHui()
     RandomSleep(1000, 1200)
@@ -77,7 +77,8 @@ reachEnd(step := 3) {
     if (setting.isAutoDodge) {
       Press('2', 2)
       RandomSleep(800, 900)
-      Press('3', 2)
+      Press('3', 3)
+      RandomSleep(800, 900)
       MingHui()
     } else {
       ; 接应
