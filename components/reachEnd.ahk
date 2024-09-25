@@ -17,7 +17,7 @@ reachEnd(step := 3) {
     below()
   }
   ; 加载动画
-  RandomSleep(1800, 2000)
+  RandomSleep(1000, 1200)
   return true
 
   /** 判断地图类型 */
@@ -57,7 +57,7 @@ reachEnd(step := 3) {
     bomb()
     ; 向右移动
     Press("d")
-    RandomSleep(1100, 1200)
+    RandomSleep(1300, 1500)
     ; 选择铭徽
     MingHui()
     RandomSleep(1000, 1200)

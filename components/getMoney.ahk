@@ -8,11 +8,11 @@ getMoney(step := 6) {
   ; 进入零号业绩格子
   Press('d')
   Press('w', 2)
+  Press('d', 1)
+  RandomSleep(400, 500)
+  Press('1', 3)
+  RandomSleep(2200, 2300)
   Press('d', 2)
-  RandomSleep(2200, 2500)
-  Press('Space', 8)
-  RandomSleep(2200, 2500)
-  Press('d')
   ; 获得零号业绩（如果有）
   Press('w')
   ; 加载动画

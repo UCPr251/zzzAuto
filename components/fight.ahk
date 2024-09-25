@@ -29,7 +29,7 @@ fight(step := 4) {
 
   static XStart := 0.2, XEnd := 0.8, XHierarchy := 3, XInteval := 0.03
   static YStart := 0.1, YEnd := 0.8, YHierarchy := 4, YInteval := 0
-  variation := Min(Max(Round(setting.variation * 0.5), 10), 30)
+  variation := Min(Max(Round(setting.variation * 0.5), 10), 50)
   X := Cal(A_ScreenWidth, XStart, XEnd, XHierarchy, XInteval)
   Y := Cal(A_ScreenHeight, YStart, YEnd, YHierarchy, YInteval)
   ; 战斗开始

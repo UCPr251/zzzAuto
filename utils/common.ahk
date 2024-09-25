@@ -73,8 +73,8 @@ preprocess(&X, &Y) {
 RandomMouseMove(TargetX, TargetY) {
   MouseGetPos(&StartX, &StartY)
   Distance := Sqrt((TargetX - StartX) ** 2 + (TargetY - StartY) ** 2)
-  MinSpeed := 30
-  MaxSpeed := 35
+  MinSpeed := 36
+  MaxSpeed := 42
   ; 鼠标移动速度，适当缩放确保效果
   Speed := (MinSpeed + Random() * (MaxSpeed - MinSpeed)) * (A_ScreenWidth / 1920)
   ; 生成随机控制点用于贝塞尔曲线

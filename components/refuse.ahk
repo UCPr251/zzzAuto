@@ -14,5 +14,5 @@ refuse(step := 2) {
   ; 对话
   Press("Space", 10)
   ; 加载动画
-  RandomSleep(4000, 4200)
+  RandomSleep(2000, 2200)
 }

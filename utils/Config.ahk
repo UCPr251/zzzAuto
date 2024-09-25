@@ -24,7 +24,7 @@ Class Config {
     /** 异常处理 */
     errHandler: true,
     /** 是否开启步骤信息弹窗 */
-    isStepLog: true,
+    isStepLog: false,
     /** 刷完后是否自动关闭游戏 */
     isAutoClose: false,
     /** 战斗时是否自动识别红光闪避 */
