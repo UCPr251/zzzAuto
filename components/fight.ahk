@@ -208,7 +208,7 @@ fight(step := 4) {
     Sleep(3000)
     awaitLoading() {
       static startX := Integer(A_ScreenWidth * 0.3), endX := Integer(A_ScreenWidth * 0.7)
-      static startY := Integer(A_ScreenHeight * 0.8), endY := Integer(A_ScreenHeight * 0.95)
+      static startY := Integer(A_ScreenHeight * 0.7), endY := Integer(A_ScreenHeight * 0.95)
       loop (5) {
         if (!PixelSearch(&X, &Y, startX, startY, endX, endY, 0x009dff, setting.variation)) {
           return false
@@ -223,7 +223,7 @@ fight(step := 4) {
       }
       if (A_Index > 50) {
         if (!setting.errHandler) {
-          throw Error('识别进入副本·第一层失败')
+          throw Error('识别进入副本·第二层失败')
         }
         break
       }

@@ -1,8 +1,11 @@
+.vscode
 /历史版本
 *.exe
 test*.ahk
+/备份
 /取坐标.ahk
 /数据
 /toString.ahk
 /*.ini
 /活动
+/*.ahk

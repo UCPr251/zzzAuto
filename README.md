@@ -18,6 +18,8 @@
 
 ## 下载、打开方法
 
+> PS: 程序报毒属正常现象，担心的话可以跑源码或者自行编译，怕别用用别怕
+
 - 方法一（下载即用，懒人最爱）：
 
     [<<<点击进入>>>](https://gitee.com/UCPr251/zzzAuto/releases/latest)release最新版本，下载并运行该exe文件
