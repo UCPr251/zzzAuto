@@ -1,7 +1,7 @@
 ﻿/** 激活绝区零窗口 */
 activateZZZ() {
   try {
-    WinActivate("ahk_exe ZenlessZoneZero.exe")
+    WinActivate(ZZZ)
     RandomSleep()
   } catch {
     MsgBox("未找到绝区零窗口，请进入游戏后重试", "错误", "Iconx 0x40000 T3")
@@ -52,7 +52,7 @@ MingHui(isTry := false, searchTimes := 30) {
 Press(key, times := 1) {
   loop (times) {
     Send("{" key " Down}")
-    Sleep(Random(50, 100))
+    Sleep(Random(60, 80))
     Send("{" key " Up}")
     Sleep(Random(200, 220))
   }
@@ -60,21 +60,22 @@ Press(key, times := 1) {
 
 /** 对坐标进行缩放处理，使设计坐标与实际坐标匹配 */
 preprocess(&X, &Y) {
-  if (A_ScreenWidth = 1920 && A_ScreenHeight = 1080) { ; 无需缩放
+  if (c.width = 1920 && c.height = 1080) {
     return
   }
-  scaleX := A_ScreenWidth / 1920
-  scaleY := A_ScreenHeight / 1080
+  scaleX := c.width / 1920
+  scaleY := c.height / 1080
   X := Round(X * scaleX)
   Y := Round(Y * scaleY)
 }
 
 /** 鼠标随机移动至指定真实坐标 */
 RandomMouseMove(TargetX, TargetY) {
+  activateZZZ()
   MouseGetPos(&StartX, &StartY)
   Distance := Sqrt((TargetX - StartX) ** 2 + (TargetY - StartY) ** 2)
-  MinSpeed := 36
-  MaxSpeed := 42
+  MinSpeed := 48
+  MaxSpeed := 52
   ; 鼠标移动速度，适当缩放确保效果
   Speed := (MinSpeed + Random() * (MaxSpeed - MinSpeed)) * (A_ScreenWidth / 1920)
   ; 生成随机控制点用于贝塞尔曲线
@@ -106,7 +107,7 @@ SimulateClick(x?, y?, clickCount := 1) {
   }
 }
 
-/** 对坐标进行缩放预处理的像素搜索，取真实坐标 */
+/** 对坐标进行缩放预处理的像素搜索，返回真实坐标 */
 PixelSearchPre(&X, &Y, X1, Y1, X2, Y2, Color, Tolerance := 1, transColor?, transTolerance?) {
   if (IsSet(transColor)) {
     Color := transColor
@@ -157,6 +158,20 @@ pixelSearchAndClick(X1, Y1, X2, Y2, defaultX, defaultY, Color, Tolerance := 1) {
   RandomSleep()
   return [X, Y]
 }
+
+/** 检查RGB渐变 */
+; CheckVariation(RGB1, RGB2, Variation := 5) {
+;   R1 := (RGB1 >> 16) & 0xFF
+;   G1 := (RGB1 >> 8) & 0xFF
+;   B1 := RGB1 & 0xFF
+;   R2 := (RGB2 >> 16) & 0xFF
+;   G2 := (RGB2 >> 8) & 0xFF
+;   B2 := RGB2 & 0xFF
+;   RDiff := Abs(R1 - R2)
+;   GDiff := Abs(G1 - G2)
+;   BDiff := Abs(B1 - B2)
+;   return RDiff <= Variation && GDiff <= Variation && BDiff <= Variation
+; }
 
 ; /**
 ;  * 获取图片中心绝对坐标

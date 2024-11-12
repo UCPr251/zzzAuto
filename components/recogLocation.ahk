@@ -1,5 +1,12 @@
-﻿/** 识别所处界面 1：角色操作界面，2：关卡选择界面 */
-recogLocation() {
+﻿/**
+ * 识别所处界面
+ * 
+ * 返回值：
+ * - 1：角色操作界面
+ * - 2：零号空洞关卡选择界面
+ * - 3：HDD关卡选择界面
+ */
+recogLocation(loopTimes := 30) {
   activateZZZ()
 
   /** 通过三个特殊定位点判断所处界面 */
@@ -13,6 +20,11 @@ recogLocation() {
     c.零号选择.旧都列车,
     c.零号选择.施工废墟
   ]
+  patterns3 := [
+    c.拿命验收.返回键,
+    c.拿命验收.难度格,
+    c.拿命验收.推荐等级
+  ]
   static judge(patterns) {
     for (pattern in patterns) {
       if (!PixelSearchPre(&FoundX, &FoundY, pattern*)) {
@@ -21,17 +33,21 @@ recogLocation() {
     }
     return true
   }
-  mode := 0
-  loop (30) {
+  page := 0
+  loop (loopTimes) {
     if (judge(patterns1)) {
-      mode := 1
+      page := 1
       break
     }
     if (judge(patterns2)) {
-      mode := 2
+      page := 2
+      break
+    }
+    if (judge(patterns3)) {
+      page := 3
       break
     }
     Sleep(100)
   }
-  return mode
+  return page
 }

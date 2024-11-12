@@ -23,7 +23,7 @@ reachEnd(step := 3) {
   /** 判断地图类型 */
   static judgeMap() {
     mode := 0
-    loop (50) {
+    loop (60) {
       ; 对指定区域进行RGB检测
       if (PixelSearchPre(&FoundX, &FoundY, c.空洞.1.右上终点*)) {
         mode := 1

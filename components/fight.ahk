@@ -30,8 +30,8 @@ fight(step := 4) {
   static XStart := 0.2, XEnd := 0.8, XHierarchy := 3, XInteval := 0.03
   static YStart := 0.1, YEnd := 0.8, YHierarchy := 4, YInteval := 0
   variation := Min(Max(Round(setting.variation * 0.5), 10), 50)
-  X := Cal(A_ScreenWidth, XStart, XEnd, XHierarchy, XInteval)
-  Y := Cal(A_ScreenHeight, YStart, YEnd, YHierarchy, YInteval)
+  X := Cal(c.width, XStart, XEnd, XHierarchy, XInteval)
+  Y := Cal(c.height, YStart, YEnd, YHierarchy, YInteval)
   ; 战斗开始
   Ctrl.startFight()
   ; 通用·普通攻击战斗模式
@@ -71,16 +71,16 @@ fight(step := 4) {
         Press("Shift") ; 闪避
       }
       Send("{w Down}") ; 向前
-      autoDodge(200, 220)
+      autoDodge(80, 100)
       Click("Right Down") ; 右键蓄力，进入快蓄
-      autoDodge(500, 520)
+      autoDodge(420, 430)
       Click("Right Up") ; 快蓄完毕，释放右键
       Click("Left Down") ; 普攻蓄力
       autoDodge()
       if (fightIsOver(patterns)) {
         return true
       }
-      autoDodge(1500, 1800)
+      autoDodge(1500, 1600)
       Click("Left Up") ; 完成蓄力普攻
       Send("{w Up}") ; 停止移动
       autoDodge()
@@ -207,8 +207,8 @@ fight(step := 4) {
 
     Sleep(3000)
     awaitLoading() {
-      static startX := Integer(A_ScreenWidth * 0.3), endX := Integer(A_ScreenWidth * 0.7)
-      static startY := Integer(A_ScreenHeight * 0.7), endY := Integer(A_ScreenHeight * 0.95)
+      static startX := Integer(c.width * 0.3), endX := Integer(c.width * 0.7)
+      static startY := Integer(c.height * 0.7), endY := Integer(c.height * 0.95)
       loop (5) {
         if (!PixelSearch(&X, &Y, startX, startY, endX, endY, 0x009dff, setting.variation)) {
           return false

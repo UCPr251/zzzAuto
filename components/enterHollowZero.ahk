@@ -1,7 +1,7 @@
 ﻿/**
  * - 角色操作界面进入零号空洞选择界面
  */
-charOperation() {
+enterHollowZero() {
   activateZZZ()
   ; 进入快捷手册
   Press(setting.handbook)

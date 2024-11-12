@@ -41,10 +41,14 @@ class Controller {
   finish() {
     this.finishTime := A_Now
     duration := DateDiff(this.finishTime, this.startTime, "Seconds")
-    setting.newStatistics(FormatTime(this.startTime, "M-dd HH:mm:ss"), this.fightDuration, duration)
+    if (setting.mode = 'YeJi') {
+      setting.newStatistics(FormatTime(this.startTime, "M-dd HH:mm:ss"), this.fightDuration, duration)
+      this.fightDuration := 0
+    } else {
+      setting.newStatisticsDenny(FormatTime(this.startTime, "M-dd HH:mm:ss"), duration)
+    }
     this.startTime := 0
     this.finishTime := 0
-    this.fightDuration := 0
   }
 
 }

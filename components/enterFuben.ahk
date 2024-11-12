@@ -13,8 +13,8 @@ enterFuben(step := 1) {
 
   Sleep(10000)
   awaitLoading() {
-    static startX := Integer(A_ScreenWidth * 0.3), endX := Integer(A_ScreenWidth * 0.7)
-    static startY := Integer(A_ScreenHeight * 0.8), endY := Integer(A_ScreenHeight * 0.95)
+    static startX := Integer(c.width * 0.3), endX := Integer(c.width * 0.7)
+    static startY := Integer(c.height * 0.8), endY := Integer(c.height * 0.95)
     loop (5) {
       if (!PixelSearch(&X, &Y, startX, startY, endX, endY, 0x009dff, setting.variation)) {
         return false

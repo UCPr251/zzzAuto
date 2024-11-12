@@ -5,6 +5,8 @@ Class Config {
 
   /** 默认配置 */
   oriSetting := {
+    /** 业绩或丁尼 'YeJi' or 'Denny' */
+    mode: 'YeJi',
     /** 炸弹使用：长按1，点击2 */
     bombMode: 1,
     /** 快捷手册 */
@@ -29,6 +31,10 @@ Class Config {
     isAutoClose: false,
     /** 战斗时是否自动识别红光闪避 */
     isAutoDodge: false,
+    /** 循环模式：0：丁尼上限；-1：无限循环；正整数：刷取指定次数 */
+    loopModeDenny: 0,
+    /** 拿命验收破坏箱子前视角向右转动的坐标，调整该值以确保视角对齐NPC */
+    rotateCoords: 200
   }
 
   __New() {
@@ -36,8 +42,11 @@ Class Config {
     this.iniFile := A_MyDocuments "\autoZZZ.ini"
     this.section1 := "Settings"
     this.section2 := "Statistics"
-    /** 刷取统计数据 */
+    this.section3 := "StatisticsDenny"
+    /** 业绩刷取统计数据 */
     this.statistics := []
+    /** 丁尼刷取统计数据 */
+    this.statisticsDenny := []
     /** 设置项 */
     this.setting := this.oriSetting.Clone()
     this.Load()
@@ -63,14 +72,33 @@ Class Config {
   Load(*) {
     this.LoadSetting()
     this.LoadStatistics()
+    this.LoadStatisticsDenny()
   }
 
   Save(*) {
     this.SaveSetting()
     this.SaveStatistics()
+    this.SaveStatisticsDenny()
     try {
       IniWrite(Version, this.iniFile, 'Version', 'Version')
     }
+  }
+
+  isFirst(key) {
+    static lastVer := IniRead(this.iniFile, 'Version', 'Version', 'v1.0.0')
+    static set := {}
+    result := true
+    if (lastVer != Version && !set.HasProp(key)) {
+      set.%key% := true
+    } else {
+      result := +IniRead(this.iniFile, 'isFirst', key, true)
+    }
+    if (result) {
+      try {
+        IniWrite(false, this.iniFile, 'isFirst', key)
+      }
+    }
+    return result
   }
 
   LoadSetting(*) {
@@ -107,6 +135,23 @@ Class Config {
     }
   }
 
+  LoadStatisticsDenny(*) {
+    if (FileExist(this.iniFile)) {
+      try {
+        Loop {
+          time := IniRead(this.iniFile, this.section3, "time" A_Index, "")
+          duration := IniRead(this.iniFile, this.section3, "duration" A_Index, 0)
+          if (time = "" && duration = 0) {
+            break
+          }
+          if (time && duration) {
+            this.statisticsDenny.Push({ time: time, duration: Integer(duration) })
+          }
+        }
+      }
+    }
+  }
+
   SaveSetting(*) {
     try {
       for (key, value in this.setting.OwnProps()) {
@@ -127,10 +172,27 @@ Class Config {
     }
   }
 
+  SaveStatisticsDenny(*) {
+    try {
+      IniDelete(this.iniFile, this.section3) ; 清空
+      Loop (this.statisticsDenny.Length) {
+        item := this.statisticsDenny[A_Index]
+        IniWrite(item.time, this.iniFile, this.section3, "time" A_Index)
+        IniWrite(item.duration, this.iniFile, this.section3, "duration" A_Index)
+      }
+    }
+  }
+
   newStatistics(time, fightDuration, duration) {
     this.statistics.Push({ time: time, fightDuration: fightDuration, duration: duration })
     this.SaveStatistics()
     p.newDetail(time, fightDuration, duration)
+  }
+
+  newStatisticsDenny(time, duration) {
+    this.statisticsDenny.Push({ time: time, duration: duration })
+    this.SaveStatisticsDenny()
+    p.newDetailDenny(time, duration)
   }
 
   watch() {

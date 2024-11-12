@@ -8,4 +8,5 @@ test*.ahk
 /toString.ahk
 /*.ini
 /活动
+/*.ahk/备份
 /*.ahk
