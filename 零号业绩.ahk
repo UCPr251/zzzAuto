@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/11/13
- * @version v2.0.0
+ * @date 2024/11/15
+ * @version v2.0.0.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -373,7 +373,7 @@ YeJi() {
       stepLog("指定次数剩余" setting.loopMode "次，继续刷取。已刷取" setting.statistics.Length "次")
     }
   }
-  RandomSleep(960, 1000)
+  RandomSleep(1500, 1600)
   pixelSearchAndClick(c.空洞.结算.完成*)
   while (recogLocation() != 2) {
     if (A_Index > 2) {
@@ -455,11 +455,14 @@ Denny() {
       stepLog("指定次数剩余" setting.loopModeDenny "次，继续刷取。已刷取" setting.statisticsDenny.Length "次")
     }
   }
-  RandomSleep(960, 1000)
+  RandomSleep(1500, 1600)
   pixelSearchAndClick(c.空洞.结算.完成*)
   Sleep(1000)
-  if (PixelSearchPre(&X, &Y, c.空洞.结算.完成*)) {
-    SimulateClick(X, Y)
+  loop (3) {
+    if (PixelSearchPre(&X, &Y, c.空洞.结算.完成*)) {
+      SimulateClick(X, Y)
+      Sleep(1000)
+    }
   }
   RandomSleep(2510, 2600)
   Denny()
