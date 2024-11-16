@@ -39,8 +39,8 @@ class Panel {
     this.CP.AddUpDown('-2', setting.sleepCoefficient).OnEvent('Change', UpDownChange)
 
     this.CP.AddText('X30', '异常重试次数：')
-    this.CP.AddEdit('X+10 w51 h25 Limit2 Number').OnEvent('Change', changeRetryTimes)
-    this.CP.AddUpDown('Range0-99', setting.retryTimes).OnEvent('Change', changeRetryTimes)
+    this.CP.AddEdit('X+10 w60 h25 Limit3 Number').OnEvent('Change', changeRetryTimes)
+    this.CP.AddUpDown('Range0-999', setting.retryTimes).OnEvent('Change', changeRetryTimes)
 
     this.CP.AddText('X30', '颜色搜索允许RGB容差：')
     this.CP.AddEdit('X+10 w60 h25 Limit3 Number').OnEvent('Change', changeVariation)
@@ -226,7 +226,7 @@ class Panel {
     static changeRetryTimes(g, *) {
       value := g.Value
       if (IsInteger(value)) {
-        if (value >= 0 && value <= 99) {
+        if (value >= 0 && value <= 999) {
           setting.retryTimes := Integer(value)
         } else {
           g.Value := setting.retryTimes

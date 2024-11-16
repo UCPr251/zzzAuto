@@ -27,8 +27,11 @@ enterHDD(step := 1) {
       SimulateClick(FoundX, FoundY)
       pixelSearchAndClick(c.空洞.退出副本.确认*)
       while (recogLocation() != 1) {
-        if (A_Index > 20) {
+        if (A_Index > 6) {
           break
+        }
+        if (PixelSearchPre(&FoundX, &FoundY, c.空洞.退出副本.确认*)) {
+          SimulateClick(FoundX, FoundY)
         }
         Sleep(500)
       }

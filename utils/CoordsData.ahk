@@ -257,7 +257,7 @@ class CoordsData {
         返回键: [61, 149, 154, 191, 0xc01c00],
         难度格: [510, 736, 534, 753, 0xe74706],
         推荐等级: [97, 698, 199, 768, 0xcb3f4a],
-        重新开始: [1256, 890, 1276, 922, 1399, 904,  0xff5d00],
+        重新开始: [1256, 890, 1276, 922, 1399, 904, 0xff5d00],
         丁尼: [1334, 606, 1433, 624, 0x00a9ff, 0.5]
       },
       地图: {
@@ -417,6 +417,9 @@ class CoordsData {
         windowed := true
       }
     }
+    if (this.c.HasProp('width') && w = this.c.width && h = this.c.height && this.c.windowed = windowed) {
+      return
+    }
     actualRatio := Round(w / h, 2)
     bestRatio := {
       diff: 251,
@@ -424,27 +427,24 @@ class CoordsData {
     }
     for (key, value in this.data.OwnProps()) {
       designRatio := value.ratio
-      if (designRatio = actualRatio) {
-        this.c := value
-        this.c.compatible := false
-        this.c.windowed := windowed
-        this.c.width := w, this.c.height := h
-        return
-      }
       ratioDiff := Abs(designRatio - actualRatio)
       if (ratioDiff < bestRatio.diff) {
         bestRatio.diff := ratioDiff
         bestRatio.key := key
+      }
+      if (ratioDiff = 0) {
+        break
       }
     }
     this.c := this.data.%bestRatio.key%
     this.c.compatible := bestRatio.diff > 0.07
     this.c.windowed := windowed
     this.c.width := w, this.c.height := h
+    global FoundDennyFuben := false ; 重置丁尼副本Found标记
   }
 
   watch() {
-    OnMessage(0x7E, this.reset.Bind(this))
+    OnMessage(0x7E, (*) => SetTimer(this.reset.Bind(this), -3000))
   }
 
 }

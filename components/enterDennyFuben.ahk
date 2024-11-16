@@ -1,5 +1,6 @@
 #Include ../utils/ScreenBitmap.ahk
 
+global FoundDennyFuben := false
 /**
  * HDD关卡选择界面查找副本并进入
  */
@@ -11,7 +12,6 @@ enterDennyFuben(step := 2) {
   static y := Floor(c.height * 0.9)
   static ymin := c.height // 10
   static maxO := Ceil(c.height / 2160 * 16)
-  static found := false
   static GetPixel := PixelGetColor
   static isPageDown := false
   static calY(x0, y0, r, x) {
@@ -53,7 +53,8 @@ enterDennyFuben(step := 2) {
     RandomSleep()
     SimulateClick()
   }
-  if (found) {
+  global FoundDennyFuben
+  if (FoundDennyFuben) {
     if (isPageDown) {
       pagedown()
     }
@@ -170,7 +171,7 @@ enterDennyFuben(step := 2) {
           }
           DisposeImage(BitMap)
           FreeLibrary(pToken)
-          found := true
+          FoundDennyFuben := true
           SimulateClick(x, y)
           choose()
           ; MsgBox(Format("X: {}, Y: {}, xTotal: {}, yTotal: {}, seconds: {}, offSet: {}", x, y, xTotal, yTotal, Round((A_TickCount - start) / 1000, 3), offSet))
@@ -185,7 +186,7 @@ enterDennyFuben(step := 2) {
   ; MsgBox(Format("自动搜索失败，X: {}, Y: {}, xTotal: {}, yTotal: {}, seconds: {}", x, y, IsSet(xTotal) ? xTotal : -1, IsSet(yTotal) ? yTotal : -1, Round((A_TickCount - start) / 1000, 3)), "警告", "Icon! 0x40000")
   Sleep(3000)
   MouseGetPos(&x, &y)
-  found := true
+  FoundDennyFuben := true
   MsgBox(Format("后续选择丁尼副本位置将取当前鼠标位置：({}，{})`n重启脚本后重置", x, y), , "0x40000 T3")
   SimulateClick(x, y)
   choose()
