@@ -38,7 +38,7 @@ class Panel {
     EG.OnEvent('Change', changeSleepCoefficient)
     this.CP.AddUpDown('-2', setting.sleepCoefficient).OnEvent('Change', UpDownChange)
 
-    this.CP.AddText('X30', '异常重试次数：')
+    this.CP.AddText('X30', '异常重试次数：').OnEvent('DoubleClick', (*) => MsgBox(retry(), '历史异常', '0x40000'))
     this.CP.AddEdit('X+10 w60 h25 Limit3 Number').OnEvent('Change', changeRetryTimes)
     this.CP.AddUpDown('Range0-999', setting.retryTimes).OnEvent('Change', changeRetryTimes)
 

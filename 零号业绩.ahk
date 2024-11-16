@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/11/16
- * @version v2.0.0.2
+ * @version v2.1.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.0.0"
+global Version := "v2.1.0"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -170,29 +170,32 @@ main() {
 }
 
 /** 出现异常后重试 */
-retry(reason) {
+retry(reason?) {
+  static errReasons := []
+  static getErrorMsg() {
+    errMsg := "历史异常："
+    loop (errReasons.Length) {
+      err := errReasons[A_Index]
+      errMsg .= "`n异常" A_Index "：[" err.time "] " err.reason
+    }
+    return errMsg
+  }
+  if (!IsSet(reason) || !reason) {
+    return getErrorMsg()
+  }
   isYeJi := setting.mode = 'YeJi'
   if (!setting.errHandler || ((isYeJi ? setting.statistics : setting.statisticsDenny).Length = 0)) {
     throw Error(reason)
   }
-  static errReasons := []
-  errReasons.Push(reason)
-  getErrorMsg() {
-    errMsg := ""
-    loop (errReasons.Length) {
-      errMsg .= "`n异常" A_Index "：" errReasons[A_Index]
-    }
-    errReasons := []
-    return errMsg
-  }
+  errReasons.Push({ time: FormatTime(A_Now, "HH:mm:ss"), reason: reason })
   setting.retryTimes--
   if (setting.retryTimes < 0) {
     Ctrl.stop()
     errReasons := []
     setting.retryTimes := setting.oriSetting.retryTimes
-    return MsgBox("【错误】异常重试次数过多，脚本结束" getErrorMsg(), "错误", "Iconx 0x40000")
+    return MsgBox("【错误】异常重试次数过多，脚本结束`n" getErrorMsg(), "错误", "Iconx 0x40000")
   }
-  MsgBox("【错误】连续刷取过程中出现异常：`n" reason "`n`n将在6s后重试", "错误", "Iconx T6 0x40000")
+  MsgBox("【错误】连续刷取过程中出现异常：`n" reason "`n`n将在3s后重试", "错误", "Iconx T3 0x40000")
   RandomSleep()
   page := 0
   ; 卡在空洞走格子、交互、确认界面，子界面
@@ -269,7 +272,38 @@ retry(reason) {
     }
     return runAutoZZZ()
   }
-  return MsgBox("【重试失败】未找到零号空洞关卡选择界面，脚本结束`n重试原因：" reason "`n异常次数：" errReasons.Length "`n历史异常：" getErrorMsg(), "错误", "Iconx 0x40000")
+  try {
+    GamePath := WinGetProcessPath(ZZZ)
+    if (GamePath) {
+      MsgBox("【重启】返回主界面失败，将在3s后重启游戏", "执行重启", "Icon! T3 0x40000")
+      WinClose(ZZZ)
+      Sleep(1000)
+      while (WinExist(ZZZ)) {
+        Sleep(251)
+      }
+      Sleep(1000)
+      Run(GamePath)
+      Sleep(8000)
+      while (!WinExist(ZZZ)) {
+        Sleep(251)
+      }
+      Sleep(1000)
+      c.reset()
+      loop (3) {
+        while (recogLocation(10) != 1) {
+          SimulateClick(c.width // 2, c.height // 2)
+          Sleep(1000)
+        }
+        Sleep(1000)
+        if (recogLocation(10) = 1) {
+          return runAutoZZZ()
+        }
+      }
+    }
+  } catch Error as e {
+    MsgBox("【重启失败】重启游戏失败，脚本结束`n重启失败原因" e.Message "`n重启原因：" reason "`n异常总次数：" errReasons.Length "`n" getErrorMsg(), "错误", "Iconx 0x40000")
+    errReasons := []
+  }
 }
 
 /** 运行刷取脚本 */
