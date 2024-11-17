@@ -48,10 +48,8 @@ enterDennyFuben(step := 2) {
   }
   static choose() {
     pixelSearchAndClick(c.旧都列车.下一步*)
-    RandomSleep(720, 800)
-    pixelSearchAndClick(c.旧都列车.出战*)
-    RandomSleep()
-    SimulateClick()
+    RandomSleep(251, 300)
+    SimulateClick(, , 6)
   }
   global FoundDennyFuben
   if (FoundDennyFuben) {

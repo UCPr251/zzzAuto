@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/11/16
- * @version v2.1.0
+ * @date 2024/11/17
+ * @version v2.1.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.1.0"
+global Version := "v2.1.1"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -173,6 +173,9 @@ main() {
 retry(reason?) {
   static errReasons := []
   static getErrorMsg() {
+    if (!errReasons.Length) {
+      return "无历史异常"
+    }
     errMsg := "历史异常："
     loop (errReasons.Length) {
       err := errReasons[A_Index]
@@ -407,8 +410,9 @@ YeJi() {
       stepLog("指定次数剩余" setting.loopMode "次，继续刷取。已刷取" setting.statistics.Length "次")
     }
   }
-  RandomSleep(1500, 1600)
+  RandomSleep(500, 600)
   pixelSearchAndClick(c.空洞.结算.完成*)
+  SimulateClick(, , 3)
   while (recogLocation() != 2) {
     if (A_Index > 2) {
       if (PixelSearchPre(&X, &Y, c.空洞.结算.完成*)) {
@@ -438,7 +442,7 @@ Denny() {
       return retry("进入HDD界面失败")
     }
     SimulateClick(c.width // 2, c.height * 7 // 10, 3) ; 进入战斗委托
-    RandomSleep(1200, 1300)
+    RandomSleep(251, 300)
   }
   if (recogLocation() != 3) {
     return retry("未找到HDD关卡选择界面")
@@ -489,9 +493,9 @@ Denny() {
       stepLog("指定次数剩余" setting.loopModeDenny "次，继续刷取。已刷取" setting.statisticsDenny.Length "次")
     }
   }
-  RandomSleep(1500, 1600)
+  RandomSleep(500, 600)
   pixelSearchAndClick(c.空洞.结算.完成*)
-  Sleep(1000)
+  SimulateClick(, , 3)
   loop (3) {
     if (PixelSearchPre(&X, &Y, c.空洞.结算.完成*)) {
       SimulateClick(X, Y)
