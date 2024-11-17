@@ -232,7 +232,7 @@ class Panel {
       p.CPLastPos := [x * 96 / A_ScreenDPI, y * 96 / A_ScreenDPI]
       destroyGui()
       if (setting.mode = 'Denny' && setting.isFirst('Denny')) {
-        MsgBox('首次使用丁尼模式，请注意：`n`n1、HDD关卡选择界面需提前切换至「间章第二章」`n2、编队首位必须为「比利」，其他随意`n3、请在副本内调整「视角转动值」以确保对齐NPC`n4、游戏内转动效果有浮动系正常现象', '丁尼模式注意事项', 'Icon! 0x40000')
+        MsgBox('首次使用丁尼模式，请注意：`n`n1、HDD关卡选择界面需提前切换至「间章第二章」`n2、编队首位必须为「比利」，第二位推荐鲨鱼妹`n3、请在副本内调整「视角转动值」以确保对齐NPC`n4、游戏内转动效果有浮动系正常现象', '丁尼模式注意事项', 'Icon! 0x40000')
       }
       p.ControlPanel()
     }

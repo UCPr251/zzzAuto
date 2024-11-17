@@ -27,7 +27,9 @@ getDenny(step := 3) {
   Sleep(200)
   Click('Left Up')
   Press('Space')
+  Send('{Shift Down}')
   RandomSleep(2510, 2600)
+  Send('{Shift Up}')
   while (isFighting()) {
     if (A_Index > 12) {
       break
