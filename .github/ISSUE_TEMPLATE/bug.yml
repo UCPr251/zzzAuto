@@ -33,16 +33,8 @@ body:
   - type: input
     attributes:
       label: 录屏链接
-      description: 请输入该问题出现前后全过程的录屏链接。如果问题无法复现，在前面描述清楚后忽略此项即可
-      placeholder: https://lanzou.com
-    validations:
-      required: true
-
-  - type: input
-    attributes:
-      label: 使用的版本
-      description: 所使用的脚本的版本，如v1.7.0
-      value: v1.
+      description: 请输入该问题出现前后全过程的录屏链接。除非问题无法复现，应尽量提供录屏，这是查找并解决问题的最佳方式
+      placeholder: 只接受蓝奏云或阿里云链接
     validations:
       required: true
 
@@ -52,8 +44,3 @@ body:
       description: 请提供Alt+C控制面板截图
     validations:
       required: true
-
-  - type: textarea
-    attributes:
-      label: 其他说明
-      description: 如果有任何补充说明，请在此补充

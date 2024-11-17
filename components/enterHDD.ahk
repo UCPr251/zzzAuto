@@ -22,7 +22,7 @@ enterHDD(step := 1) {
   Press('m')
   RandomSleep(800, 900)
   RandomMouseMove(c.width // 2, c.height // 2)
-  loop (30) {
+  loop (32) {
     if (judge()) {
       SimulateClick(FoundX, FoundY)
       pixelSearchAndClick(c.空洞.退出副本.确认*)
