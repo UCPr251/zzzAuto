@@ -12,7 +12,8 @@ class Panel {
     this.detailDenny := []
     this.general := ""
     this.paused := false
-    this.lastPos := 0
+    this.CPLastPos := 0
+    this.SPLastPos := 0
     this.init()
   }
 
@@ -21,8 +22,12 @@ class Panel {
     if (this.CP) {
       return destroyGui()
     }
-    this.paused := A_IsPaused
-    Pause(1)
+    if (Ctrl.ing) {
+      this.paused := A_IsPaused
+      Pause(1)
+    } else {
+      this.paused := false
+    }
     A_TrayMenu.Check('控制面板')
     isYeJi := setting.mode = 'YeJi'
 
@@ -104,7 +109,14 @@ class Panel {
     this.CP.AddButton('X+8 w100', '&Z ' (Ctrl.ing ? (Ctrl.nextExit ? '取消结束' : '本轮结束') : '开始刷取')).OnEvent('Click', start)
     this.CP.AddStatusBar(, '`tAlt+字母 = 点击按钮')
 
-    this.CP.Show()
+    if (this.CPLastPos) {
+      this.CP.Show('Hide')
+      this.CP.Move(this.CPLastPos*)
+      this.CP.Show()
+      this.CPLastPos := 0
+    } else {
+      this.CP.Show()
+    }
 
     this.CP.OnEvent('Close', destroyGui)
     this.CP.OnEvent('Escape', destroyGui)
@@ -216,6 +228,8 @@ class Panel {
       if (Ctrl.ing)
         return MsgBox("当前正在刷取中，请先结束刷取再切换模式", , "Icon! 0x40000 T3")
       setting.mode := setting.mode = 'YeJi' ? 'Denny' : 'YeJi'
+      p.CP.GetPos(&x, &y)
+      p.CPLastPos := [x * 96 / A_ScreenDPI, y * 96 / A_ScreenDPI]
       destroyGui()
       if (setting.mode = 'Denny' && setting.isFirst('Denny')) {
         MsgBox('首次使用丁尼模式，请注意：`n`n1、HDD关卡选择界面需提前切换至「间章第二章」`n2、编队首位必须为「比利」，其他随意`n3、请在副本内调整「视角转动值」以确保对齐NPC`n4、游戏内转动效果有浮动系正常现象', '丁尼模式注意事项', 'Icon! 0x40000')
@@ -300,7 +314,7 @@ class Panel {
       if (IsSet(OutputVar) && OutputVar[0]) {
         latestVersion := OutputVar[0]
         if (Version = latestVersion) {
-          this.UP := Gui('AlwaysOnTop -MinimizeBox' (this.CP ? ' +Owner' this.CP.Hwnd : ''), '零号业绩检查更新')
+          this.UP := Gui('AlwaysOnTop -MinimizeBox' (this.CP ? ' +Owner' this.CP.Hwnd : ''), '检查更新')
           this.UP.destroyGui := destroyGui
           this.UP.SetFont('s12', '微软雅黑')
           this.UP.AddLink('x60 h25 w251', '当前已是最新版本：<a href="' url '"> ' latestVersion ' </a>').OnEvent('Click', (Ctrl, ID, HREF) => Run(HREF) || destroyGui() || (this.CP ? this.CP.destroyGui() : 0))
@@ -412,11 +426,15 @@ class Panel {
     this.SP.AddButton('x+6 w' width, '反选').OnEvent('Click', InvertSelect)
     this.SP.AddButton('x+6 w' (width + 20), '删除选中').OnEvent('Click', Delete)
     this.SP.AddButton('x+6 w' width ' Default', '确定').OnEvent('Click', destroyGui)
-    this.SP.Show()
-    if (this.lastPos) {
-      this.SP.Move(this.lastPos*)
-      this.lastPos := 0
+    if (this.SPLastPos) {
+      this.SP.Show('Hide')
+      this.SP.Move(this.SPLastPos*)
+      this.SP.Show()
+      this.SPLastPos := 0
+    } else {
+      this.SP.Show()
     }
+
     this.SP.OnEvent("Close", destroyGui)
     this.SP.OnEvent("Escape", destroyGui)
 
@@ -519,7 +537,7 @@ class Panel {
       }
       this.SP.changed := 1
       this.SP.GetPos(&x, &y)
-      this.lastPos := [x * 96 / A_ScreenDPI, y * 96 / A_ScreenDPI]
+      this.SPLastPos := [x * 96 / A_ScreenDPI, y * 96 / A_ScreenDPI]
       destroyGui()
       this.StatisticsPanel()
     }
