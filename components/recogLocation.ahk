@@ -13,7 +13,7 @@ recogLocation(loopTimes := 30) {
   patterns1 := [
     c.角色操作.M,
     c.角色操作.Q,
-    c.角色操作.Tab
+    c.角色操作.T
   ]
   patterns2 := [
     c.零号选择.资质考核,

@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/11/17
- * @version v2.1.1
+ * @date 2024/11/18
+ * @version v2.1.2
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.1.1"
+global Version := "v2.1.2"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -282,19 +282,27 @@ retry(reason?) {
       WinClose(ZZZ)
       Sleep(1000)
       while (WinExist(ZZZ)) {
-        Sleep(251)
+        Sleep(1000)
       }
-      Sleep(1000)
+      Sleep(6000)
       Run(GamePath)
-      Sleep(8000)
+      Sleep(3000)
       while (!WinExist(ZZZ)) {
+        if (A_Index > 100)
+          throw Error("重启游戏失败：等待游戏启动超时")
         Sleep(251)
       }
-      Sleep(1000)
+      Sleep(8000)
       c.reset()
       loop (3) {
         while (recogLocation(10) != 1) {
-          SimulateClick(c.width // 2, c.height // 2)
+          if (A_Index > 20)
+            throw Error("重启游戏失败：等待进入角色操作界面超时")
+          if (PixelSearchPre(&X, &Y, c.角色操作.取消正在处理*)) {
+            SimulateClick(X, Y)
+          } else {
+            SimulateClick(c.width // 2, c.height // 2)
+          }
           Sleep(1000)
         }
         Sleep(1000)
@@ -304,7 +312,7 @@ retry(reason?) {
       }
     }
   } catch Error as e {
-    MsgBox("【重启失败】重启游戏失败，脚本结束`n重启失败原因" e.Message "`n重启原因：" reason "`n异常总次数：" errReasons.Length "`n" getErrorMsg(), "错误", "Iconx 0x40000")
+    MsgBox("【重启失败】重启游戏失败，脚本结束`n重启失败原因：" e.Message "`n重启原因：" reason "`n异常总次数：" errReasons.Length "`n`n" getErrorMsg(), "错误", "Iconx 0x40000")
     errReasons := []
   }
 }
@@ -377,9 +385,9 @@ YeJi() {
     return MsgBox("本次刷取已结束。共刷取" setting.statistics.Length "次")
   }
   while (!PixelSearchPre(&X, &Y, c.空洞.结算.完成*)) {
-    Sleep(300)
-    if (A_Index > 30)
-      break
+    Sleep(251)
+    if (A_Index > 50)
+      return retry("等待结算完毕超时")
   }
   ; 业绩上限模式
   if (setting.loopMode = 0) {
@@ -431,7 +439,7 @@ YeJi() {
 Denny() {
   status := 0
   step := 0
-  page := recogLocation()
+  page := recogLocation(50)
   if (page = 0) { ; 休息
     Press('Space', 10)
   }
@@ -461,9 +469,9 @@ Denny() {
     return MsgBox("本次刷取已结束。共刷取" setting.statisticsDenny.Length "次")
   }
   while (!PixelSearchPre(&X, &Y, c.空洞.结算.完成*)) {
-    Sleep(300)
-    if (A_Index > 30)
-      break
+    Sleep(251)
+    if (A_Index > 50)
+      return retry("等待结算完毕超时")
   }
   ; 丁尼上限模式
   if (setting.loopModeDenny = 0) {
@@ -502,6 +510,5 @@ Denny() {
       Sleep(1000)
     }
   }
-  RandomSleep(2510, 2600)
   Denny()
 }
