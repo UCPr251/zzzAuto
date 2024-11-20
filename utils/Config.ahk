@@ -34,7 +34,8 @@ Class Config {
     /** 循环模式：0：丁尼上限；-1：无限循环；正整数：刷取指定次数 */
     loopModeDenny: 0,
     /** 拿命验收破坏箱子前视角向右转动的坐标，调整该值以确保视角对齐NPC */
-    rotateCoords: 200
+    rotateCoords: 200,
+    GamePath: ''
   }
 
   __New() {

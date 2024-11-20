@@ -412,6 +412,7 @@ class CoordsData {
     windowed := false
     w := A_ScreenWidth, h := A_ScreenHeight
     if (WinExist(ZZZ)) {
+      setting.GamePath := WinGetProcessPath(ZZZ)
       WinGetClientPos(, , &w, &h, ZZZ)
       if (w != A_ScreenWidth || h != A_ScreenHeight) {
         windowed := true

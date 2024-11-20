@@ -282,8 +282,17 @@ class Panel {
           g.Text := "&Z 本轮结束"
         }
       } else {
+        if (!WinExist(ZZZ) && setting.GamePath && FileExist(setting.GamePath)) {
+          MsgBox('未运行游戏，3s后将尝试自动启动游戏', , 'Icon! 0x40000 T3')
+          destroyGui()
+          Ctrl.ing := 1
+          try {
+            RestartGame()
+          }
+        } else {
+          destroyGui()
+        }
         activateZZZ()
-        destroyGui()
         main()
       }
     }

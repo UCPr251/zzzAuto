@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/11/18
- * @version v2.1.2
+ * @date 2024/11/21
+ * @version v2.1.3
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.1.2"
+global Version := "v2.1.3"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -119,7 +119,7 @@ init() {
     MsgBox("警告：`n当前显示模式分辨率" A_ScreenWidth "x" A_ScreenHeight "无内置数据`n将使用" c.mode "的分辨率比例数据进行缩放兼容处理`n`n若无法正常运行，请更改游戏显示模式，如1920*1080", "警告", "Icon! 0x40000")
   }
   if (setting.isFirst('Start')) {
-    MsgBox("`t`t绝区零自动刷取`n`n支持界面：窗口、全屏`n支持刷取：丁尼、零号业绩、零号银行`n`n使用方法 ：`n`tAlt+P ：暂停/恢复脚本`n`tAlt+C ：打开/关闭控制面板`n`n当前版本 ：" Version "`n仓库地址 ：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
+    MsgBox("`t`t绝区零自动刷取`n`n支持界面：窗口、全屏`n支持刷取：拿命验收、零号业绩、零号银行`n`n使用方法 ：`n`tAlt+P ：暂停/恢复脚本`n`tAlt+C ：打开/关闭控制面板`n`n当前版本 ：" Version "`n仓库地址 ：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
   }
   p.ControlPanel()
 }
@@ -276,45 +276,59 @@ retry(reason?) {
     return runAutoZZZ()
   }
   try {
-    GamePath := WinGetProcessPath(ZZZ)
-    if (GamePath) {
-      MsgBox("【重启】返回主界面失败，将在3s后重启游戏", "执行重启", "Icon! T3 0x40000")
-      WinClose(ZZZ)
-      Sleep(1000)
-      while (WinExist(ZZZ)) {
-        Sleep(1000)
-      }
-      Sleep(6000)
-      Run(GamePath)
-      Sleep(3000)
-      while (!WinExist(ZZZ)) {
-        if (A_Index > 100)
-          throw Error("重启游戏失败：等待游戏启动超时")
-        Sleep(251)
-      }
-      Sleep(8000)
-      c.reset()
-      loop (3) {
-        while (recogLocation(10) != 1) {
-          if (A_Index > 20)
-            throw Error("重启游戏失败：等待进入角色操作界面超时")
-          if (PixelSearchPre(&X, &Y, c.角色操作.取消正在处理*)) {
-            SimulateClick(X, Y)
-          } else {
-            SimulateClick(c.width // 2, c.height // 2)
-          }
-          Sleep(1000)
-        }
-        Sleep(1000)
-        if (recogLocation(10) = 1) {
-          return runAutoZZZ()
-        }
-      }
+    if (RestartGame()) {
+      runAutoZZZ()
+    } else {
+      throw Error("重启游戏执行失败")
     }
   } catch Error as e {
-    MsgBox("【重启失败】重启游戏失败，脚本结束`n重启失败原因：" e.Message "`n重启原因：" reason "`n异常总次数：" errReasons.Length "`n`n" getErrorMsg(), "错误", "Iconx 0x40000")
+    Ctrl.stop()
     errReasons := []
+    MsgBox("【重启失败】异常重启游戏失败，脚本结束`n重启失败原因：" e.Message "`n重启原因：" reason "`n异常总次数：" errReasons.Length "`n`n" getErrorMsg(), "错误", "Iconx 0x40000")
   }
+}
+
+RestartGame(GamePath := setting.GamePath) {
+  if (!IsSet(GamePath) || !GamePath || !FileExist(GamePath)) {
+    if (!WinExist(ZZZ))
+      return false
+    GamePath := WinGetProcessPath(ZZZ)
+    setting.GamePath := GamePath
+  }
+  if (WinExist(ZZZ)) {
+    WinClose(ZZZ)
+    Sleep(1000)
+    while (WinExist(ZZZ)) {
+      Sleep(1000)
+    }
+    Sleep(6000)
+  }
+  Run(GamePath)
+  Sleep(3000)
+  while (!WinExist(ZZZ)) {
+    if (A_Index > 100)
+      throw Error("重启游戏失败：等待游戏启动超时")
+    Sleep(251)
+  }
+  Sleep(8000)
+  c.reset()
+  loop (3) {
+    while (recogLocation(10) != 1) {
+      if (A_Index > 20)
+        throw Error("重启游戏失败：等待进入角色操作界面超时")
+      if (PixelSearchPre(&X, &Y, c.角色操作.取消正在处理*)) {
+        SimulateClick(X, Y)
+      } else {
+        SimulateClick(c.width // 2, c.height // 2)
+      }
+      Sleep(1000)
+    }
+    Sleep(1000)
+    if (recogLocation(10) = 1) {
+      return true
+    }
+  }
+  return false
 }
 
 /** 运行刷取脚本 */
@@ -455,6 +469,7 @@ Denny() {
   if (recogLocation() != 3) {
     return retry("未找到HDD关卡选择界面")
   }
+  RandomSleep()
   Ctrl.start()
   enterDennyFuben(++step)
   getDenny(++step)
