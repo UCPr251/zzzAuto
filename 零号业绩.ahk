@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/11/21
- * @version v2.1.3
+ * @date 2024/11/26
+ * @version v2.1.4
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.1.3"
+global Version := "v2.1.4"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -202,7 +202,7 @@ retry(reason?) {
   RandomSleep()
   page := 0
   ; 卡在空洞走格子、交互、确认界面，子界面
-  uc:
+  UC:
   loop (6) {
     Press('Space', 2)
     if (PixelSearchPre(&X, &Y, c.空洞.确认*)) { ; 确认？
@@ -239,7 +239,7 @@ retry(reason?) {
           RandomSleep(5600, 5800)
           page := recogLocation()
           if (page)
-            break uc
+            break UC
         }
         Sleep(100)
       }

@@ -9,11 +9,11 @@
 recogLocation(loopTimes := 30) {
   activateZZZ()
 
-  /** 通过三个特殊定位点判断所处界面 */
+  /** 通过特殊定位点判断所处界面 */
   patterns := [[
     c.角色操作.M,
     c.角色操作.Q,
-    c.角色操作.T
+    [c.角色操作.T, c.角色操作.Tab]
   ], [
     c.零号选择.资质考核,
     c.零号选择.旧都列车,
@@ -24,20 +24,28 @@ recogLocation(loopTimes := 30) {
     c.拿命验收.推荐等级
   ]]
   static judge(patterns) {
+    UC:
     for (pattern in patterns) {
-      if (!PixelSearchPre(&FoundX, &FoundY, pattern*)) {
-        return false
+      if (pattern[1] is Array) {
+        for (p in pattern) {
+          if (PixelSearchPre(&FoundX, &FoundY, p*)) {
+            continue UC
+          }
+        }
+      } else if (PixelSearchPre(&FoundX, &FoundY, pattern*)) {
+        continue
       }
+      return false
     }
     return true
   }
   page := 0
-  uc:
+  UC:
   loop (loopTimes) {
     for (i, pattern in patterns) {
       if (judge(pattern)) {
         page := i 
-        break uc
+        break UC
       }
     }
     Sleep(100)

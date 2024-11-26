@@ -11,7 +11,7 @@ enterDennyFuben(step := 2) {
   static x := 251
   static y := Floor(c.height * 0.9)
   static ymin := c.height // 10
-  static maxO := Ceil(c.height / 2160 * 16)
+  static maxO := Ceil(c.height / 2160 * 24)
   static GetPixel := PixelGetColor
   static isPageDown := false
   static calY(x0, y0, r, x) {
