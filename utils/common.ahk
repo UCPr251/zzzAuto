@@ -60,9 +60,6 @@ Press(key, times := 1) {
 
 /** 对坐标进行缩放处理，使设计坐标与实际坐标匹配 */
 preprocess(&X, &Y) {
-  if (c.width = 1920 && c.height = 1080) {
-    return
-  }
   scaleX := c.width / 1920
   scaleY := c.height / 1080
   X := Round(X * scaleX)
@@ -71,11 +68,11 @@ preprocess(&X, &Y) {
 
 /** 鼠标随机移动至指定真实坐标 */
 RandomMouseMove(TargetX, TargetY) {
+  static MinSpeed := 48
+  static MaxSpeed := 52
   activateZZZ()
   MouseGetPos(&StartX, &StartY)
   Distance := Sqrt((TargetX - StartX) ** 2 + (TargetY - StartY) ** 2)
-  MinSpeed := 48
-  MaxSpeed := 52
   ; 鼠标移动速度，适当缩放确保效果
   Speed := (MinSpeed + Random() * (MaxSpeed - MinSpeed)) * (A_ScreenWidth / 1920)
   ; 生成随机控制点用于贝塞尔曲线

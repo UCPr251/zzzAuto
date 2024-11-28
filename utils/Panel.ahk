@@ -143,6 +143,10 @@ class Panel {
         Pause(0)
       }
       if (p.CP) {
+        if (!p.CPLastPos) {
+          p.CP.GetPos(&x, &y)
+          p.CPLastPos := [x * 96 / A_ScreenDPI, y * 96 / A_ScreenDPI]
+        }
         p.CP.Destroy()
         p.CP := 0
       }

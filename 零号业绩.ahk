@@ -3,7 +3,7 @@
  * @file 零号业绩.ahk
  * @author UCPr
  * @date 2024/11/28
- * @version v2.1.4
+ * @version v2.1.4.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -116,7 +116,7 @@ init() {
     throw err
   }
   if (c.compatible) {
-    MsgBox("警告：`n当前显示模式分辨率" A_ScreenWidth "x" A_ScreenHeight "无内置数据`n将使用" c.mode "的分辨率比例数据进行缩放兼容处理`n`n若无法正常运行，请更改游戏显示模式，如1920*1080", "警告", "Icon! 0x40000")
+    MsgBox("警告：`n当前显示模式分辨率" c.width "x" c.height "无内置数据`n将使用" c.mode "的分辨率比例数据进行缩放兼容处理`n`n若无法正常运行，请更改游戏显示模式，如1920*1080", "警告", "Icon! 0x40000")
   }
   if (setting.isFirst('Start')) {
     MsgBox("`t`t绝区零自动刷取`n`n支持界面：窗口、全屏`n支持刷取：拿命验收、零号业绩、零号银行`n`n使用方法 ：`n`tAlt+P ：暂停/恢复脚本`n`tAlt+C ：打开/关闭控制面板`n`n当前版本 ：" Version "`n仓库地址 ：https://github.com/UCPr251/zzzAuto", "UCPr", "0x40000")
