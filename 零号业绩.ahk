@@ -2,7 +2,7 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/11/26
+ * @date 2024/11/28
  * @version v2.1.4
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
@@ -104,7 +104,7 @@ init() {
   A_TrayMenu.Default := "控制面板"
   A_TrayMenu.Add("刷取统计", p.StatisticsPanel.Bind(p))
   A_TrayMenu.Add()
-  A_TrayMenu.Add("前往仓库", (*) => Run('https://gitee.com/UCPr251/zzzAuto') || (p.CP && p.CP.destroyGui()))
+  A_TrayMenu.Add("前往仓库", (*) => Run('https://github.com/UCPr251/zzzAuto') || (p.CP && p.CP.destroyGui()))
   A_TrayMenu.Add("检查更新", p.checkUpdate.Bind(p))
   A_TrayMenu.Add()
   A_TrayMenu.Add("重启", (*) => Reload())

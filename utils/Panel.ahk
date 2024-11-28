@@ -306,7 +306,7 @@ class Panel {
     }
     A_TrayMenu.Check('检查更新')
 
-    static urls := ["https://gitee.com/UCPr251/zzzAuto/releases/latest", "https://github.com/UCPr251/zzzAuto/releases/latest"]
+    static urls := ["https://github.com/UCPr251/zzzAuto/releases/latest", "https://gitee.com/UCPr251/zzzAuto/releases/latest"]
     err := 0
     for (url in urls) {
       try {

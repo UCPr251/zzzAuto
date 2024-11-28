@@ -31,7 +31,7 @@
 
 - 方法一：使用编译好的程序（推荐，**下载即用**）
 
-    [<<<点击进入>>>](https://gitee.com/UCPr251/zzzAuto/releases/latest)release最新版本，下载并运行该exe文件
+    [<<<点击进入>>>](https://github.com/UCPr251/zzzAuto/releases/latest)release最新版本，下载并运行该exe文件
 
 - 方法二：使用源码
 
@@ -93,7 +93,7 @@
 1. 本脚本基于固定坐标和像素点颜色查找实现，设计分辨率比例：**21:9、16:9、16:10、4:3、5:4**，应已满足大部分情况。
 <br>如果脚本无法正常运行，建议 **显示器和游戏** 的画面分辨率设置为 **长宽比16:9** 且 **关闭HDR等** 重新运行脚本
 
-2. 若脚本仍无法正常运行，请提出[issue](https://gitee.com/UCPr251/zzzAuto/issues/new?template=bug.yml)并按照要求描述提供所需信息
+2. 若脚本仍无法正常运行，请提出[issue](https://github.com/UCPr251/zzzAuto/issues/new?template=bug.yml)并按照要求描述提供所需信息
 
 3. 数据文件路径： **C:/Users/用户名/Documents/autoZZZ.ini**，启动脚本后自动生成
 
