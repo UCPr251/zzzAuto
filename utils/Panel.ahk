@@ -184,8 +184,9 @@ class Panel {
         setting.%key% := -1
       }
       if (name = 'N') {
-        setting.%key% := 10
-        p.loopEditGui.Value := 10
+        value := setting.mode = 'YeJi' ? 30 : 650
+        setting.%key% := value
+        p.loopEditGui.Value := value
         p.loopEditGui.Visible := true
         p.loopUpDownGui.Visible := true
       } else {
