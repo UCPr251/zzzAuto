@@ -9,6 +9,7 @@ class Controller {
     this.finishTime := 0
     this.startFightTime := 0
     this.fightDuration := 0
+    this.continuous := 0
   }
 
   /** 开始刷取 */
@@ -35,6 +36,7 @@ class Controller {
     this.ing := false
     this.startTime := 0
     this.finishTime := 0
+    this.continuous := 0
   }
 
   /** 完成刷取 */

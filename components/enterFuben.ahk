@@ -6,7 +6,11 @@ enterFuben(step := 1) {
   stepLog("【step" step "】进入副本")
 
   pixelSearchAndClick(c.零号选择.旧都列车*)
-  pixelSearchAndClick(c.旧都列车.前线*)
+  ; 连续运行，无需重复选择
+  if (!Ctrl.continuous) {
+    pixelSearchAndClick(c.旧都列车.前线*)
+    Ctrl.continuous := true
+  }
   pixelSearchAndClick(c.旧都列车.下一步*)
   RandomSleep(251, 300)
   SimulateClick(, , 6)
