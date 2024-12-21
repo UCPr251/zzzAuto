@@ -79,7 +79,8 @@ reachEnd(step := 3) {
       RandomSleep(800, 900)
       Press('3', 3)
       RandomSleep(800, 900)
-      MingHui()
+      ; 通过Esc确认
+      Press('Escape')
     } else {
       ; 接应
       Press('1', 2)

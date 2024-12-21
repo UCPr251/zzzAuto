@@ -1,7 +1,7 @@
 /** 配置 */
 Class Config {
 
-  fightModeArr := ['通用·普通攻击', '艾莲']
+  fightModeArr := ['通用·普通攻击', '艾莲', '星见雅']
 
   /** 默认配置 */
   oriSetting := {
@@ -18,7 +18,7 @@ Class Config {
     /** 颜色搜索允许的RGB值容差 */
     variation: 60,
     /** 战斗模式 */
-    fightMode: 1,
+    fightMode: 3,
     /** 刷取模式：0：全都要；1：只要业绩；2：只存银行 */
     gainMode: 0,
     /** 循环模式：0：业绩上限；-1：无限循环；正整数：刷取指定次数 */

@@ -98,6 +98,39 @@ fight(step := 4) {
         }
       }
     }
+    ; 雅战斗模式
+  } else if (setting.fightMode = 3) {
+    ; 约12s一循环
+    loop (6) {
+      if (A_Index = 1) {
+        ; 长闪避近身
+        Send("{w Down}")
+        Send("{Shift Down}")
+        Sleep(Random(360, 400))
+        Send("{Shift Up}")
+        RandomSleep(200, 220)
+        Send("{w Up}")
+      }
+      ; 蓄力斩
+      Click("Left Down")
+      Sleep(Random(1460, 1520))
+      Click("Left Up")
+      attack(10)
+      if (fightIsOver(patterns)) {
+        return true
+      }
+      attack(6)
+      autoDodge(500, 520)
+      sAttack()
+      sAttack()
+      autoDodge(460, 520)
+      sAttack()
+      sAttack()
+      if (fightIsOver(patterns)) {
+        return true
+      }
+      attack(12)
+    }
   }
 
   ; 如果战斗时长超过设置好的循环次数，可能是因为周上限提示需要点击确定，尝试使用Esc退出确认窗口，否则可以暂停战斗
@@ -128,6 +161,7 @@ fight(step := 4) {
         Send("{Shift Down}")
         Sleep(Random(80, 100))
         Send("{Shift Up}")
+        Sleep(Random(120, 140))
         attack(1)
       }
       if (A_TickCount - start > randomMs - 30) {

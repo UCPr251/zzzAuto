@@ -28,7 +28,8 @@ saveBank(step := 7, gainMode := 0) {
   ; 对话
   Press('Space', 12)
   ; 确认侵蚀
-  pixelSearchAndClick(c.空洞.确认*)
+  ; pixelSearchAndClick(c.空洞.确认*)
+  Press('Escape')
   RandomSleep(3800, 4000)
   Press('a', 3)
   ; 对话
