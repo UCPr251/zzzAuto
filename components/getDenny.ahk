@@ -23,14 +23,34 @@ getDenny(step := 3) {
   Sleep(100)
   DllCall("mouse_event", "UInt", 1, "UInt", setting.rotateCoords, "UInt", 0)
   Send("{w Down}")
+  ; 比利闪避长按攻击
   Press('Shift')
   Click('Left Down')
   Sleep(200)
   Click('Left Up')
+  ; 切人
   Press('Space')
-  Send('{Shift Down}')
-  RandomSleep(2510, 2600)
-  Send('{Shift Up}')
+  if (setting.fightModeDenny = 1) {
+    ; 通用连续闪避
+    loop(6) {
+      Press('Shift')
+      Sleep(Random(300, 320))
+    }
+  } else if (setting.fightModeDenny = 2) {
+    ; 艾莲长按闪避
+    Send('{Shift Down}')
+    RandomSleep(2510, 2600)
+    Send('{Shift Up}')
+  } else if (setting.fightModeDenny = 3) {
+    ; 雅连续长按闪避
+    loop (2) {
+      Send("{Shift Down}")
+      Sleep(Random(300, 320))
+      Send("{Shift Up}")
+      RandomSleep(180, 200)
+    }
+  }
+
   while (isFighting()) {
     if (A_Index > 12) {
       break
@@ -45,12 +65,16 @@ getDenny(step := 3) {
     ;   throw Error('丁尼刷取交互失败')
     ; }
     Press('Escape')
-    if (++depth > 8) {
-      throw Error('获取丁尼重试次数过多，请确保：`n1、进入了正确的副本：第二章间章「真·拿命验收」`n2、编队首位必须为「比利」，第二位推荐鲨鱼妹`n3、在控制面板中设置了合适的“视角转动值”')
+    if (++depth > 4) {
+      ; 若存在刷取成功的数据，证明非配置问题，尝试重进副本刷取
+      if (setting.statisticsDenny.length) {
+        return false
+      }
+      throw Error('获取丁尼重试次数过多，请确保：`n1、进入了正确的副本：第二章间章「真·拿命验收」`n2、编队首位必须为「比利」`n3、在控制面板中设置了合适的“视角转动值”')
     }
     pixelSearchAndClick(c.拿命验收.重新开始*)
     pixelSearchAndClick(c.空洞.退出副本.确认*)
-    getDenny(step)
+    return getDenny(step)
   } else {
     loop (2) {
       Press('Space', 3)
@@ -58,5 +82,6 @@ getDenny(step := 3) {
       Press('Space', 3)
     }
     depth := 1
+    return true
   }
 }

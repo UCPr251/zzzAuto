@@ -1,7 +1,7 @@
 /** 配置 */
 Class Config {
 
-  fightModeArr := ['通用·普通攻击', '艾莲', '星见雅']
+  fightModeArr := ['通用', '艾莲', '星见雅']
 
   /** 默认配置 */
   oriSetting := {
@@ -31,6 +31,8 @@ Class Config {
     isAutoClose: false,
     /** 战斗时是否自动识别红光闪避 */
     isAutoDodge: false,
+    /** 拿命验收二号位角色：1：通用；2：艾莲；3：星见雅 */
+    fightModeDenny: 3,
     /** 循环模式：0：丁尼上限；-1：无限循环；正整数：刷取指定次数 */
     loopModeDenny: 0,
     /** 拿命验收破坏箱子前视角向右转动的坐标，调整该值以确保视角对齐NPC */

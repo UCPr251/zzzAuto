@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/12/21
- * @version v2.2.0
+ * @date 2024/12/23
+ * @version v2.2.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.2.0"
+global Version := "v2.2.1"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -453,9 +453,14 @@ YeJi() {
 Denny() {
   status := 0
   step := 0
-  page := recogLocation(50)
+  page := recogLocation(40)
   if (page = 0) { ; 休息
-    Press('Space', 10)
+    Press('Space', 2)
+    while (not page := recogLocation(3)) {
+      Press('Space', 2)
+      if (A_Index > 20)
+        return retry("确认休息进入角色操作界面超时")
+    }
   }
   if (page = 1 || recogLocation() = 1) {
     RandomSleep(300, 320)
@@ -472,7 +477,10 @@ Denny() {
   RandomSleep()
   Ctrl.start()
   enterDennyFuben(++step)
-  getDenny(++step)
+  status := getDenny(++step)
+  if (!status) {
+    return retry("丁尼副本刷取重试次数过多")
+  }
   Ctrl.finish()
   RandomSleep(2000, 2200)
   ; 本轮结束

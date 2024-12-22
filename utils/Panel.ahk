@@ -64,7 +64,7 @@ class Panel {
       ; this.CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
 
       this.CP.AddText('X30', '战斗模式：')
-      this.CP.AddDropDownList("X+10 W140 Choose" setting.fightMode, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightMode := Integer(g.Value))
+      this.CP.AddDropDownList("X+10 W80 Choose" setting.fightMode, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightMode := Integer(g.Value))
 
       this.CP.AddText('X30', '刷取模式：')
       this.CP.SetFont('s10')
@@ -72,6 +72,9 @@ class Panel {
       this.CP.AddRadio('X+2 vgain1 Checked' (setting.gainMode = 1), '只要业绩').OnEvent('Click', gainModeSelected)
       this.CP.AddRadio('X+2 vgain2 Checked' (setting.gainMode = 2), '只存银行').OnEvent('Click', gainModeSelected)
     } else {
+      this.CP.AddText('X30', '二号位角色：')
+      this.CP.AddDropDownList("X+10 W80 Choose" setting.fightModeDenny, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightModeDenny := Integer(g.Value))
+
       this.CP.AddText('X30', '视角转动值：')
       this.CP.AddEdit('X+10 w80 h25 Limit3 Number').OnEvent('Change', changeRotateCoords)
       this.CP.AddUpDown('Range0-9999', setting.rotateCoords).OnEvent('Change', changeRotateCoords)
@@ -237,7 +240,7 @@ class Panel {
       p.CPLastPos := [x * 96 / A_ScreenDPI, y * 96 / A_ScreenDPI]
       destroyGui()
       if (setting.mode = 'Denny' && setting.isFirst('Denny')) {
-        MsgBox('首次使用丁尼模式，请注意：`n`n1、HDD关卡选择界面需提前切换至「间章第二章」`n2、编队首位必须为「比利」，第二位推荐鲨鱼妹`n3、请在副本内调整「视角转动值」以确保对齐NPC`n4、游戏内转动效果有浮动系正常现象', '丁尼模式注意事项', 'Icon! 0x40000')
+        MsgBox('首次使用丁尼模式，请注意：`n`n1、HDD关卡选择界面需提前切换至「间章第二章」`n2、编队首位必须为「比利」`n3、请在副本内调整「视角转动值」以确保对齐NPC`n4、转动效果受游戏帧率设置影响`n5、转动效果存在浮动系正常现象', '丁尼模式注意事项', 'Icon! 0x40000')
       }
       p.ControlPanel()
     }
