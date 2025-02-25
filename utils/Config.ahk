@@ -37,6 +37,7 @@ Class Config {
     loopModeDenny: 0,
     /** 拿命验收破坏箱子前视角向右转动的坐标，调整该值以确保视角对齐NPC */
     rotateCoords: 200,
+    HollowDenny: false,
     GamePath: ''
   }
 

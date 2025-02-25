@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2024/12/23
- * @version v2.2.1
+ * @date 2025/2/25
+ * @version v2.2.2
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.2.1"
+global Version := "v2.2.2"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -227,6 +227,7 @@ retry(reason?) {
       return runAutoZZZ()
     }
     Press('Escape')
+    RandomSleep(1300, 1500)
     ; 副本内
     if (PixelSearchPre(&X, &Y, c.空洞.退出副本.放弃*)) {
       SimulateClick(X, Y)
@@ -370,22 +371,25 @@ YeJi() {
   if (status = 0) {
     return retry("战斗超时或检测异常")
   }
-  ; 选择增益
-  status := choose(++step)
-  if (status = 0) {
-    return retry("未找到对应增益选项")
-  }
-  gainMode := setting.gainMode
-  ; 全都要
-  if (gainMode = 0) {
-    getMoney(++step)
-    saveBank(++step, gainMode)
-    ; 只要业绩
-  } else if (gainMode = 1) {
-    getMoney(++step)
-    ; 只存银行
-  } else if (gainMode = 2) {
-    saveBank(++step, gainMode)
+  ; 空洞丁尼模式打完第一层直接退出副本
+  if (not setting.HollowDenny) {
+    ; 选择增益
+    status := choose(++step)
+    if (status = 0) {
+      return retry("未找到对应增益选项")
+    }
+    gainMode := setting.gainMode
+    ; 全都要
+    if (gainMode = 0) {
+      getMoney(++step)
+      saveBank(++step, gainMode)
+      ; 只要业绩
+    } else if (gainMode = 1) {
+      getMoney(++step)
+      ; 只存银行
+    } else if (gainMode = 2) {
+      saveBank(++step, gainMode)
+    }
   }
   ; 退出副本
   exitFuben(++step)
@@ -411,9 +415,9 @@ YeJi() {
         WinClose(ZZZ)
       }
       Ctrl.stop()
-      return MsgBox("业绩已达周上限，脚本结束。共刷取" setting.statistics.Length "次")
+      return MsgBox((setting.HollowDenny ? "丁尼" : "业绩") "已达周上限，脚本结束。共刷取" setting.statistics.Length "次")
     }
-    stepLog("业绩未达周上限，继续刷取。已刷取" setting.statistics.Length "次")
+    stepLog((setting.HollowDenny ? "丁尼" : "业绩") "未达周上限，继续刷取。已刷取" setting.statistics.Length "次")
     ; 无限循环模式
   } else if (setting.loopMode = -1) {
     stepLog("无限循环模式。已刷取" setting.statistics.Length "次")
@@ -432,18 +436,18 @@ YeJi() {
       stepLog("指定次数剩余" setting.loopMode "次，继续刷取。已刷取" setting.statistics.Length "次")
     }
   }
-  RandomSleep(500, 600)
+  RandomSleep(888, 1000)
   pixelSearchAndClick(c.空洞.结算.完成*)
   SimulateClick(, , 3)
-  while (recogLocation() != 2) {
-    if (A_Index > 2) {
+  while (recogLocation(10) != 2) {
+    if (A_Index < 3) {
       if (PixelSearchPre(&X, &Y, c.空洞.结算.完成*)) {
         SimulateClick(X, Y)
       }
     }
-    if (A_Index > 6)
+    if (A_Index > 10)
       break
-    Sleep(100)
+    Sleep(200)
   }
   Sleep(100)
   YeJi()

@@ -86,6 +86,7 @@ reachEnd(step := 3) {
       Press('1', 2)
       RandomSleep(800, 900)
       Press('1', 2)
+      RandomSleep(800, 900)
       pixelSearchAndClick(c.空洞.确认*)
     }
     RandomSleep(1800, 2000)

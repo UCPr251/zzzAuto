@@ -84,7 +84,9 @@ class Panel {
     this.CP.AddText('X30', '循环模式：')
     this.CP.SetFont('s10')
     nowLoopMode := isYeJi ? setting.loopMode : setting.loopModeDenny
-    this.CP.AddRadio('X50 Y+10 vloop0 Checked' (nowLoopMode = 0), (isYeJi ? '业绩' : '丁尼') '上限').OnEvent('Click', loopModeSelected)
+    AddRadio := this.CP.AddRadio('X50 Y+10 vloop0 Checked' (nowLoopMode = 0), ((isYeJi && !setting.HollowDenny) ? '业绩' : '丁尼') '上限')
+    AddRadio.OnEvent('Click', loopModeSelected)
+    AddRadio.OnEvent('DoubleClick', hollowDennySwitch)
     this.CP.AddRadio('X+2 vloop-1 Checked' (nowLoopMode = -1), '无限循环').OnEvent('Click', loopModeSelected)
     this.CP.AddRadio('X+2 vloopN Checked' (nowLoopMode > 0), '指定次数').OnEvent('Click', loopModeSelected)
     this.loopEditGui := this.CP.AddEdit('X+0 w45 h20 Number Limit3 Hidden' (nowLoopMode <= 0), nowLoopMode > 0 ? nowLoopMode : isYeJi ? 50 : 99)
@@ -195,6 +197,22 @@ class Panel {
       } else {
         p.loopEditGui.Visible := false
         p.loopUpDownGui.Visible := false
+      }
+    }
+
+    static hollowDennySwitch(g, *) {
+      if (setting.mode != 'YeJi')
+        return
+      if (Ctrl.ing)
+        return MsgBox("当前正在刷取中，请先结束刷取再切换模式", , "Icon! 0x40000 T3")
+      setting.HollowDenny := !setting.HollowDenny
+      if (setting.HollowDenny) {
+        g.Text := '丁尼上限'
+        if (setting.isFirst('HollowDenny')) {
+          MsgBox('首次使用空洞丁尼模式，请注意：`n1、此模式下将不再获取业绩`n2、第一层boss战斗结束后将直接退出副本进入下一循环`n3、该模式用于刷完业绩后刷取零号空洞的丁尼', '空洞丁尼模式注意事项', 'Icon! 0x40000')
+        }
+      } else {
+        g.Text := '业绩上限'
       }
     }
 

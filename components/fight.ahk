@@ -113,7 +113,7 @@ fight(step := 4) {
       }
       ; 蓄力斩
       Click("Left Down")
-      Sleep(Random(1460, 1520))
+      Sleep(Random(1660, 1720))
       Click("Left Up")
       attack(10)
       if (fightIsOver(patterns)) {
