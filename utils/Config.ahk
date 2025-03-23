@@ -27,8 +27,8 @@ Class Config {
     errHandler: true,
     /** 是否开启步骤信息弹窗 */
     isStepLog: false,
-    /** 刷完后是否自动关闭游戏 */
-    isAutoClose: false,
+    /** 刷完后是否自动关闭游戏/电脑：0：禁用；1：关闭游戏；2：关闭电脑 */
+    isAutoClose: 0,
     /** 战斗时是否自动识别红光闪避 */
     isAutoDodge: false,
     /** 拿命验收二号位角色：1：通用；2：艾莲；3：星见雅 */
@@ -37,7 +37,8 @@ Class Config {
     loopModeDenny: 0,
     /** 拿命验收破坏箱子前视角向右转动的坐标，调整该值以确保视角对齐NPC */
     rotateCoords: 200,
-    HollowDenny: false,
+    /** 子循环模式：0：业绩上限；1：丁尼上限；2：全部上限 */
+    subLoopMode: 0,
     GamePath: ''
   }
 

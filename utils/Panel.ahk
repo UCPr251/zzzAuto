@@ -84,9 +84,9 @@ class Panel {
     this.CP.AddText('X30', '循环模式：')
     this.CP.SetFont('s10')
     nowLoopMode := isYeJi ? setting.loopMode : setting.loopModeDenny
-    AddRadio := this.CP.AddRadio('X50 Y+10 vloop0 Checked' (nowLoopMode = 0), ((isYeJi && !setting.HollowDenny) ? '业绩' : '丁尼') '上限')
+    AddRadio := this.CP.AddRadio('X50 Y+10 vloop0 Checked' (nowLoopMode = 0), !isYeJi ? '丁尼上限' : !setting.subLoopMode ? '业绩上限' : setting.subLoopMode = 1 ? '丁尼上限' : '全部上限')
     AddRadio.OnEvent('Click', loopModeSelected)
-    AddRadio.OnEvent('DoubleClick', hollowDennySwitch)
+    AddRadio.OnEvent('DoubleClick', subLoopModeSwitch)
     this.CP.AddRadio('X+2 vloop-1 Checked' (nowLoopMode = -1), '无限循环').OnEvent('Click', loopModeSelected)
     this.CP.AddRadio('X+2 vloopN Checked' (nowLoopMode > 0), '指定次数').OnEvent('Click', loopModeSelected)
     this.loopEditGui := this.CP.AddEdit('X+0 w45 h20 Number Limit3 Hidden' (nowLoopMode <= 0), nowLoopMode > 0 ? nowLoopMode : isYeJi ? 50 : 99)
@@ -99,11 +99,15 @@ class Panel {
     this.CP.SetFont('s13')
     this.CP.AddCheckBox('verrHandler X30 Checked' setting.errHandler, '异常处理').OnEvent('Click', switchSetting)
     this.CP.AddCheckBox('visStepLog Checked' setting.isStepLog, '步骤信息弹窗').OnEvent('Click', switchSetting)
-    this.CP.AddCheckBox('visAutoClose Checked' setting.isAutoClose, '刷完关闭游戏').OnEvent('Click', switchSetting)
     if (isYeJi)
       this.CP.AddCheckBox('visAutoDodge Checked' setting.isAutoDodge, '战斗红光自动闪避').OnEvent('Click', switchSetting)
 
     this.CP.SetFont('s12')
+    this.CP.AddText('X30', '刷完关闭：')
+    this.CP.AddRadio('X+3 Checked' (setting.isAutoClose = 0), '禁用').OnEvent('Click', (*) => setting.isAutoClose := 0)
+    this.CP.AddRadio('X+3 Checked' (setting.isAutoClose = 1), '游戏').OnEvent('Click', (*) => setting.isAutoClose := 1)
+    this.CP.AddRadio('X+3 Checked' (setting.isAutoClose = 2), '电脑').OnEvent('Click', (*) => setting.isAutoClose := 2)
+
     this.CP.AddButton('X15 Y+15 w75', '&Q 退出').OnEvent('Click', (*) => ExitApp())
     this.CP.AddButton('X+5 w75', '&R 重启').OnEvent('Click', (*) => Reload())
     this.CP.pauseButton := this.CP.AddButton('X+5 w75', '&P ' (this.paused ? '继续' : '暂停'))
@@ -200,19 +204,25 @@ class Panel {
       }
     }
 
-    static hollowDennySwitch(g, *) {
+    static subLoopModeSwitch(g, *) {
       if (setting.mode != 'YeJi')
         return
       if (Ctrl.ing)
         return MsgBox("当前正在刷取中，请先结束刷取再切换模式", , "Icon! 0x40000 T3")
-      setting.HollowDenny := !setting.HollowDenny
-      if (setting.HollowDenny) {
-        g.Text := '丁尼上限'
-        if (setting.isFirst('HollowDenny')) {
-          MsgBox('首次使用空洞丁尼模式，请注意：`n1、此模式下将不再获取业绩`n2、第一层boss战斗结束后将直接退出副本进入下一循环`n3、该模式用于刷完业绩后刷取零号空洞的丁尼', '空洞丁尼模式注意事项', 'Icon! 0x40000')
-        }
-      } else {
+      ; 业绩上限 → 丁尼上限 → 全部上限
+      setting.subLoopMode := Mod(setting.subLoopMode + 1, 3)
+      if (setting.subLoopMode = 0) {
         g.Text := '业绩上限'
+      } else if (setting.subLoopMode = 1) {
+        g.Text := '丁尼上限'
+        if (setting.isFirst('subLoopMode1')) {
+          MsgBox('首次使用丁尼上限模式，请注意：`n1、此模式下将不再获取业绩`n2、第一层boss战斗结束后将直接退出副本进入下一循环`n3、该模式用于刷完业绩后刷取零号空洞的丁尼', '丁尼上限模式注意事项', 'Icon! 0x40000')
+        }
+      } else if (setting.subLoopMode = 2) {
+        g.Text := '全部上限'
+        if (setting.isFirst('subLoopMode2')) {
+          MsgBox('首次使用全部上限模式，请注意：`n1、此模式下将一直刷取直至业绩、丁尼皆达到周上限`n2、此模式下当刷取业绩达上限时，会自动切换至丁尼上限模式', '全部上限模式注意事项', 'Icon! 0x40000')
+        }
       }
     }
 

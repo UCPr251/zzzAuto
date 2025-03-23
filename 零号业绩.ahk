@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2025/2/25
- * @version v2.2.2
+ * @date 2025/3/23
+ * @version v2.2.3
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.2.2"
+global Version := "v2.2.3"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -346,6 +346,7 @@ runAutoZZZ() {
 
 /** 业绩模式 */
 YeJi() {
+  static limited := 0
   page := recogLocation()
   if (page = 1) {
     if (!enterHollowZero()) {
@@ -372,7 +373,7 @@ YeJi() {
     return retry("战斗超时或检测异常")
   }
   ; 空洞丁尼模式打完第一层直接退出副本
-  if (not setting.HollowDenny) {
+  if (setting.subLoopMode != 1) {
     ; 选择增益
     status := choose(++step)
     if (status = 0) {
@@ -411,13 +412,27 @@ YeJi() {
   if (setting.loopMode = 0) {
     ; 判断是否达到上限
     if (isLimited()) { ; 达到上限
-      if (setting.isAutoClose) {
-        WinClose(ZZZ)
+      limited++
+      if (limited >= 2) { ; 连续两次判断为已达上限
+        limited := 0
+        if (setting.subLoopMode = 2) { ; 全部上限模式，业绩达上限时自动切换丁尼上限模式
+          setting.subLoopMode := 1
+        } else {
+          Ctrl.stop()
+          msg := (setting.subLoopMode = 1 ? "丁尼" : "业绩") "已达周上限，脚本结束。共刷取" setting.statistics.Length "次"
+          if (setting.isAutoClose) {
+            WinClose(ZZZ)
+            if (setting.isAutoClose = 2) {
+              return ShutdownPC(msg)
+            }
+          }
+          return MsgBox(msg)
+        }
       }
-      Ctrl.stop()
-      return MsgBox((setting.HollowDenny ? "丁尼" : "业绩") "已达周上限，脚本结束。共刷取" setting.statistics.Length "次")
+    } else {
+      limited := 0
     }
-    stepLog((setting.HollowDenny ? "丁尼" : "业绩") "未达周上限，继续刷取。已刷取" setting.statistics.Length "次")
+    stepLog((setting.subLoopMode = 1 ? "丁尼" : "业绩") "未达周上限，继续刷取。已刷取" setting.statistics.Length "次")
     ; 无限循环模式
   } else if (setting.loopMode = -1) {
     stepLog("无限循环模式。已刷取" setting.statistics.Length "次")
@@ -455,6 +470,7 @@ YeJi() {
 
 /** 丁尼模式 */
 Denny() {
+  static limited := 0
   status := 0
   step := 0
   page := recogLocation(40)
@@ -503,11 +519,21 @@ Denny() {
   ; 丁尼上限模式
   if (setting.loopModeDenny = 0) {
     if (isLimited()) { ; 已达到上限
-      if (setting.isAutoClose) {
-        WinClose(ZZZ)
+      limited++
+      if (limited >= 2) { ; 连续两次判断为已达上限
+        limited := 0
+        Ctrl.stop()
+        msg := "丁尼已达日上限，脚本结束。共刷取" setting.statisticsDenny.Length "次"
+        if (setting.isAutoClose) {
+          WinClose(ZZZ)
+          if (setting.isAutoClose = 2) {
+            return ShutdownPC(msg)
+          }
+        }
+        return MsgBox(msg)
       }
-      Ctrl.stop()
-      return MsgBox("丁尼已达日上限，脚本结束。共刷取" setting.statisticsDenny.Length "次")
+    } else {
+      limited := 0
     }
     stepLog("丁尼未达日上限，继续刷取。已刷取" setting.statisticsDenny.Length "次")
     ; 无限循环模式
@@ -538,4 +564,11 @@ Denny() {
     }
   }
   Denny()
+}
+
+ShutdownPC(msg := '', Code := 1) {
+  r := MsgBox(msg '`n`n将在12s后自动关机，点击取消可取消关机', '刷取完毕自动关机', 'Icon! T12 OC Default2')
+  if (r != 'Cancel') {
+    Shutdown(Code)
+  }
 }

@@ -41,7 +41,7 @@ fight(step := 4) {
     autoDodge(200, 300)
     Send("{w Up}")
     ; 约5s一循环
-    loop (16) {
+    loop (10) {
       ; 战斗动作
       sAttack() ; 使用技能
       attack(4)
@@ -66,7 +66,7 @@ fight(step := 4) {
     ; 艾莲战斗模式
   } else if (setting.fightMode = 2) {
     ; 约10s一循环
-    loop (8) {
+    loop (5) {
       if (A_Index != 1 && !setting.isAutoDodge) {
         Press("Shift") ; 闪避
       }
@@ -101,7 +101,7 @@ fight(step := 4) {
     ; 雅战斗模式
   } else if (setting.fightMode = 3) {
     ; 约12s一循环
-    loop (6) {
+    loop (4) {
       if (A_Index = 1) {
         ; 长闪避近身
         Send("{w Down}")
