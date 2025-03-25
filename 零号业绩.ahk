@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2025/3/23
- * @version v2.2.3
+ * @date 2025/3/25
+ * @version v2.2.4
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.2.3"
+global Version := "v2.2.4"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -441,11 +441,15 @@ YeJi() {
     setting.loopMode--
     ; 刷取完毕
     if (setting.loopMode = 0) {
+      Ctrl.stop()
+      msg := "已刷完指定次数，脚本结束。共刷取" setting.statistics.Length "次"
       if (setting.isAutoClose) {
         WinClose(ZZZ)
+        if (setting.isAutoClose = 2) {
+          return ShutdownPC(msg)
+        }
       }
-      Ctrl.stop()
-      return MsgBox("已刷完指定次数，脚本结束。共刷取" setting.statistics.Length "次")
+      return MsgBox(msg)
       ; 未刷完
     } else {
       stepLog("指定次数剩余" setting.loopMode "次，继续刷取。已刷取" setting.statistics.Length "次")
@@ -544,11 +548,15 @@ Denny() {
     setting.loopModeDenny--
     ; 刷取完毕
     if (setting.loopModeDenny = 0) {
+      Ctrl.stop()
+      msg := "已刷完指定次数，脚本结束。共刷取" setting.statisticsDenny.Length "次"
       if (setting.isAutoClose) {
         WinClose(ZZZ)
+        if (setting.isAutoClose = 2) {
+          return ShutdownPC(msg)
+        }
       }
-      Ctrl.stop()
-      return MsgBox("已刷完指定次数，脚本结束。共刷取" setting.statisticsDenny.Length "次")
+      return MsgBox(msg)
       ; 未刷完
     } else {
       stepLog("指定次数剩余" setting.loopModeDenny "次，继续刷取。已刷取" setting.statisticsDenny.Length "次")
