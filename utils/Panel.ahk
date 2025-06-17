@@ -72,6 +72,9 @@ class Panel {
       this.CP.AddRadio('X+2 vgain1 Checked' (setting.gainMode = 1), '只要业绩').OnEvent('Click', gainModeSelected)
       this.CP.AddRadio('X+2 vgain2 Checked' (setting.gainMode = 2), '只存银行').OnEvent('Click', gainModeSelected)
     } else {
+      this.CP.AddText('X30', '快捷导航：')
+      this.CP.AddHotkey('X+10 w60 h25 Limit14', setting.quickNav).OnEvent('Change', changeQuickNav)
+
       this.CP.AddText('X30', '二号位角色：')
       this.CP.AddDropDownList("X+10 W80 Choose" setting.fightModeDenny, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightModeDenny := Integer(g.Value))
 
@@ -250,6 +253,19 @@ class Panel {
           MsgBox('颜色搜索允许渐变值须介于0~255', '错误', 'Iconx 0x40000')
           g.Value := setting.variation
         }
+      }
+    }
+    
+    static changeQuickNav(g, *) {
+      value := g.Value
+      if (value) {
+        if (Instr(value, '^!') || StrLen(value) > 2) {
+          g.Value := setting.quickNav
+        } else {
+          setting.quickNav := value
+        }
+      } else {
+        g.Value := setting.quickNav
       }
     }
 

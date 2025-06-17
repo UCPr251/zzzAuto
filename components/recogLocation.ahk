@@ -12,7 +12,7 @@ recogLocation(loopTimes := 30) {
 
   /** 通过特殊定位点判断所处界面 */
   patterns := [[
-    c.角色操作.M,
+    c.角色操作.鼠标右键,
     c.角色操作.Q,
     [c.角色操作.T, c.角色操作.Tab]
   ], [
@@ -49,7 +49,7 @@ recogLocation(loopTimes := 30) {
         break UC
       }
     }
-    Sleep(100)
+    Sleep(200)
   }
   return page
 }

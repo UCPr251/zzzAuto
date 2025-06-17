@@ -23,8 +23,7 @@ enterHollowZero() {
   }
   RandomSleep(400, 600)
   Press('Escape')
-  while (recogLocation() != 1) {
-    Sleep(100)
+  while (recogLocation(3) != 1) {
     if (A_Index > 3) {
       return false
     }

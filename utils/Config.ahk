@@ -11,6 +11,8 @@ Class Config {
     bombMode: 1,
     /** 快捷手册 */
     handbook: 'F2',
+    /** 快捷导航 */
+    quickNav: 'n',
     /** 休眠系数，加载动画等待时长在原基础上的倍率，可通过修改该值延长/缩短全局等待时长 */
     sleepCoefficient: 1.0,
     /** 允许总的异常时重试的次数 */
