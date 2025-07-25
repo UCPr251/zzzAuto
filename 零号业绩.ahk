@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2025/6/18
- * @version v2.2.5
+ * @date 2025/7/26
+ * @version v2.3.0
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.2.5"
+global Version := "v2.3.0"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -141,30 +141,30 @@ main() {
         return MsgBox("请位于 <HDD第二章间章战斗委托关卡选择界面> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
       }
     }
-    case 1:
-    {
-      stepLog("【开始】界面：角色操作界面")
-    }
-    case 2:
-    {
-      stepLog("【开始】界面：零号空洞主页")
-      if (!isYeJi) {
-        loop (2) {
-          Press('Escape')
-          RandomSleep(1100, 1200)
-        }
+      case 1:
+      {
+        stepLog("【开始】界面：角色操作界面")
       }
-    }
-    case 3:
-    {
-      stepLog("【开始】界面：HDD关卡选择界面")
-      if (isYeJi) {
-        loop (2) {
-          Press('Escape')
-          RandomSleep(1100, 1200)
+        case 2:
+        {
+          stepLog("【开始】界面：零号空洞主页")
+          if (!isYeJi) {
+            loop (2) {
+              Press('Escape')
+              RandomSleep(1100, 1200)
+            }
+          }
         }
-      }
-    }
+          case 3:
+          {
+            stepLog("【开始】界面：HDD关卡选择界面")
+            if (isYeJi) {
+              loop (2) {
+                Press('Escape')
+                RandomSleep(1100, 1200)
+              }
+            }
+          }
   }
   runAutoZZZ()
 }
@@ -202,7 +202,7 @@ retry(reason?) {
   RandomSleep()
   page := 0
   ; 卡在空洞走格子、交互、确认界面，子界面
-  UC:
+UC:
   loop (6) {
     Press('Space', 2)
     if (PixelSearchPre(&X, &Y, c.空洞.确认*)) { ; 确认？
@@ -357,6 +357,7 @@ runAutoZZZ() {
 /** 业绩模式 */
 YeJi() {
   static limited := 0
+  static oriSubLoopMode := -1
   page := recogLocation()
   if (page = 1) {
     if (!enterHollowZero()) {
@@ -427,9 +428,14 @@ YeJi() {
         limited := 0
         if (setting.subLoopMode = 2) { ; 全部上限模式，业绩达上限时自动切换丁尼上限模式
           setting.subLoopMode := 1
+          oriSubLoopMode := 2
         } else {
           Ctrl.stop()
           msg := (setting.subLoopMode = 1 ? "丁尼" : "业绩") "已达周上限，脚本结束。共刷取" setting.statistics.Length "次"
+          if (oriSubLoopMode > -1) {
+            setting.subLoopMode := oriSubLoopMode
+            oriSubLoopMode := -1
+          }
           if (setting.isAutoClose) {
             WinClose(ZZZ)
             if (setting.isAutoClose = 2) {
@@ -490,7 +496,7 @@ Denny() {
   page := recogLocation(40)
   if (page = 0) { ; 休息
     Press('Space', 2)
-    while (not page := recogLocation(3)) {
+    while ( not page := recogLocation(3)) {
       Press('Space', 2)
       if (A_Index > 20)
         return retry("确认休息进入角色操作界面超时")
