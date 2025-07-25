@@ -255,7 +255,7 @@ class Panel {
         }
       }
     }
-    
+
     static changeQuickNav(g, *) {
       value := g.Value
       if (value) {
@@ -284,7 +284,7 @@ class Panel {
       p.CPLastPos := [x * 96 / A_ScreenDPI, y * 96 / A_ScreenDPI]
       destroyGui()
       if (setting.mode = 'Denny' && setting.isFirst('Denny')) {
-        MsgBox('首次使用丁尼模式，请注意：`n`n1、HDD关卡选择界面需提前切换至「间章第二章」`n2、编队首位必须为「比利」`n3、请在副本内调整「视角转动值」以确保对齐NPC`n4、转动效果受游戏帧率设置影响`n5、转动效果存在浮动系正常现象', '丁尼模式注意事项', 'Icon! 0x40000')
+        MsgBox('首次使用丁尼模式，请注意：`n`n1、HDD关卡选择界面需提前切换至「间章第二章」`n2、编队首位必须为「比利」`n3、请在副本内调整「视角转动值」以确保对齐NPC`n4、转动效果受游戏帧率设置影响`n5、转动效果存在浮动系正常现象`n6、如需于角色操作界面启动脚本时自动传送HDD，请先于快捷导航中收藏置顶录像店', '丁尼模式注意事项', 'Icon! 0x40000')
       }
       p.ControlPanel()
     }
