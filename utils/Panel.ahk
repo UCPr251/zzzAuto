@@ -31,107 +31,120 @@ class Panel {
     A_TrayMenu.Check('控制面板')
     isYeJi := setting.mode = 'YeJi'
 
-    this.CP := Gui('AlwaysOnTop -MinimizeBox', '零号业绩控制面板 ' Version)
-    this.CP.destroyGui := destroyGui
-    this.CP.SetFont('s9', '微软雅黑')
-    this.CP.MarginX := 15
-    this.CP.AddText('X62 w251', '分辨率：' c.width "x" c.height "   模式：" c.mode (c.compatible ? (c.windowed ? " (窗口兼容)" : " (全屏兼容)") : (c.windowed ? " (窗口)" : " (全屏)")))
-    this.CP.SetFont('s13')
+    CP := this.CP := Gui('AlwaysOnTop -MinimizeBox', '零号业绩控制面板 ' Version)
+    CP.destroyGui := destroyGui
+    CP.SetFont('s9', '微软雅黑')
+    CP.MarginX := 15
+    CP.AddText('X62 w251', '分辨率：' c.width "x" c.height "   模式：" c.mode (c.compatible ? (c.windowed ? " (窗口兼容)" : " (全屏兼容)") : (c.windowed ? " (窗口)" : " (全屏)")))
+    CP.SetFont('s13')
 
-    this.CP.AddText('X30 Y40', '休眠系数：')
-    EG := this.CP.AddEdit('X+10 w60 h25 Limit4', setting.sleepCoefficient)
+    CP.AddText('X30 Y40', '休眠系数：')
+    EG := CP.AddEdit('X+10 w60 h25 Limit4', setting.sleepCoefficient)
     EG.OnEvent('Change', changeSleepCoefficient)
-    this.CP.AddUpDown('-2', setting.sleepCoefficient).OnEvent('Change', UpDownChange)
+    CP.AddUpDown('-2', setting.sleepCoefficient).OnEvent('Change', UpDownChange)
 
-    this.CP.AddText('X30', '异常重试次数：').OnEvent('DoubleClick', (*) => MsgBox(retry(), '历史异常', '0x40000'))
-    this.CP.AddEdit('X+10 w48 h25 Limit2 Number').OnEvent('Change', changeRetryTimes)
-    this.CP.AddUpDown('Range0-99', setting.retryTimes).OnEvent('Change', changeRetryTimes)
+    CP.AddText('X30', '异常重试次数：').OnEvent('DoubleClick', (*) => MsgBox(retry(), '历史异常', '0x40000'))
+    CP.AddEdit('X+10 w48 h25 Limit2 Number').OnEvent('Change', changeRetryTimes)
+    CP.AddUpDown('Range0-99', setting.retryTimes).OnEvent('Change', changeRetryTimes)
 
-    this.CP.AddText('X30', '颜色搜索允许RGB容差：')
-    this.CP.AddEdit('X+10 w60 h25 Limit3 Number').OnEvent('Change', changeVariation)
-    this.CP.AddUpDown('Range0-255', setting.variation).OnEvent('Change', changeVariation)
+    CP.AddText('X30', '颜色搜索允许RGB容差：')
+    CP.AddEdit('X+10 w60 h25 Limit3 Number').OnEvent('Change', changeVariation)
+    CP.AddUpDown('Range0-255', setting.variation).OnEvent('Change', changeVariation)
 
-    this.CP.AddButton('X15 w320 h30', '切换至' (isYeJi ? '丁尼' : '业绩') '模式').OnEvent('Click', switchMode)
+    CP.AddButton('X15 w320 h30', '切换至' (isYeJi ? '丁尼' : '业绩') '模式').OnEvent('Click', switchMode)
 
     if (isYeJi) {
-      this.CP.AddText('X30', '使用炸弹：')
-      this.CP.AddRadio('X+5 Checked' (setting.bombMode = 1), '长按').OnEvent('Click', (*) => setting.bombMode := 1)
-      this.CP.AddRadio('X+5 Checked' (setting.bombMode = 2), '点击').OnEvent('Click', (*) => setting.bombMode := 2)
+      CP.AddText('X30', '使用炸弹：')
+      CP.AddRadio('X+5 Checked' (setting.bombMode = 1), '长按').OnEvent('Click', (*) => setting.bombMode := 1)
+      CP.AddRadio('X+5 Checked' (setting.bombMode = 2), '点击').OnEvent('Click', (*) => setting.bombMode := 2)
 
-      this.CP.AddText('X30', '快捷手册：')
-      this.CP.AddHotkey('X+10 w60 h25 Limit14', setting.handbook).OnEvent('Change', changeHandbook)
+      CP.AddText('X30', '快捷手册：')
+      CP.AddHotkey('X+10 w60 h25 Limit14', setting.handbook).OnEvent('Change', changeHandbook)
 
-      ; this.CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
+      ; CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
 
-      this.CP.AddText('X30', '战斗模式：')
-      this.CP.AddDropDownList("X+10 W80 Choose" setting.fightMode, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightMode := Integer(g.Value))
+      CP.AddText('X30', '战斗模式：')
+      CP.AddDropDownList("X+10 W80 Choose" setting.fightMode, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightMode := Integer(g.Value))
 
-      this.CP.AddText('X30', '刷取模式：')
-      this.CP.SetFont('s10')
-      this.CP.AddRadio('X50 Y+10 vgain0 Checked' (setting.gainMode = 0), '我全都要').OnEvent('Click', gainModeSelected)
-      this.CP.AddRadio('X+2 vgain1 Checked' (setting.gainMode = 1), '只要业绩').OnEvent('Click', gainModeSelected)
-      this.CP.AddRadio('X+2 vgain2 Checked' (setting.gainMode = 2), '只存银行').OnEvent('Click', gainModeSelected)
+      CP.AddText('X30', '刷取模式：')
+      CP.SetFont('s10')
+      CP.AddRadio('X50 Y+10 vgain0 Checked' (setting.gainMode = 0), '我全都要').OnEvent('Click', gainModeSelected)
+      CP.AddRadio('X+2 vgain1 Checked' (setting.gainMode = 1), '只要业绩').OnEvent('Click', gainModeSelected)
+      CP.AddRadio('X+2 vgain2 Checked' (setting.gainMode = 2), '只存银行').OnEvent('Click', gainModeSelected)
     } else {
-      this.CP.AddText('X30', '快捷导航：')
-      this.CP.AddHotkey('X+10 w60 h25 Limit14', setting.quickNav).OnEvent('Change', changeQuickNav)
+      CP.AddText('X30', '快捷导航：')
+      CP.AddHotkey('X+10 w60 h25 Limit14', setting.quickNav).OnEvent('Change', changeQuickNav)
 
-      this.CP.AddText('X30', '二号位角色：')
-      this.CP.AddDropDownList("X+10 W80 Choose" setting.fightModeDenny, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightModeDenny := Integer(g.Value))
+      CP.AddText('X30', '二号位角色：')
+      CP.AddDropDownList("X+10 W80 Choose" setting.fightModeDenny, setting.fightModeArr).OnEvent("Change", (g, *) => setting.fightModeDenny := Integer(g.Value))
 
-      this.CP.AddText('X30', '视角转动值：')
-      this.CP.AddEdit('X+10 w80 h25 Limit3 Number').OnEvent('Change', changeRotateCoords)
-      this.CP.AddUpDown('Range0-9999', setting.rotateCoords).OnEvent('Change', changeRotateCoords)
+      CP.AddText('X30', '视角转动值：')
+      CP.AddEdit('X+10 w80 h25 Limit3 Number').OnEvent('Change', changeRotateCoords)
+      CP.AddUpDown('Range0-9999', setting.rotateCoords).OnEvent('Change', changeRotateCoords)
     }
 
-    this.CP.SetFont('s13')
-    this.CP.AddText('X30', '循环模式：')
-    this.CP.SetFont('s10')
+    CP.SetFont('s13')
+    CP.AddText('X30', '循环模式：')
+    CP.SetFont('s10')
     nowLoopMode := isYeJi ? setting.loopMode : setting.loopModeDenny
-    AddRadio := this.CP.AddRadio('X50 Y+10 vloop0 Checked' (nowLoopMode = 0), !isYeJi ? '丁尼上限' : !setting.subLoopMode ? '业绩上限' : setting.subLoopMode = 1 ? '丁尼上限' : '全部上限')
+    AddRadio := CP.AddRadio('X50 Y+10 vloop0 Checked' (nowLoopMode = 0), !isYeJi ? '丁尼上限' : !setting.subLoopMode ? '业绩上限' : setting.subLoopMode = 1 ? '丁尼上限' : '全部上限')
     AddRadio.OnEvent('Click', loopModeSelected)
     AddRadio.OnEvent('DoubleClick', subLoopModeSwitch)
-    this.CP.AddRadio('X+2 vloop-1 Checked' (nowLoopMode = -1), '无限循环').OnEvent('Click', loopModeSelected)
-    this.CP.AddRadio('X+2 vloopN Checked' (nowLoopMode > 0), '指定次数').OnEvent('Click', loopModeSelected)
-    this.loopEditGui := this.CP.AddEdit('X+0 w45 h20 Number Limit3 Hidden' (nowLoopMode <= 0), nowLoopMode > 0 ? nowLoopMode : isYeJi ? 50 : 99)
-    this.loopEditGui.OnEvent('Change', changeLoopMode)
-    this.loopUpDownGui := this.CP.AddUpDown('Range1-999 Hidden' (nowLoopMode <= 0), nowLoopMode > 0 ? nowLoopMode : isYeJi ? 50 : 99)
-    this.loopUpDownGui.OnEvent('Change', changeLoopMode)
+    CP.AddRadio('X+2 vloop-1 Checked' (nowLoopMode = -1), '无限循环').OnEvent('Click', loopModeSelected)
+    CP.AddRadio('X+2 vloopN Checked' (nowLoopMode > 0), '指定次数').OnEvent('Click', loopModeSelected)
+    loopEditGui := CP.AddEdit('X+0 w45 h20 Number Limit3 Hidden' (nowLoopMode <= 0), nowLoopMode > 0 ? nowLoopMode : isYeJi ? 50 : 99)
+    loopEditGui.OnEvent('Change', changeLoopMode)
+    loopUpDownGui := CP.AddUpDown('Range1-999 Hidden' (nowLoopMode <= 0), nowLoopMode > 0 ? nowLoopMode : isYeJi ? 50 : 99)
+    loopUpDownGui.OnEvent('Change', changeLoopMode)
 
-    ; this.CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
+    ; CP.AddText('X30 Y+10 w286 h1 BackgroundGray')
 
-    this.CP.SetFont('s13')
-    this.CP.AddCheckBox('verrHandler X30 Checked' setting.errHandler, '异常处理').OnEvent('Click', switchSetting)
-    this.CP.AddCheckBox('visStepLog Checked' setting.isStepLog, '步骤信息弹窗').OnEvent('Click', switchSetting)
+    CP.SetFont('s13')
+    CP.AddCheckBox('verrHandler X30 Checked' setting.errHandler, '异常处理').OnEvent('Click', switchSetting)
+    CP.AddCheckBox('visStepLog Checked' setting.isStepLog, '步骤信息弹窗').OnEvent('Click', switchSetting)
     if (isYeJi)
-      this.CP.AddCheckBox('visAutoDodge Checked' setting.isAutoDodge, '战斗红光自动闪避').OnEvent('Click', switchSetting)
+      CP.AddCheckBox('visAutoDodge Checked' setting.isAutoDodge, '战斗红光自动闪避').OnEvent('Click', switchSetting)
 
-    this.CP.SetFont('s12')
-    this.CP.AddText('X30', '刷完关闭：')
-    this.CP.AddRadio('X+3 Checked' (setting.isAutoClose = 0), '禁用').OnEvent('Click', (*) => setting.isAutoClose := 0)
-    this.CP.AddRadio('X+3 Checked' (setting.isAutoClose = 1), '游戏').OnEvent('Click', (*) => setting.isAutoClose := 1)
-    this.CP.AddRadio('X+3 Checked' (setting.isAutoClose = 2), '电脑').OnEvent('Click', (*) => setting.isAutoClose := 2)
+    CP.AddCheckBox('vAutoRun Checked' setting.AutoRun, '定时运行').OnEvent('Click', switchAutoRun)
+    AutoRunHourEditGui := CP.AddEdit('X+10 w45 h25 Number Limit2 Hidden' (!setting.AutoRun), setting.AutoRunHour)
+    AutoRunHourEditGui.OnEvent('Change', (g, *) => (IsInteger(g.Value) && g.Value >= 0 && g.Value <= 23) ? (setting.AutoRunHour := g.Value) : (g.Value := setting.AutoRunHour))
+    AutoRunHourUpDownGui := CP.AddUpDown('Range0-23 Hidden' (!setting.AutoRun), setting.AutoRunHour)
+    AutoRunHourUpDownGui.OnEvent('Change', (g, *) => (IsInteger(g.Value) && g.Value >= 0 && g.Value <= 23) ? (setting.AutoRunHour := g.Value) : (g.Value := setting.AutoRunHour))
+    AutoRunHourTextGui := CP.AddText('X+2 Hidden' (!setting.AutoRun), '时')
+    AutoRunMinuteEditGui := CP.AddEdit('X+2 w45 h25 Number Limit2 Hidden' (!setting.AutoRun), setting.AutoRunMinute)
+    AutoRunMinuteEditGui.OnEvent('Change', (g, *) => (IsInteger(g.Value) && g.Value >= 0 && g.Value <= 59) ? (setting.AutoRunMinute := g.Value) : (g.Value := setting.AutoRunMinute))
+    AutoRunMinuteUpDownGui := CP.AddUpDown('Range0-59 Hidden' (!setting.AutoRun), setting.AutoRunMinute)
+    AutoRunMinuteUpDownGui.OnEvent('Change', (g, *) => (IsInteger(g.Value) && g.Value >= 0 && g.Value <= 59) ? (setting.AutoRunMinute := g.Value) : (g.Value := setting.AutoRunMinute))
+    AutoRunMinuteTextGui := CP.AddText('X+2 Hidden' (!setting.AutoRun), '分')
 
-    this.CP.AddButton('X15 Y+15 w75', '&Q 退出').OnEvent('Click', (*) => ExitApp())
-    this.CP.AddButton('X+5 w75', '&R 重启').OnEvent('Click', (*) => Reload())
-    this.CP.pauseButton := this.CP.AddButton('X+5 w75', '&P ' (this.paused ? '继续' : '暂停'))
-    this.CP.pauseButton.OnEvent('Click', pauseS)
-    this.CP.AddButton('X+5 Default w75', '&C 确定').OnEvent('Click', destroyGui)
-    this.CP.AddButton('X15 Y+10 w100', '&U 检查更新').OnEvent('Click', this.checkUpdate.Bind(this))
-    this.CP.AddButton('X+8 w100', '&T 刷取统计').OnEvent('Click', this.StatisticsPanel.Bind(this))
-    this.CP.AddButton('X+8 w100', '&Z ' (Ctrl.ing ? (Ctrl.nextExit ? '取消结束' : '本轮结束') : '开始刷取')).OnEvent('Click', start)
-    this.CP.AddStatusBar(, '`tAlt+字母 = 点击按钮')
+    CP.SetFont('s12')
+    CP.AddText('X30', '刷完关闭：')
+    CP.AddRadio('X+3 Checked' (setting.isAutoClose = 0), '禁用').OnEvent('Click', (*) => setting.isAutoClose := 0)
+    CP.AddRadio('X+3 Checked' (setting.isAutoClose = 1), '游戏').OnEvent('Click', (*) => setting.isAutoClose := 1)
+    CP.AddRadio('X+3 Checked' (setting.isAutoClose = 2), '电脑').OnEvent('Click', (*) => setting.isAutoClose := 2)
+
+    CP.AddButton('X15 Y+15 w75', '&Q 退出').OnEvent('Click', (*) => ExitApp())
+    CP.AddButton('X+5 w75', '&R 重启').OnEvent('Click', (*) => Reload())
+    CP.pauseButton := CP.AddButton('X+5 w75', '&P ' (this.paused ? '继续' : '暂停'))
+    CP.pauseButton.OnEvent('Click', pauseS)
+    CP.AddButton('X+5 Default w75', '&C 确定').OnEvent('Click', destroyGui)
+    CP.AddButton('X15 Y+10 w100', '&U 检查更新').OnEvent('Click', this.checkUpdate.Bind(this))
+    CP.AddButton('X+8 w100', '&T 刷取统计').OnEvent('Click', this.StatisticsPanel.Bind(this))
+    startButtonGui := CP.AddButton('X+8 w100', '&Z ' (Ctrl.ing ? (Ctrl.nextExit ? '取消结束' : '本轮结束') : (Ctrl.timer ? '取消定时' : (setting.AutoRun ? '定时刷取' : '开始刷取'))))
+    startButtonGui.OnEvent('Click', start)
+    CP.AddStatusBar(, '`tAlt+字母 = 点击按钮')
 
     if (this.CPLastPos) {
-      this.CP.Show('Hide')
-      this.CP.Move(this.CPLastPos*)
-      this.CP.Show()
+      CP.Show('Hide')
+      CP.Move(this.CPLastPos*)
+      CP.Show()
       this.CPLastPos := 0
     } else {
-      this.CP.Show()
+      CP.Show()
     }
 
-    this.CP.OnEvent('Close', destroyGui)
-    this.CP.OnEvent('Escape', destroyGui)
+    CP.OnEvent('Close', destroyGui)
+    CP.OnEvent('Escape', destroyGui)
 
     lastUpDownValue := 1
     UpDownChange(g, *) {
@@ -170,6 +183,22 @@ class Panel {
       }
     }
 
+    switchAutoRun(g, *) {
+      if (!setting.GamePath || !FileExist(setting.GamePath)) {
+        g.Value := setting.AutoRun := false
+        MsgBox("请先启动游戏并运行一次本脚本后使用此功能", "游戏路径错误", "Icon! 0x40000")
+      } else {
+        switchSetting(g)
+      }
+      AutoRunHourEditGui.Visible := setting.AutoRun
+      AutoRunHourUpDownGui.Visible := setting.AutoRun
+      AutoRunHourTextGui.Visible := setting.AutoRun
+      AutoRunMinuteEditGui.Visible := setting.AutoRun
+      AutoRunMinuteUpDownGui.Visible := setting.AutoRun
+      AutoRunMinuteTextGui.Visible := setting.AutoRun
+      startButtonGui.Text := '&Z ' (Ctrl.ing ? (Ctrl.nextExit ? '取消结束' : '本轮结束') : (Ctrl.timer ? '取消定时' : (setting.AutoRun ? '定时刷取' : '开始刷取')))
+    }
+
     static switchSetting(g, *) {
       setting.%g.Name% := !setting.%g.Name%
     }
@@ -187,7 +216,7 @@ class Panel {
       }
     }
 
-    static loopModeSelected(g, *) {
+    loopModeSelected(g, *) {
       name := StrReplace(g.Name, 'loop', '')
       key := setting.mode = 'YeJi' ? 'loopMode' : 'loopModeDenny'
       if (name = '0') {
@@ -198,12 +227,12 @@ class Panel {
       if (name = 'N') {
         value := setting.mode = 'YeJi' ? 30 : 650
         setting.%key% := value
-        p.loopEditGui.Value := value
-        p.loopEditGui.Visible := true
-        p.loopUpDownGui.Visible := true
+        loopEditGui.Value := value
+        loopEditGui.Visible := true
+        loopUpDownGui.Visible := true
       } else {
-        p.loopEditGui.Visible := false
-        p.loopUpDownGui.Visible := false
+        loopEditGui.Visible := false
+        loopUpDownGui.Visible := false
       }
     }
 
@@ -334,18 +363,32 @@ class Panel {
           g.Text := "&Z 本轮结束"
         }
       } else {
-        if (!WinExist(ZZZ) && setting.GamePath && FileExist(setting.GamePath)) {
-          MsgBox('未运行游戏，3s后将尝试自动启动游戏', , 'Icon! 0x40000 T3')
+        if (setting.AutoRun && !Ctrl.timer) {
+          hour := setting.AutoRunHour
+          minute := setting.AutoRunMinute
+          targetTime := DateAdd(A_Now, hour - A_Hour, "H")
+          targetTime := DateAdd(targetTime, minute - A_Min, "M")
+          targetTime := DateAdd(targetTime, -A_Sec, "S")
+          ; 如果目标时间已过，则设置为明天
+          if (targetTime <= A_Now)
+            targetTime := DateAdd(targetTime, 1, "D")
+          ; 需要等待的秒数
+          waitTime := DateDiff(targetTime, A_Now, "S")
+          SetTimer(main, -waitTime * 1000)
+          Ctrl.timer := true
+          waitHours := waitTime // 3600
+          waitMinutes := waitTime // 60 - waitHours * 60
+          MsgBox(waitHours "小时" waitMinutes "分钟后将自动启动游戏并运行刷取", "定时刷取", "Iconi 0x40000 T6")
           destroyGui()
-          Ctrl.ing := 1
-          try {
-            RestartGame()
-          }
+        } else if (Ctrl.timer) {
+          SetTimer(main, 0)
+          Ctrl.timer := false
+          g.Text := '&Z ' (setting.AutoRun ? '定时刷取' : '开始刷取')
+          MsgBox("定时刷取已取消", "定时刷取", "Iconi 0x40000 T3")
         } else {
           destroyGui()
+          main()
         }
-        activateZZZ()
-        main()
       }
     }
 

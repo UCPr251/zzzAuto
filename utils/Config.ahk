@@ -16,11 +16,11 @@ Class Config {
     /** 休眠系数，加载动画等待时长在原基础上的倍率，可通过修改该值延长/缩短全局等待时长 */
     sleepCoefficient: 1.0,
     /** 允许总的异常时重试的次数 */
-    retryTimes: 3,
+    retryTimes: 10,
     /** 颜色搜索允许的RGB值容差 */
     variation: 60,
     /** 战斗模式 */
-    fightMode: 3,
+    fightMode: 1,
     /** 刷取模式：0：全都要；1：只要业绩；2：只存银行 */
     gainMode: 0,
     /** 循环模式：0：业绩上限；-1：无限循环；正整数：刷取指定次数 */
@@ -34,13 +34,19 @@ Class Config {
     /** 战斗时是否自动识别红光闪避 */
     isAutoDodge: false,
     /** 拿命验收二号位角色：1：通用；2：艾莲；3：星见雅 */
-    fightModeDenny: 3,
+    fightModeDenny: 1,
     /** 循环模式：0：丁尼上限；-1：无限循环；正整数：刷取指定次数 */
     loopModeDenny: 0,
     /** 拿命验收破坏箱子前视角向右转动的坐标，调整该值以确保视角对齐NPC */
     rotateCoords: 200,
     /** 子循环模式：0：业绩上限；1：丁尼上限；2：全部上限 */
     subLoopMode: 0,
+    /** 是否定时运行 */
+    AutoRun: false,
+    /** 定时运行时 */
+    AutoRunHour: 4,
+    /** 定时运行分 */
+    AutoRunMinute: 0,
     GamePath: ''
   }
 

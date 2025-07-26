@@ -126,9 +126,13 @@ init() {
 
 /** 开始，检测所在页面 */
 main() {
-  c.reset()
   Ctrl.stop() ; 重置
   Ctrl.ing := true
+  if (!WinExist(ZZZ) && setting.GamePath && FileExist(setting.GamePath)) {
+    MsgBox('未运行游戏，3s后将尝试自动启动游戏', , 'Icon! 0x40000 T3')
+    RestartGame()
+  }
+  c.reset()
   isYeJi := setting.mode = 'YeJi'
   page := recogLocation()
   switch (page) {
