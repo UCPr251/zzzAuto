@@ -32,7 +32,7 @@ getDenny(step := 3) {
   Press('Space')
   if (setting.fightModeDenny = 1) {
     ; 通用连续闪避
-    loop(6) {
+    loop (6) {
       Press('Shift')
       Sleep(Random(300, 320))
     }
@@ -65,7 +65,7 @@ getDenny(step := 3) {
     ;   throw Error('丁尼刷取交互失败')
     ; }
     Press('Escape')
-    if (++depth > 4) {
+    if (++depth > 3) {
       ; 若存在刷取成功的数据，证明非配置问题，尝试重进副本刷取
       if (setting.statisticsDenny.length) {
         return false

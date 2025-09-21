@@ -22,8 +22,10 @@ enterDennyFuben(step := 2) {
   }
   static pagedown() {
     MouseMove(c.width // 4 * 3, c.height // 2)
+    RandomSleep(500, 600)
     loop (10) {
       Click('WD 1')
+      Sleep(20)
     }
     Sleep(1000)
   }

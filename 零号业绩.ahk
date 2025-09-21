@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2025/7/26
- * @version v2.3.0
+ * @date 2025/9/21
+ * @version v2.3.1
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.3.0"
+global Version := "v2.3.1"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
