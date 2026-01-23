@@ -11,7 +11,8 @@ enterHollowZero() {
   } else {
     pixelSearchAndClick(c.快捷手册.挑战_黑色*)
   }
-  pixelSearchAndClick(c.快捷手册.零号空洞*)
+  ; pixelSearchAndClick(c.快捷手册.零号空洞*)
+  Sleep(251)
   pixelSearchAndClick(c.快捷手册.前往*)
   pixelSearchAndClick(c.快捷手册.传送*)
   RandomSleep()
@@ -23,8 +24,8 @@ enterHollowZero() {
   }
   RandomSleep(400, 600)
   Press('Escape')
-  while (recogLocation(3) != 1) {
-    if (A_Index > 6) {
+  while (recogLocation(5) != 1) {
+    if (A_Index > 12) {
       return false
     }
     Press('Escape')
