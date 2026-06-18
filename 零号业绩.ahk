@@ -2,8 +2,8 @@
  * @description 绝区零零号空洞零号业绩自动刷取、自动银行存款脚本
  * @file 零号业绩.ahk
  * @author UCPr
- * @date 2026/1/23
- * @version v2.3.2
+ * @date 2026/6/18
+ * @version v2.3.3
  * @link https://github.com/UCPr251/zzzAuto
  * @warning 请勿用于任何商业用途，仅供学习交流使用
  ***********************************************************************/
@@ -42,7 +42,7 @@ SetMouseDelay(-1)
 #Include getDenny.ahk
 #Include enterHDD.ahk
 
-global Version := "v2.3.2"
+global Version := "v2.3.3"
 global ZZZ := "ahk_exe ZenlessZoneZero.exe"
 
 init()
@@ -137,38 +137,38 @@ main() {
   page := recogLocation()
   switch (page) {
     case 0: ; 未知界面
-    {
-      Ctrl.ing := false
-      if (isYeJi) {
-        return MsgBox("请位于 <零号空洞主页> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
-      } else {
-        return MsgBox("请位于 <HDD第二章间章战斗委托关卡选择界面> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
+      {
+        Ctrl.ing := false
+        if (isYeJi) {
+          return MsgBox("请位于 <零号空洞主页> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
+        } else {
+          return MsgBox("请位于 <HDD第二章间章战斗委托关卡选择界面> 或 <角色操作界面> 重试", "错误", "Iconx 0x40000")
+        }
       }
-    }
-      case 1:
+    case 1:
       {
         stepLog("【开始】界面：角色操作界面")
       }
-        case 2:
-        {
-          stepLog("【开始】界面：零号空洞主页")
-          if (!isYeJi) {
-            loop (2) {
-              Press('Escape')
-              RandomSleep(1100, 1200)
-            }
+    case 2:
+      {
+        stepLog("【开始】界面：零号空洞主页")
+        if (!isYeJi) {
+          loop (2) {
+            Press('Escape')
+            RandomSleep(1100, 1200)
           }
         }
-          case 3:
-          {
-            stepLog("【开始】界面：HDD关卡选择界面")
-            if (isYeJi) {
-              loop (2) {
-                Press('Escape')
-                RandomSleep(1100, 1200)
-              }
-            }
+      }
+    case 3:
+      {
+        stepLog("【开始】界面：HDD关卡选择界面")
+        if (isYeJi) {
+          loop (2) {
+            Press('Escape')
+            RandomSleep(1100, 1200)
           }
+        }
+      }
   }
   runAutoZZZ()
 }
@@ -206,7 +206,7 @@ retry(reason?) {
   RandomSleep()
   page := 0
   ; 卡在空洞走格子、交互、确认界面，子界面
-UC:
+  UC:
   loop (6) {
     Press('Space', 2)
     if (PixelSearchPre(&X, &Y, c.空洞.确认*)) { ; 确认？
